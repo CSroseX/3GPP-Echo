@@ -21,6 +21,22 @@ def after_retrieve(state: Dict[str, Any]) -> str:
     return "generate"
 
 
+def after_grade(state: Dict[str, Any]) -> str:
+    """Router after grade_sufficiency, on the count of relevant chunks:
+
+    - >= sufficiency_min_relevant -> generate
+    - fewer, with rewrites left (rewrites < max_rewrites) -> rewrite_query
+    - fewer, rewrites exhausted -> abstain (insufficient_context);
+      regenerating against context that lacks the answer can't succeed.
+    """
+    cfg = get_settings()
+    if (state.get("n_relevant_chunks") or 0) >= cfg.sufficiency_min_relevant:
+        return "generate"
+    if (state.get("rewrites") or 0) < cfg.max_rewrites:
+        return "rewrite_query"
+    return "abstain"
+
+
 def after_rewrite(state: Dict[str, Any]) -> str:
     """Router after rewrite_query: re-retrieve on the rewritten query, unless
     the rewrite was a no-op (cap already spent, or it reproduced the queries

@@ -30,6 +30,11 @@ class GraphState(TypedDict, total=False):
     # (one query, or a 4G/5G split); `query` stays the user's question.
     retrieval_queries: Optional[List[str]]
     rewrite_noop: Optional[bool]
+    # grade_sufficiency_node: after_grade routes on n_relevant_chunks.
+    n_relevant_chunks: Optional[int]
+    relevance_flags: Optional[List[bool]]
+    top1_cross_score: Optional[float]
+    sufficiency_signal: Optional[str]  # llm | cross_encoder_floor | cross_encoder_fallback | no_chunks
 
     # Reserved for later phases; unpopulated today.
     citations: Optional[List[Dict[str, Any]]]

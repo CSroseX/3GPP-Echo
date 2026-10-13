@@ -101,6 +101,23 @@ class Settings(BaseSettings):
     rewrite_4g_spec_ids: list[str] = ["24.301"]
     rewrite_5g_spec_ids: list[str] = ["23.501", "24.501"]
 
+    # grade_sufficiency_node. Cross-encoder (ms-marco-MiniLM-L-6-v2) logits:
+    # the six answerable golden-set questions measured top-1 4.6-8.4 in
+    # eval/baseline/retrieval_metrics.json; irrelevant pairs score negative.
+    # Below the top-1 floor no LLM call is made. The fallback threshold
+    # counts a chunk relevant only when the relevance LLM call fails.
+    sufficiency_top_n: int = 5
+    sufficiency_min_relevant: int = 2
+    sufficiency_min_top1_score: float = 0.0
+    sufficiency_fallback_min_score: float = 3.0
+    sufficiency_llm_max_tokens: int = 200
+    sufficiency_chunk_char_cap: int = 1200
+    sufficiency_filter_chunks: bool = True
+
+    # Per-chunk character cap on chunk text injected into the generate and
+    # verify prompts (prompt tokens are 66% of measured spend).
+    prompt_chunk_char_cap: int = 2400
+
     @property
     def project_root(self) -> Path:
         return _find_project_root()
