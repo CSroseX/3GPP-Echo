@@ -26,6 +26,11 @@ forward). Three defects fixed:
 Also adds --limit and --types for cheap iteration (a 3-question subset
 instead of a full, rate-limited 18-question run), and --types/--limit
 apply to the resume logic too.
+
+Each invocation that executes questions also writes
+eval/runs/<run_id>/{run.json, per_question.jsonl, summary.json} via
+RunRecorder: per-node latency, tokens (from the traced client factory's
+usage log), cost estimate, and node path per question.
 """
 
 from __future__ import annotations
@@ -42,7 +47,10 @@ from typing import Any, Dict, List, Optional
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from src.config import get_settings
+from src.generation import nodes as gen_nodes
 from src.generation.graph import build_graph
+from src.obs.metrics import RunRecorder
+from src.obs.tracing import usage_since, usage_snapshot
 from src.retrieval.retriever import Retriever
 
 GOLDEN_SET_PATH = Path(__file__).resolve().parent.parent.parent / "eval" / "golden" / "golden_set.v1.json"
@@ -125,14 +133,32 @@ def atomic_write_json(path: Path, payload: Dict[str, Any]) -> None:
     os.replace(tmp_path, path)
 
 
-def run_one_question(app, item: Dict[str, Any]) -> Dict[str, Any]:
+def run_one_question(app, item: Dict[str, Any], recorder: Optional[RunRecorder] = None) -> Dict[str, Any]:
     question = item["question"]
+    if recorder is not None:
+        recorder.start_question(item["id"], question, item["type"])
 
     inputs = {"query": question}
     final_state = inputs.copy()
+    # app.stream yields once per completed node, so the gap between yields
+    # is that node's latency and the usage-log delta is its token spend.
+    last_tick = time.perf_counter()
+    usage_cursor = usage_snapshot()
     for output in app.stream(inputs):
-        for _, value in output.items():
-            final_state.update(value)
+        for node_name, value in output.items():
+            final_state.update(value or {})
+            if recorder is not None:
+                now = time.perf_counter()
+                calls = usage_since(usage_cursor)
+                usage_cursor += len(calls)
+                recorder.record_node(
+                    node_name,
+                    latency_ms=(now - last_tick) * 1000,
+                    tokens_in=sum(c["prompt_tokens"] for c in calls),
+                    tokens_out=sum(c["completion_tokens"] for c in calls),
+                    llm_calls=len(calls),
+                )
+                last_tick = now
 
     chunks = final_state.get("chunks", [])
 
@@ -141,7 +167,7 @@ def run_one_question(app, item: Dict[str, Any]) -> Dict[str, Any]:
     else:
         status = "flagged_unverified"
 
-    return {
+    result = {
         "id": item["id"],
         "question": question,
         "type": item["type"],
@@ -154,6 +180,16 @@ def run_one_question(app, item: Dict[str, Any]) -> Dict[str, Any]:
         "status": status,
         "feedback": final_state.get("feedback", ""),
     }
+    if recorder is not None:
+        recorder.end_question(
+            termination_reason=result["termination_reason"],
+            status=status,
+            verification_passed=result["verification_passed"],
+            attempt=final_state.get("attempt"),
+            retries=result["retries"],
+            sources=result["sources"],
+        )
+    return result
 
 
 def run(
@@ -185,18 +221,33 @@ def run(
         app = build_graph(retriever=retriever)
         sleep_time = sleep_seconds if sleep_seconds is not None else cfg.eval_sleep_seconds
 
-        for idx, item in enumerate(pending, start=1):
-            print(f"\n[{idx}/{len(pending)}] (id={item['id']}, {item['type']}) {item['question']}")
-            result = run_one_question(app, item)
-            results_by_id[item["id"]] = result
+        # Run artifacts cover only the questions executed in this invocation;
+        # resumed results already on disk belong to an earlier run's artifacts.
+        recorder = RunRecorder()
+        recorder.start_run(
+            model_name=gen_nodes.MODEL_NAME,
+            golden_set_path=str(golden_set_path),
+            golden_set_hash=expected_hash,
+            results_path=str(results_path),
+            limit=limit,
+            types=types,
+        )
+        try:
+            for idx, item in enumerate(pending, start=1):
+                print(f"\n[{idx}/{len(pending)}] (id={item['id']}, {item['type']}) {item['question']}")
+                result = run_one_question(app, item, recorder=recorder)
+                results_by_id[item["id"]] = result
 
-            atomic_write_json(results_path, {
-                "golden_set_hash": expected_hash,
-                "results": [results_by_id[k] for k in sorted(results_by_id)],
-            })
+                atomic_write_json(results_path, {
+                    "golden_set_hash": expected_hash,
+                    "results": [results_by_id[k] for k in sorted(results_by_id)],
+                })
 
-            if idx < len(pending):
-                time.sleep(sleep_time)
+                if idx < len(pending):
+                    time.sleep(sleep_time)
+        finally:
+            # Written even on a crash, so a partial run still leaves artifacts.
+            print(f"\nRun artifacts: {recorder.end_run()}")
 
     selected_results = [results_by_id[q["id"]] for q in questions if q["id"] in results_by_id]
     print_summary(selected_results)
