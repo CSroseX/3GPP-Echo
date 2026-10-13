@@ -114,6 +114,21 @@ class Settings(BaseSettings):
     sufficiency_chunk_char_cap: int = 1200
     sufficiency_filter_chunks: bool = True
 
+    # triage_node. Tier 2 compares the query's max cosine against per-spec
+    # clause centroids (one per clause prefix at this depth, cached to the
+    # .npz below): < refuse_below -> refuse, >= accept_above -> retrieve,
+    # in between -> one tier-3 LLM yes/no capped at triage_llm_max_tokens.
+    # The two thresholds are PROVISIONAL until src/eval/triage_sweep.py has
+    # been run against the BGE model (it writes the recommended values);
+    # sweep_margin pads the golden-set extremes it derives them from.
+    triage_centroids_path: str = "data/domain_centroids.npz"
+    triage_centroid_clause_depth: int = 2
+    triage_centroid_exclude_clauses: list[str] = ["0", "2"]  # frontmatter, References
+    triage_refuse_below: float = 0.60
+    triage_accept_above: float = 0.72
+    triage_llm_max_tokens: int = 10
+    triage_sweep_margin: float = 0.02
+
     # Per-chunk character cap on chunk text injected into the generate and
     # verify prompts (prompt tokens are 66% of measured spend).
     prompt_chunk_char_cap: int = 2400

@@ -22,7 +22,10 @@ class GraphState(TypedDict, total=False):
     abstention: Optional[Dict[str, Any]]  # set by abstain_node on any non-verified exit
 
     # Phase 4 decision-nodes.
-    triage_decision: Optional[str]
+    triage_decision: Optional[str]  # in_domain | out_of_domain
+    triage_tier: Optional[str]  # lexical | centroid | llm | fail_open
+    triage_score: Optional[float]  # max centroid cosine, when tier 2 ran
+    triage_signals: Optional[Dict[str, List[str]]]
     retrieval_scores: Optional[List[float]]
     sufficiency: Optional[str]
     rewrites: Optional[int]

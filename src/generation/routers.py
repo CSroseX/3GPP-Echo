@@ -21,6 +21,15 @@ def after_retrieve(state: Dict[str, Any]) -> str:
     return "generate"
 
 
+def after_triage(state: Dict[str, Any]) -> str:
+    """Router after triage: out-of-domain questions go to refuse (no
+    retrieval, no generation); everything else, including a fail-open
+    triage, goes to retrieve."""
+    if state.get("triage_decision") == "out_of_domain":
+        return "refuse"
+    return "retrieve"
+
+
 def after_grade(state: Dict[str, Any]) -> str:
     """Router after grade_sufficiency, on the count of relevant chunks:
 
