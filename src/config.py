@@ -49,6 +49,9 @@ class Settings(BaseSettings):
     # (Was a flat fetch_k=20 behind max(fetch_k, top_k), so top_k=5 and
     # top_k=20 both reranked the same 20 candidates.)
     rerank_multiplier: int = 8
+    # BM25 (in-process, src/retrieval/hybrid.py) fused with dense via RRF.
+    hybrid_bm25: bool = True
+    rrf_k: int = 60
     verify_top_k: int = 3
 
     # ── Generation ──────────────────────────────────────────────────

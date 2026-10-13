@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 from src.config import Settings
+from src.ingestion.chunk_ids import assign_chunk_ids
 
 CHUNKS = [
     {"spec_id": "23.501", "clause_id": "6.2.1", "clause_title": "AMF",
@@ -42,9 +43,13 @@ def make_retriever(tmp_path):
 
         q_client = MagicMock()
 
+        # Payloads carry chunk_id, as the indexer stores them.
+        payloads = [dict(c) for c in CHUNKS]
+        assign_chunk_ids(payloads)
+
         def query_points(collection_name, query, query_filter, limit):
             points = [
-                SimpleNamespace(payload=CHUNKS[i], score=1.0 - 0.1 * rank)
+                SimpleNamespace(payload=payloads[i], score=1.0 - 0.1 * rank)
                 for rank, i in enumerate(qdrant_order)
             ][:limit]
             return SimpleNamespace(points=points)
@@ -109,3 +114,30 @@ class TestRerankOrdering:
         results = r.search("What is the AMF?", top_k=2)
         assert [c["clause_id"] for c in results] == ["5.3.2", "6.2.1"]
         assert results[0]["score"] == 0.9
+
+
+class TestHybridFusion:
+    def test_bm25_only_hit_reaches_the_reranker(self, make_retriever):
+        # Dense misses the AMF chunk entirely; BM25 matches "AMF" lexically.
+        r = make_retriever(qdrant_order=(1, 2), cross_scores={"6.2.1": 5.0, "5.3.2": 1.0, "5.5.3": 0.0})
+        results = r.search("AMF", top_k=1)
+        assert results[0]["clause_id"] == "6.2.1"
+        assert results[0]["qdrant_score"] is None
+        assert results[0]["bm25_score"] > 0
+
+    def test_hybrid_disabled_is_dense_only(self, make_retriever):
+        r = make_retriever(qdrant_order=(1, 2), cross_scores={"6.2.1": 5.0}, hybrid_bm25=False)
+        assert r.retriever.bm25 is None
+        results = r.search("AMF", top_k=3)
+        assert "6.2.1" not in [c["clause_id"] for c in results]
+
+    def test_chunk_found_by_both_paths_is_not_duplicated(self, make_retriever):
+        r = make_retriever(qdrant_order=(0, 1, 2))
+        results = r.search("AMF registration", top_k=10)
+        ids = [c["chunk_id"] for c in results]
+        assert len(ids) == len(set(ids)) == 3
+
+    def test_bm25_respects_spec_targeting(self, make_retriever):
+        r = make_retriever(qdrant_order=())
+        results = r.search("tracking area timer T3412 in TS 24.301", top_k=5)
+        assert {c["spec_id"] for c in results} == {"24.301"}
