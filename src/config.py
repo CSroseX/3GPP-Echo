@@ -45,7 +45,10 @@ class Settings(BaseSettings):
 
     # ── Retrieval ───────────────────────────────────────────────────
     default_top_k: int = 5
-    fetch_k: int = 20
+    # Candidates sent to the cross-encoder = rerank_multiplier * top_k.
+    # (Was a flat fetch_k=20 behind max(fetch_k, top_k), so top_k=5 and
+    # top_k=20 both reranked the same 20 candidates.)
+    rerank_multiplier: int = 8
     verify_top_k: int = 3
 
     # ── Generation ──────────────────────────────────────────────────
@@ -63,6 +66,8 @@ class Settings(BaseSettings):
 
     # ── Eval ────────────────────────────────────────────────────────
     eval_sleep_seconds: int = 5
+    # Ranked-list length the retrieval report scores (recall@20 needs 20).
+    eval_top_k: int = 20
 
     # ── Cost estimation (USD per 1k tokens, clearly an ESTIMATE) ───
     cost_per_1k_input_tokens: float = 0.0015

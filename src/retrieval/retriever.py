@@ -64,13 +64,19 @@ class Retriever:
 
         return spec_id, clause_id
 
-    def search(self, query: str, top_k: int = None):
+    def search(self, query: str, top_k: int = None, candidate_k: int = None):
         """
         Executes a dual-path retrieval based on query parsing.
+
+        candidate_k is how many candidates the cross-encoder reranks before
+        truncating to top_k; it defaults to rerank_multiplier * top_k.
         """
         cfg = get_settings()
         if top_k is None:
             top_k = cfg.default_top_k
+        if candidate_k is None:
+            candidate_k = cfg.rerank_multiplier * top_k
+        candidate_k = max(candidate_k, top_k)
 
         spec_id, clause_id = self._parse_query(query)
 
@@ -118,7 +124,7 @@ class Retriever:
             collection_name=self.collection_name,
             query=vector,
             query_filter=query_filter,
-            limit=max(cfg.fetch_k, top_k)
+            limit=candidate_k
         ).points
 
         # Format results and prepare for reranking

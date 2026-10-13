@@ -5,10 +5,12 @@ Zero LLM tokens — this only exercises Retriever.search() against Qdrant,
 never the generate/verify graph. Safe to re-run anytime Qdrant is live.
 
     python -m src.eval.retrieval_report
+    python -m src.eval.retrieval_report --output eval/baselines/ablation_x.json
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
@@ -25,6 +27,11 @@ OUTPUT_PATH = "eval/baselines/retrieval_baseline.json"
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Zero-LLM-token retrieval report over the golden set.")
+    parser.add_argument("--output", default=OUTPUT_PATH,
+                        help="Where to write the report (default: the committed baseline).")
+    output_path = parser.parse_args().output
+
     cfg = get_settings()
 
     with open(GOLDEN_SET_PATH, "r", encoding="utf-8") as f:
@@ -33,13 +40,16 @@ def main():
     scored_questions = [q for q in golden_set if q.get("retrieval_scored")]
 
     retriever = Retriever()
+    candidate_k = cfg.rerank_multiplier * cfg.default_top_k
 
     per_question = []
     latencies_ms = []
 
     for q in scored_questions:
         start = time.perf_counter()
-        results = retriever.search(q["question"], top_k=cfg.fetch_k)
+        # Rerank the same candidate pool the app uses at default_top_k, so
+        # this list's top-5 is exactly what the app would return.
+        results = retriever.search(q["question"], top_k=cfg.eval_top_k, candidate_k=candidate_k)
         elapsed_ms = (time.perf_counter() - start) * 1000
         latencies_ms.append(elapsed_ms)
 
@@ -93,7 +103,10 @@ def main():
     report = {
         "golden_set_path": GOLDEN_SET_PATH,
         "config": {
-            "fetch_k": cfg.fetch_k,
+            "default_top_k": cfg.default_top_k,
+            "rerank_multiplier": cfg.rerank_multiplier,
+            "candidate_k": candidate_k,
+            "eval_top_k": cfg.eval_top_k,
             "embedding_model": cfg.embedding_model,
             "reranker_model": cfg.reranker_model,
         },
@@ -101,11 +114,11 @@ def main():
         "per_question": per_question,
     }
 
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
+    os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
 
-    print(f"Wrote {OUTPUT_PATH}")
+    print(f"Wrote {output_path}")
     print(json.dumps(summary, indent=2))
 
 
