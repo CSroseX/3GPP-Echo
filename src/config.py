@@ -86,6 +86,21 @@ class Settings(BaseSettings):
     openai_api_key: str = ""
     model_name: str = ""
 
+    # ── Phase 4 decision-node settings ──────────────────────────────
+    # Corpus lexicon (src/generation/lexicon.py): an acronym-shaped token
+    # must occur at least this often in spec text to count as a domain term
+    # (keeps one-off mentions like XML/HTTP out of the lexicon).
+    lexicon_min_term_freq: int = 10
+
+    # rewrite_query_node: hard cap on rewrites per question; after it the
+    # flow terminates at abstain. Generation affinity: an acronym is 4G- or
+    # 5G-affine when its per-token rate in one spec group is >= this ratio
+    # times its rate in the other.
+    max_rewrites: int = 1
+    rewrite_generation_affinity_ratio: float = 3.0
+    rewrite_4g_spec_ids: list[str] = ["24.301"]
+    rewrite_5g_spec_ids: list[str] = ["23.501", "24.501"]
+
     @property
     def project_root(self) -> Path:
         return _find_project_root()

@@ -1,6 +1,6 @@
 from langgraph.graph import END
 
-from src.generation.routers import after_retrieve, should_retry
+from src.generation.routers import after_retrieve, after_rewrite, should_retry
 
 
 class TestAfterRetrieve:
@@ -13,6 +13,17 @@ class TestAfterRetrieve:
     def test_with_chunks_routes_to_generate(self):
         state = {"chunks": [{"spec_id": "23.501", "clause_id": "6.2.1"}]}
         assert after_retrieve(state) == "generate"
+
+
+class TestAfterRewrite:
+    def test_real_rewrite_routes_to_retrieve(self):
+        assert after_rewrite({"rewrite_noop": False, "rewrites": 1}) == "retrieve"
+
+    def test_noop_routes_to_abstain(self):
+        assert after_rewrite({"rewrite_noop": True, "rewrites": 1}) == "abstain"
+
+    def test_missing_flag_routes_to_retrieve(self):
+        assert after_rewrite({}) == "retrieve"
 
 
 class TestShouldRetryVerifiedPasses:

@@ -13,3 +13,4 @@ from src.generation.nodes.core import (  # noqa: F401
     verify_claims_node,
 )
 from src.generation.nodes.retrieve import make_retrieve_node  # noqa: F401
+from src.generation.nodes.rewrite import rewrite_query_node  # noqa: F401

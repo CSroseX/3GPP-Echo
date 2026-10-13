@@ -21,6 +21,15 @@ def after_retrieve(state: Dict[str, Any]) -> str:
     return "generate"
 
 
+def after_rewrite(state: Dict[str, Any]) -> str:
+    """Router after rewrite_query: re-retrieve on the rewritten query, unless
+    the rewrite was a no-op (cap already spent, or it reproduced the queries
+    already tried) — an identical retrieval can't change the grade."""
+    if state.get("rewrite_noop"):
+        return "abstain"
+    return "retrieve"
+
+
 def should_retry(state: Dict[str, Any]) -> str:
     """Router for the `verify` node's conditional edges.
 

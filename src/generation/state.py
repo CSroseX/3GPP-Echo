@@ -21,11 +21,17 @@ class GraphState(TypedDict, total=False):
     termination_reason: Optional[str]
     abstention: Optional[Dict[str, Any]]  # set by abstain_node on any non-verified exit
 
-    # Reserved for later phases (Phase 4 decision-nodes); unpopulated today.
+    # Phase 4 decision-nodes.
     triage_decision: Optional[str]
     retrieval_scores: Optional[List[float]]
     sufficiency: Optional[str]
     rewrites: Optional[int]
+    # rewrite_query_node: what retrieve_node searches on after a rewrite
+    # (one query, or a 4G/5G split); `query` stays the user's question.
+    retrieval_queries: Optional[List[str]]
+    rewrite_noop: Optional[bool]
+
+    # Reserved for later phases; unpopulated today.
     citations: Optional[List[Dict[str, Any]]]
 
 
