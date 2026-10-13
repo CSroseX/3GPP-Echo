@@ -141,3 +141,22 @@ class TestHybridFusion:
         r = make_retriever(qdrant_order=())
         results = r.search("tracking area timer T3412 in TS 24.301", top_k=5)
         assert {c["spec_id"] for c in results} == {"24.301"}
+
+
+class TestLineageBoost:
+    def test_boost_lifts_title_match_over_close_competitor(self, make_retriever):
+        # Cross-encoder slightly prefers 5.3.2; the query names the AMF clause.
+        scores = {"6.2.1": 1.0, "5.3.2": 1.5, "5.5.3": -5.0}
+        r = make_retriever(cross_scores=scores, lineage_boost=2.0)
+        results = r.search("What is the role of the AMF?", top_k=1)
+        assert results[0]["clause_id"] == "6.2.1"
+        assert results[0]["cross_score"] == 1.0
+        assert results[0]["lineage_match"] == 1.0
+        assert results[0]["score"] == 3.0
+
+    def test_default_boost_is_off(self, make_retriever):
+        scores = {"6.2.1": 1.0, "5.3.2": 1.5, "5.5.3": -5.0}
+        r = make_retriever(cross_scores=scores)
+        results = r.search("What is the role of the AMF?", top_k=1)
+        assert results[0]["clause_id"] == "5.3.2"
+        assert results[0]["score"] == results[0]["cross_score"]

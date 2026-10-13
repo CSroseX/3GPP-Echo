@@ -52,6 +52,10 @@ class Settings(BaseSettings):
     # BM25 (in-process, src/retrieval/hybrid.py) fused with dense via RRF.
     hybrid_bm25: bool = True
     rrf_k: int = 60
+    # Added to the cross-encoder logit × lineage_match (src/retrieval/lineage.py).
+    # Off until swept against the reranker: it also fully matches decoys,
+    # e.g. 24.301 "GUTI" for a 5G-GUTI question.
+    lineage_boost: float = 0.0
     verify_top_k: int = 3
 
     # ── Generation ──────────────────────────────────────────────────

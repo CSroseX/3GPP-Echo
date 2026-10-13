@@ -16,6 +16,7 @@ from src.config import get_settings
 from src.ingestion.chunk_ids import assign_chunk_ids
 from src.obs.logging import get_logger
 from src.retrieval.hybrid import BM25Index, rrf_fuse
+from src.retrieval.lineage import lineage_match
 
 log = get_logger(__name__)
 
@@ -162,10 +163,14 @@ class Retriever:
         pairs = [(str(query), str(c["content"])) for c in candidates]
         cross_scores = self.cross_encoder.predict(pairs)
 
+        # score = cross-encoder logit + lineage boost; cross_score keeps the
+        # raw logit for anything that needs an uncalibrated-by-us signal.
         for i, c in enumerate(candidates):
-            c["score"] = round(float(cross_scores[i]), 4)
+            c["cross_score"] = round(float(cross_scores[i]), 4)
+            c["lineage_match"] = round(lineage_match(query, c["clause_title"], c["lineage"]), 4)
+            c["score"] = round(c["cross_score"] + cfg.lineage_boost * c["lineage_match"], 4)
 
-        # Sort by cross-encoder score
+        # Sort by final score
         candidates.sort(key=lambda x: x["score"], reverse=True)
 
         # Take top_k
