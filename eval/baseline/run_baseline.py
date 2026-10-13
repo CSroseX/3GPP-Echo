@@ -8,6 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from src.generation import nodes as gen_nodes
 from src.generation.graph import build_graph
+from src.obs.tracing import usage_since, usage_snapshot
 from src.retrieval.retriever import Retriever
 
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -128,22 +129,9 @@ def run_end_to_end():
     gold = load_json(GOLD_PATH)
     gold_map = {item["question"]: item for item in gold}
 
-    original_create = gen_nodes.client.chat.completions.create
-    usage_log = []
-
-    def wrapped_create(*args, **kwargs):
-        response = original_create(*args, **kwargs)
-        usage = getattr(response, "usage", None)
-        if usage is not None:
-            usage_log.append({
-                "model": kwargs.get("model") or getattr(gen_nodes, "MODEL_NAME", None),
-                "prompt_tokens": getattr(usage, "prompt_tokens", None),
-                "completion_tokens": getattr(usage, "completion_tokens", None),
-                "total_tokens": getattr(usage, "total_tokens", None),
-            })
-        return response
-
-    gen_nodes.client.chat.completions.create = wrapped_create
+    # Token usage comes from the traced client factory (src/obs/tracing.py),
+    # which records every chat completion; no monkeypatch needed.
+    usage_cursor = usage_snapshot()
     app = build_graph()
     retriever = Retriever()
     results = []
@@ -181,7 +169,10 @@ def run_end_to_end():
         else:
             raise
     finally:
-        gen_nodes.client.chat.completions.create = original_create
+        usage_log = [
+            {**u, "model": u["model"] or getattr(gen_nodes, "MODEL_NAME", None)}
+            for u in usage_since(usage_cursor)
+        ]
 
     with open(ANSWERS_PATH, "w", encoding="utf-8") as f:
         json.dump({"results": results, "usage_log": usage_log}, f, indent=2)
