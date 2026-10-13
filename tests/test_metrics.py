@@ -1,3 +1,5 @@
+import math
+
 import pytest
 
 from src.eval.metrics import (
@@ -112,6 +114,25 @@ class TestNdcgAtK:
         prefix_score = ndcg_at_k(results, [("23.501", "5.15.2")], k=10, strict=False)
         assert strict_score == 0.0
         assert prefix_score == pytest.approx(1.0)
+
+    def test_several_chunks_of_one_gold_clause_never_exceed_one(self):
+        # Q2-shaped: two gold clauses, each split over several chunks.
+        results = [make_result("24.501", "6.4.1.2"), make_result("24.501", "6.4.1.2"),
+                   make_result("24.501", "6.4.1.1"), make_result("24.501", "6.4.1.2")]
+        gold = [("24.501", "6.4.1.2"), ("24.501", "6.4.1.1")]
+        assert ndcg_at_k(results, gold, k=10, strict=True) <= 1.0
+
+    def test_each_gold_pair_credited_at_first_hit(self):
+        # Gold at ranks 1 and 3 (rank 2 is a duplicate chunk of the first).
+        results = [make_result("24.501", "6.4.1.2"), make_result("24.501", "6.4.1.2"),
+                   make_result("24.501", "6.4.1.1")]
+        gold = [("24.501", "6.4.1.2"), ("24.501", "6.4.1.1")]
+        expected = (1 + 1 / math.log2(4)) / (1 + 1 / math.log2(3))
+        assert ndcg_at_k(results, gold, k=10, strict=True) == pytest.approx(expected)
+
+    def test_prefix_descendants_of_one_gold_count_once(self):
+        results = [make_result("23.501", "5.15.2.1"), make_result("23.501", "5.15.2.2")]
+        assert ndcg_at_k(results, [("23.501", "5.15.2")], k=10, strict=False) == pytest.approx(1.0)
 
 
 class TestScoreQuestion:
