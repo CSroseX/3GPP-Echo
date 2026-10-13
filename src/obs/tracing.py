@@ -79,15 +79,29 @@ def make_llm_client(api_key: str, base_url: str) -> Any:
     return _wrap_usage(OpenAI(api_key=api_key, base_url=base_url))
 
 
-def observe(*args: Any, **kwargs: Any) -> Callable:
+def observe(func: Optional[Callable] = None, **observe_kwargs: Any) -> Callable:
     """langfuse.observe when tracing is enabled, otherwise a pass-through.
-    Usable bare (@observe) or with arguments (@observe(name="generate"))."""
-    if tracing_enabled():
-        from langfuse import observe as lf_observe
-        return lf_observe(*args, **kwargs)
-    if len(args) == 1 and callable(args[0]) and not kwargs:
-        return args[0]
-    return lambda func: func
+    Usable bare (@observe) or with arguments (@observe(name="generate")).
+
+    The choice is made on each call, not at decoration time: .env is loaded
+    by src.generation.nodes.core at import, so a node module decorated
+    before that import would otherwise be stuck untraced."""
+
+    def decorate(fn: Callable) -> Callable:
+        traced: List[Callable] = []
+
+        @functools.wraps(fn)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            if not tracing_enabled():
+                return fn(*args, **kwargs)
+            if not traced:
+                from langfuse import observe as lf_observe
+                traced.append(lf_observe(fn, **observe_kwargs))
+            return traced[0](*args, **kwargs)
+
+        return wrapper
+
+    return decorate(func) if func is not None else decorate
 
 
 def update_trace_attributes(**attributes: Any) -> None:
