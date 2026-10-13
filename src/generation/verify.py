@@ -9,6 +9,7 @@ if sys.stdout.encoding.lower() != 'utf-8':
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from src.generation.graph import build_graph
+from src.obs.tracing import trace_attributes, trace_query, update_trace_attributes
 from src.retrieval.retriever import Retriever
 
 
@@ -27,10 +28,12 @@ def main():
 
     print("\n--- RETRIEVING, GENERATING & VERIFYING ANSWER ---")
     final_state = inputs.copy()
-    for output in app.stream(inputs):
-        for key, value in output.items():
-            print(f"Node Executed: {key}")
-            final_state.update(value)
+    with trace_query(query):
+        for output in app.stream(inputs):
+            for key, value in output.items():
+                print(f"Node Executed: {key}")
+                final_state.update(value)
+        update_trace_attributes(**trace_attributes(final_state))
 
     if not final_state:
         print("Error: Graph execution failed.")

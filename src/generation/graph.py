@@ -28,6 +28,7 @@ from src.generation.nodes import (
 )
 from src.generation.routers import after_grade, after_rewrite, after_triage, should_retry
 from src.generation.state import GraphState
+from src.obs.tracing import traced_node
 
 
 def build_graph(retriever=None, *, embed=None, centroids_loader=None, triage_llm=None, grade_llm=None):
@@ -55,15 +56,20 @@ def build_graph(retriever=None, *, embed=None, centroids_loader=None, triage_llm
 
     workflow = StateGraph(GraphState)
 
-    # Add nodes
-    workflow.add_node("triage", make_triage_node(embed=embed, centroids_loader=centroids_loader, llm=triage_llm))
-    workflow.add_node("refuse", refuse_node)
-    workflow.add_node("retrieve", make_retrieve_node(retriever_factory=get_retriever))
-    workflow.add_node("grade_sufficiency", make_grade_sufficiency_node(grade_llm))
-    workflow.add_node("rewrite_query", rewrite_query_node)
-    workflow.add_node("generate", generate_node)
-    workflow.add_node("verify", verify_claims_node)
-    workflow.add_node("abstain", abstain_node)
+    # Add nodes. Each runs inside its own tracing span (a no-op without
+    # LANGFUSE_HOST); wrap the stream in trace_query() so they share a trace.
+    nodes = {
+        "triage": make_triage_node(embed=embed, centroids_loader=centroids_loader, llm=triage_llm),
+        "refuse": refuse_node,
+        "retrieve": make_retrieve_node(retriever_factory=get_retriever),
+        "grade_sufficiency": make_grade_sufficiency_node(grade_llm),
+        "rewrite_query": rewrite_query_node,
+        "generate": generate_node,
+        "verify": verify_claims_node,
+        "abstain": abstain_node,
+    }
+    for name, node in nodes.items():
+        workflow.add_node(name, traced_node(name, node))
 
     # Add edges
     workflow.add_edge(START, "triage")
