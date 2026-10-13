@@ -48,6 +48,7 @@ def main():
     print("VERIFICATION RESULT:")
     print("="*60)
     print(f"Pass/Fail Verdict: {'PASS' if final_state.get('verification_passed') else 'FAIL'}")
+    print(f"Termination Reason: {final_state.get('termination_reason')}")
     print(f"Retry Count: {final_state.get('retries', 0)}")
     print(f"Reasoning/Feedback:\n{final_state.get('feedback', 'None')}")
 

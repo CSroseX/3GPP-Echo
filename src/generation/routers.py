@@ -13,14 +13,6 @@ from langgraph.graph import END
 from src.config import get_settings
 
 
-def after_retrieve(state: Dict[str, Any]) -> str:
-    """Router after the retrieve node: skip LLM calls when retrieval
-    found nothing (mirrors the old pre-graph empty-chunks check)."""
-    if not state.get("chunks"):
-        return "abstain"
-    return "generate"
-
-
 def after_triage(state: Dict[str, Any]) -> str:
     """Router after triage: out-of-domain questions go to refuse (no
     retrieval, no generation); everything else, including a fail-open

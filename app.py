@@ -117,7 +117,9 @@ def main():
 
                     chunks = final_state.get("chunks", [])
 
-                    if not chunks:
+                    # Refused (out_of_domain) and some abstained questions
+                    # legitimately end with no chunks; render their badge.
+                    if not chunks and not final_state.get("termination_reason"):
                         st.warning("No relevant chunks found in the database.")
                         st.session_state.messages.append({"role": "assistant", "content": "No relevant chunks found in the database."})
                     else:
