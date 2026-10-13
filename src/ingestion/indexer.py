@@ -1,7 +1,9 @@
 import glob
-import hashlib
 import json
+import os
 import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Check dependencies
 try:
@@ -13,6 +15,7 @@ except ImportError:
     sys.exit(1)
 
 from src.config import get_settings
+from src.ingestion.chunk_ids import assign_chunk_ids, point_id_for
 
 
 def format_table_for_embedding(grid):
@@ -84,23 +87,10 @@ def run_indexer():
     batch_size = cfg.indexer_batch_size
     points_indexed = 0
 
-    # Deterministic chunk_id: sha1(spec_id|clause_id|ordinal), where ordinal
-    # is the chunk's position among chunks sharing the same (spec_id,
-    # clause_id) — clause_id alone is not unique (e.g. frontmatter chunks
-    # all share clause_id "0"). Re-running the indexer over the same chunk
-    # files yields identical ids, which snapshot-based CI depends on.
-    clause_ordinals = {}
-    for chunk in all_chunks:
-        key = (chunk["spec_id"], chunk["clause_id"])
-        ordinal = clause_ordinals.get(key, 0)
-        clause_ordinals[key] = ordinal + 1
-        digest = hashlib.sha1(
-            f"{chunk['spec_id']}|{chunk['clause_id']}|{ordinal}".encode("utf-8")
-        ).hexdigest()
-        chunk["chunk_id"] = digest
-        # Qdrant point ids must be an unsigned int or a UUID string; derive a
-        # stable UUID from the same digest so the point id is reproducible.
-        chunk["_point_id"] = f"{digest[:8]}-{digest[8:12]}-{digest[12:16]}-{digest[16:20]}-{digest[20:32]}"
+    # Deterministic chunk_id (see src/ingestion/chunk_ids.py). Re-running
+    # the indexer over the same chunk files yields identical ids, which
+    # snapshot-based CI and the retriever's BM25 fusion depend on.
+    assign_chunk_ids(all_chunks)
 
     for i in range(0, len(all_chunks), batch_size):
         batch = all_chunks[i:i + batch_size]
@@ -128,7 +118,7 @@ def run_indexer():
         # Build Qdrant points
         points = []
         for j, chunk in enumerate(batch):
-            point_id = chunk.pop("_point_id")
+            point_id = point_id_for(chunk["chunk_id"])
             points.append(
                 PointStruct(
                     id=point_id,

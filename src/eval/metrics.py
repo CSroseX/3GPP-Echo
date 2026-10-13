@@ -100,27 +100,24 @@ def ndcg_at_k(
     k: int,
     strict: bool,
 ) -> float:
-    """Binary-relevance nDCG@k: a result is relevant if it matches any gold
-    pair. Multiple gold pairs do not inflate per-rank relevance past 1.0."""
+    """Binary-relevance nDCG@k over gold clauses: each gold pair is credited
+    once, at the first rank where a result matches it. A clause usually
+    spans several chunks; crediting every matching chunk let DCG exceed the
+    one-hit-per-gold-pair IDCG, so nDCG could go above 1.0."""
     if not gold_pairs:
         return 0.0
     window = results[:k]
 
     dcg = 0.0
+    credited = set()
     for rank, item in enumerate(window, start=1):
-        relevant = any(
-            (
-                item.get("spec_id") == gp[0]
-                and (
-                    item.get("clause_id") == gp[1]
-                    if strict
-                    else is_prefix_match(gp[1], item.get("clause_id", ""))
-                )
-            )
-            for gp in gold_pairs
-        )
-        if relevant:
-            dcg += 1.0 / math.log2(rank + 1)
+        for gp in gold_pairs:
+            if gp in credited or item.get("spec_id") != gp[0]:
+                continue
+            if (item.get("clause_id") == gp[1]) if strict else is_prefix_match(gp[1], item.get("clause_id", "")):
+                credited.add(gp)
+                dcg += 1.0 / math.log2(rank + 1)
+                break
 
     ideal_hits = min(len(gold_pairs), k)
     idcg = sum(1.0 / math.log2(rank + 1) for rank in range(1, ideal_hits + 1))

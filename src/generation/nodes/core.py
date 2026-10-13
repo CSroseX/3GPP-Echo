@@ -4,10 +4,11 @@ import re
 from typing import Any, Dict
 
 from dotenv import load_dotenv
-from openai import APIConnectionError, APIStatusError, APITimeoutError, OpenAI
+from openai import APIConnectionError, APIStatusError, APITimeoutError
 
 from src.config import get_settings
 from src.obs.logging import get_logger
+from src.obs.tracing import make_llm_client
 
 cfg = get_settings()
 log = get_logger(__name__)
@@ -18,7 +19,7 @@ load_dotenv(dotenv_path=str(cfg.project_root / ".env"))
 get_settings.cache_clear()
 cfg = get_settings()
 
-# Unified client for Ollama or Remote API
+# Unified client for Ollama or Remote API, built by the one traced factory
 if cfg.use_remote_llm:
     openrouter_key = cfg.open_router_api_key
     openai_key = cfg.openai_api_key
@@ -34,14 +35,11 @@ if cfg.use_remote_llm:
         base_url = preferred_base_url or cfg.openai_base_url
         default_model = cfg.remote_llm_model_openai
 
-    client = OpenAI(
-        api_key=api_key,
-        base_url=base_url,
-    )
+    client = make_llm_client(api_key=api_key, base_url=base_url)
     MODEL_NAME = cfg.model_name or default_model
 else:
     # Local Ollama endpoint
-    client = OpenAI(
+    client = make_llm_client(
         api_key="ollama",  # required but ignored
         base_url=cfg.ollama_base_url,
     )

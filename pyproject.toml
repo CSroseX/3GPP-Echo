@@ -14,6 +14,7 @@ dependencies = [
     "pydantic==2.13.4",
     "pydantic-settings==2.15.0",
     "structlog==26.1.0",
+    "rank-bm25==0.2.2",
 ]
 
 [project.optional-dependencies]
@@ -26,11 +27,8 @@ dev = [
     "pytest==9.1.1",
     "ruff>=0.8",
 ]
-eval = [
-    "rank-bm25",
-]
 obs = [
-    "langfuse",
+    "langfuse==4.17.0",
 ]
 
 [tool.ruff]

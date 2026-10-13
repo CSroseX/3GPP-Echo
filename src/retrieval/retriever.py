@@ -13,7 +13,10 @@ except ImportError:
     sys.exit(1)
 
 from src.config import get_settings
+from src.ingestion.chunk_ids import assign_chunk_ids
 from src.obs.logging import get_logger
+from src.retrieval.hybrid import BM25Index, rrf_fuse
+from src.retrieval.lineage import lineage_match
 
 log = get_logger(__name__)
 
@@ -31,25 +34,32 @@ class Retriever:
         self.spec_pattern = re.compile(r"(?i)(?:TS\s*)?\b(\d{2}\.\d{3})\b")
         self.clause_pattern = re.compile(r"(?i)(?:clause|sec|section|subclause)\s+([1-9A-Z][\d\.a-zA-Z]*)\b")
 
-        # Load all valid clause IDs for prefix matching
-        self.valid_clause_ids = set()
+        # Load every chunk: clause IDs for prefix matching, and the BM25
+        # index. Sorted file order matches the indexer, so assign_chunk_ids
+        # reproduces the chunk_id stored in each Qdrant payload.
         chunk_dir = cfg.project_root / "data" / "chunks"
-        chunk_files = glob.glob(str(chunk_dir / "*_chunks.json"))
+        chunk_files = sorted(glob.glob(str(chunk_dir / "*_chunks.json")))
         if not chunk_files:
             raise FileNotFoundError(
                 f"No chunk files found in {chunk_dir}. "
                 "Run the ingestion pipeline first (see CLAUDE.md)."
             )
+        self.chunks = []
         for f in chunk_files:
             with open(f, "r", encoding="utf-8") as file:
-                chunks = json.load(file)
-                for c in chunks:
-                    self.valid_clause_ids.add(c["clause_id"])
+                self.chunks.extend(json.load(file))
+        self.valid_clause_ids = {c["clause_id"] for c in self.chunks}
         if not self.valid_clause_ids:
             raise ValueError(
                 f"Chunk files in {chunk_dir} contained no clause IDs. "
                 "The files may be empty or malformed."
             )
+        assign_chunk_ids(self.chunks)
+
+        self.bm25 = None
+        if cfg.hybrid_bm25:
+            self.bm25 = BM25Index(self.chunks)
+            log.info("retriever.bm25_index_built", num_chunks=len(self.chunks))
 
     def _parse_query(self, query: str):
         """
@@ -64,13 +74,19 @@ class Retriever:
 
         return spec_id, clause_id
 
-    def search(self, query: str, top_k: int = None):
+    def search(self, query: str, top_k: int = None, candidate_k: int = None):
         """
         Executes a dual-path retrieval based on query parsing.
+
+        candidate_k is how many candidates the cross-encoder reranks before
+        truncating to top_k; it defaults to rerank_multiplier * top_k.
         """
         cfg = get_settings()
         if top_k is None:
             top_k = cfg.default_top_k
+        if candidate_k is None:
+            candidate_k = cfg.rerank_multiplier * top_k
+        candidate_k = max(candidate_k, top_k)
 
         spec_id, clause_id = self._parse_query(query)
 
@@ -82,6 +98,7 @@ class Retriever:
 
         # Build Filter if Targeted
         query_filter = None
+        matched_clauses = None
         if is_targeted:
             conditions = []
             if spec_id:
@@ -118,20 +135,15 @@ class Retriever:
             collection_name=self.collection_name,
             query=vector,
             query_filter=query_filter,
-            limit=max(cfg.fetch_k, top_k)
+            limit=candidate_k
         ).points
 
         # Format results and prepare for reranking
-        candidates = []
-        for res in results:
-            payload = res.payload
-            candidates.append({
-                "spec_id": payload.get("spec_id"),
-                "clause_id": payload.get("clause_id"),
-                "qdrant_score": round(res.score, 4),
-                "content": payload.get("content", ""),
-                "content_preview": str(payload.get("content", ""))[:150].replace("\n", " ") + "..."
-            })
+        candidates = [_candidate(res.payload, qdrant_score=round(res.score, 4)) for res in results]
+
+        if self.bm25 is not None:
+            bm25_hits = self.bm25.search(query, candidate_k, spec_id=spec_id, clause_ids=matched_clauses)
+            candidates = _fuse(candidates, bm25_hits, candidate_k, cfg.rrf_k)
 
         if not candidates:
             return []
@@ -140,7 +152,8 @@ class Retriever:
             "retriever.search.candidates_before_rerank",
             count=len(candidates),
             candidates=[
-                {"spec_id": c["spec_id"], "clause_id": c["clause_id"], "qdrant_score": c["qdrant_score"]}
+                {"spec_id": c["spec_id"], "clause_id": c["clause_id"], "qdrant_score": c["qdrant_score"],
+                 "bm25_score": c.get("bm25_score")}
                 for c in candidates
             ],
         )
@@ -150,10 +163,14 @@ class Retriever:
         pairs = [(str(query), str(c["content"])) for c in candidates]
         cross_scores = self.cross_encoder.predict(pairs)
 
+        # score = cross-encoder logit + lineage boost; cross_score keeps the
+        # raw logit for anything that needs an uncalibrated-by-us signal.
         for i, c in enumerate(candidates):
-            c["score"] = round(float(cross_scores[i]), 4)
+            c["cross_score"] = round(float(cross_scores[i]), 4)
+            c["lineage_match"] = round(lineage_match(query, c["clause_title"], c["lineage"]), 4)
+            c["score"] = round(c["cross_score"] + cfg.lineage_boost * c["lineage_match"], 4)
 
-        # Sort by cross-encoder score
+        # Sort by final score
         candidates.sort(key=lambda x: x["score"], reverse=True)
 
         # Take top_k
@@ -169,6 +186,42 @@ class Retriever:
         )
 
         return formatted_results
+
+
+def _candidate(chunk, qdrant_score=None):
+    content = chunk.get("content", "")
+    return {
+        "chunk_id": chunk.get("chunk_id"),
+        "spec_id": chunk.get("spec_id"),
+        "clause_id": chunk.get("clause_id"),
+        "clause_title": chunk.get("clause_title", ""),
+        "lineage": chunk.get("lineage", []),
+        "qdrant_score": qdrant_score,
+        "content": content,
+        "content_preview": str(content)[:150].replace("\n", " ") + "...",
+    }
+
+
+def _fuse(dense_candidates, bm25_hits, candidate_k, rrf_k):
+    """RRF-merge the dense ranking with BM25's, keyed by chunk_id, and keep
+    the top candidate_k for the cross-encoder. A chunk found only by BM25
+    has qdrant_score None; one found by both carries both scores."""
+    by_key = {}
+    dense_keys = []
+    for c in dense_candidates:
+        key = c["chunk_id"] or f"{c['spec_id']}|{c['clause_id']}|{c['content_preview']}"
+        by_key.setdefault(key, c)
+        dense_keys.append(key)
+
+    bm25_keys = []
+    for chunk, score in bm25_hits:
+        key = chunk["chunk_id"]
+        if key not in by_key:
+            by_key[key] = _candidate(chunk)
+        by_key[key]["bm25_score"] = round(score, 4)
+        bm25_keys.append(key)
+
+    return [by_key[key] for key in rrf_fuse([dense_keys, bm25_keys], k=rrf_k)[:candidate_k]]
 
 
 if __name__ == "__main__":

@@ -65,9 +65,9 @@ class TestRetrieverChunkLoading:
     @patch("src.retrieval.retriever.get_settings")
     def test_loads_clause_ids_from_project_root(self, mock_settings, mock_qclient, mock_embed, mock_ce, tmp_path):
         chunks = [
-            {"clause_id": "5.1", "content": "test"},
-            {"clause_id": "5.2", "content": "test"},
-            {"clause_id": "5.2.1", "content": "test"},
+            {"spec_id": "23.501", "clause_id": "5.1", "content": "test"},
+            {"spec_id": "23.501", "clause_id": "5.2", "content": "test"},
+            {"spec_id": "23.501", "clause_id": "5.2.1", "content": "test"},
         ]
         project_root = _make_chunk_dir(tmp_path, {"23.501_chunks.json": chunks})
         mock_settings.return_value = self._import_and_patch(project_root)
@@ -81,7 +81,7 @@ class TestRetrieverChunkLoading:
     @patch("src.retrieval.retriever.get_settings")
     def test_loads_from_different_cwd(self, mock_settings, mock_qclient, mock_embed, mock_ce, tmp_path):
         """Retriever loads chunks regardless of cwd, using project_root."""
-        chunks = [{"clause_id": "6.1", "content": "test"}]
+        chunks = [{"spec_id": "24.501", "clause_id": "6.1", "content": "test"}]
         project_root = _make_chunk_dir(tmp_path, {"24.501_chunks.json": chunks})
         mock_settings.return_value = self._import_and_patch(project_root)
         original_cwd = os.getcwd()
