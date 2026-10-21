@@ -1,4 +1,5 @@
-from types import SimpleNamespace
+import sys
+from types import ModuleType, SimpleNamespace
 
 import openai
 import pytest
@@ -58,7 +59,10 @@ class TestFactoryWithoutLangfuse:
         assert node({"x": 3}) == 3
         # ... then enabled: the next call goes through langfuse.observe.
         monkeypatch.setattr(tracing, "tracing_enabled", lambda: True)
-        monkeypatch.setattr("langfuse.observe", fake_lf_observe)
+        # A stand-in module, so this runs without the optional `obs` extra
+        # (CI installs only `dev`); observe() imports langfuse lazily.
+        monkeypatch.setitem(sys.modules, "langfuse", ModuleType("langfuse"))
+        monkeypatch.setattr("langfuse.observe", fake_lf_observe, raising=False)
         assert node({"x": 4}) == ("traced", 4)
         assert node({"x": 5}) == ("traced", 5)
         assert calls == [{"name": "generate"}]
