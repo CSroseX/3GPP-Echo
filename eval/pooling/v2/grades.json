@@ -1,0 +1,684 @@
+{
+  "grader": "Claude (blind: graded from grading_sheet.jsonl without method names)",
+  "scale": {
+    "2": "states the answer (quote required)",
+    "1": "states a fact that helps build the answer",
+    "0": "not relevant, including same-topic chunks that don't help"
+  },
+  "default_grade": 0,
+  "note": "Blind grading from grading_sheet.jsonl (no method names). For the 5 pilot questions, grades from pilot 1/2 are carried over. For the other 24, each chunk was read as its opening plus the passages that best match the question's words (full text checked for every answer chunk), so a relevant fact deep inside a long chunk may be under-graded.",
+  "grades": {
+    "36": {
+      "grade": 1,
+      "note": "AMF assigns a new 5G-GUTI"
+    },
+    "76": {
+      "grade": 2,
+      "quote": "In state EMM-DEREGISTERED, the UE initiates the attach procedure by sending an ATTACH REQUEST message to the MME, starting timer T3410"
+    },
+    "97": {
+      "grade": 1,
+      "note": "ESM: BEARER RESOURCE MODIFICATION REJECT with cause #96"
+    },
+    "101": {
+      "grade": 2,
+      "quote": "The Access and Mobility Management function (AMF) includes the following functionality."
+    },
+    "113": {
+      "grade": 2,
+      "quote": "the UE shall return a status message (EMM STATUS or ESM STATUS depending on the PD) with cause #96 \"invalid mandatory information\""
+    },
+    "219": {
+      "grade": 1,
+      "note": "NG-AP over N2 between 5G-AN and AMF"
+    },
+    "318": {
+      "grade": 1,
+      "note": "after expiry of the periodic registration timer the UE performs a periodic registration"
+    },
+    "372": {
+      "grade": 1,
+      "note": "UE stops T3410 on combined attach, i.e. T3410 is the attach timer"
+    },
+    "375": {
+      "grade": 1,
+      "note": "5GMM capability IE is omitted for periodic registration updating"
+    },
+    "453": {
+      "grade": 1,
+      "note": "sets EPS update status to EU3 ROAMING NOT ALLOWED"
+    },
+    "500": {
+      "grade": 1,
+      "note": "more AMF functions (non-3GPP access support)"
+    },
+    "544": {
+      "grade": 1,
+      "note": "ESM-specific handling of mandatory IE errors (cause #96)"
+    },
+    "612": {
+      "grade": 1,
+      "note": "periodic registration update controlled by T3512"
+    },
+    "660": {
+      "grade": 1,
+      "note": "N1 and N2 reference points terminate at the AMF"
+    },
+    "720": {
+      "grade": 1,
+      "note": "periodic registration update is controlled by T3512"
+    },
+    "776": {
+      "grade": 2,
+      "quote": "The UE initiates the registration procedure for initial registration by sending a REGISTRATION REQUEST message to the AMF, starting timer T3510."
+    },
+    "1015": {
+      "grade": 1,
+      "note": "sets EPS update status to EU2 NOT UPDATED"
+    },
+    "1086": {
+      "grade": 1,
+      "note": "AMF allocates the 5G-GUTI"
+    },
+    "1088": {
+      "grade": 1,
+      "note": "lists T3512 expiry as a trigger for the procedure; the registration-type sentence is in another chunk"
+    },
+    "1168": {
+      "grade": 1,
+      "note": "UE stops T3410 on combined attach"
+    },
+    "1184": {
+      "grade": 1,
+      "note": "sets EPS update status to EU1 UPDATED"
+    },
+    "1231": {
+      "grade": 1,
+      "note": "figure: REGISTRATION REQUEST starts T3510 (5G)"
+    },
+    "1306": {
+      "grade": 1,
+      "note": "AMF runs NAS security mode control"
+    },
+    "1322": {
+      "grade": 1,
+      "note": "T3512 expiry in 5GMM-IDLE starts the periodic registration update"
+    },
+    "1394": {
+      "grade": 1,
+      "note": "sets EPS update status to EU1 UPDATED"
+    },
+    "1410": {
+      "grade": 2,
+      "quote": "EU1: UPDATED … EU2: NOT UPDATED … EU3: ROAMING NOT ALLOWED"
+    },
+    "1423": {
+      "grade": 1,
+      "note": "refers to EPS update status EU1 UPDATED"
+    },
+    "1464": {
+      "grade": 1,
+      "note": "sets EPS update status to EU1 UPDATED"
+    },
+    "1482": {
+      "grade": 1,
+      "note": "sets EPS update status to EU2 NOT UPDATED"
+    },
+    "1489": {
+      "grade": 2,
+      "quote": "If case b) is the only reason for initiating the registration procedure for mobility and periodic registration update, the UE shall indicate \"periodic registration updating\" in the 5GS registration type IE"
+    },
+    "1501": {
+      "grade": 1,
+      "note": "24.501 scope: mobility management between UE and AMF"
+    },
+    "1565": {
+      "grade": 1,
+      "note": "sets EPS update status to EU1 UPDATED"
+    },
+    "294": {
+      "grade": 2,
+      "quote": "In order to initiate the UE-requested PDU session establishment procedure, the UE shall create a PDU SESSION ESTABLISHMENT REQUEST message."
+    },
+    "235": {
+      "grade": 1,
+      "note": "PDU session type IE in the request"
+    },
+    "1505": {
+      "grade": 1,
+      "note": "request type values"
+    },
+    "1070": {
+      "grade": 1,
+      "note": "request type values"
+    },
+    "1138": {
+      "grade": 1,
+      "note": "PDU session ID set in the request and UL NAS TRANSPORT"
+    },
+    "1544": {
+      "grade": 1,
+      "note": "purpose of the procedure"
+    },
+    "166": {
+      "grade": 1,
+      "note": "PDU session established once registered"
+    },
+    "856": {
+      "grade": 1,
+      "note": "PDU sessions established upon UE request via NAS SM over N1"
+    },
+    "579": {
+      "grade": 2,
+      "quote": "The SMF selection functionality is supported by the AMF and SCP and is used to allocate an SMF that shall manage the PDU Session."
+    },
+    "938": {
+      "grade": 2,
+      "quote": "The AMF queries the appropriate NRF to select an SMF in a Network Slice instance"
+    },
+    "1385": {
+      "grade": 2,
+      "quote": "selection functionality (in AMF or SCP) selects a combined SMF+PGW-C"
+    },
+    "162": {
+      "grade": 2,
+      "quote": "The AMF performs discovery and selection of H-SMF from NRF."
+    },
+    "1483": {
+      "grade": 2,
+      "quote": "SMF discovery and selection within the selected Network Slice instance is initiated by the AMF"
+    },
+    "208": {
+      "grade": 1,
+      "note": "AMF selects an SMF and an I-SMF"
+    },
+    "742": {
+      "grade": 1,
+      "note": "AMF selects an SMF for remote provisioning"
+    },
+    "628": {
+      "grade": 1,
+      "note": "AMF selects SMF for emergency services"
+    },
+    "1451": {
+      "grade": 1,
+      "note": "AMF selects SMF(s) for onboarding"
+    },
+    "425": {
+      "grade": 1,
+      "note": "delegated discovery via SCP"
+    },
+    "222": {
+      "grade": 1,
+      "note": "AMF SMF selection outcome handling"
+    },
+    "532": {
+      "grade": 1,
+      "note": "SCP performs discovery and selection of the I-SMF"
+    },
+    "555": {
+      "grade": 1,
+      "note": "AMF selects and inserts an I-SMF"
+    },
+    "1212": {
+      "grade": 1,
+      "note": "SMF selection by AMF in NAS transport"
+    },
+    "1497": {
+      "grade": 2,
+      "quote": "The 5G-GUTI shall be structured as: <5G-GUTI> := <GUAMI> <5G-TMSI>"
+    },
+    "903": {
+      "grade": 2,
+      "quote": "The 5G-GUTI has two main components (see 3GPP TS 23.501 [8]): the GUAMI; and the 5G-TMSI"
+    },
+    "462": {
+      "grade": 1,
+      "note": "5G-S-TMSI as shortened form; GUAMI fields"
+    },
+    "1153": {
+      "grade": 1,
+      "note": "5G-S-TMSI components"
+    },
+    "144": {
+      "grade": 1,
+      "note": "5GS mobile identity IE coding of the 5G-GUTI"
+    },
+    "919": {
+      "grade": 1,
+      "note": "5GS mobile identity IE can carry the 5G-GUTI"
+    },
+    "649": {
+      "grade": 2,
+      "quote": "In the state 5GMM-DEREGISTERED, no 5GMM context has been established and the UE location is unknown to the network and hence it is unreachable by a network."
+    },
+    "644": {
+      "grade": 2,
+      "quote": "A UE enters the state 5GMM-SERVICE-REQUEST-INITIATED after it has started the service request procedure and is waiting for a response from the network."
+    },
+    "756": {
+      "grade": 2,
+      "quote": "A UE enters the state 5GMM-REGISTERED-INITIATED after it has started the initial registration procedure or the non-initial registration procedure, and is waiting for a response from the network."
+    },
+    "1419": {
+      "grade": 2,
+      "quote": "5GS services are disabled in the UE. No 5GS mobility management function shall be performed in this state."
+    },
+    "758": {
+      "grade": 1,
+      "note": "5GMM states managed per access type"
+    },
+    "974": {
+      "grade": 2,
+      "quote": "The NSSAI is a collection of S-NSSAIs."
+    },
+    "1078": {
+      "grade": 1,
+      "note": "Requested NSSAI used by 5GC and RAN for slice selection"
+    },
+    "114": {
+      "grade": 1,
+      "note": "NSSAI IE identifies a collection of S-NSSAIs"
+    },
+    "1060": {
+      "grade": 1,
+      "note": "S-NSSAI identifies a Network Slice"
+    },
+    "861": {
+      "grade": 1,
+      "note": "S-NSSAI identifies a network slice"
+    },
+    "1518": {
+      "grade": 1,
+      "note": "CN gives RAN the Allowed NSSAI"
+    },
+    "1180": {
+      "grade": 1,
+      "note": "UE provides Requested NSSAI at registration"
+    },
+    "1122": {
+      "grade": 2,
+      "quote": "In state EMM-DEREGISTERED, the UE initiates the attach procedure by sending an ATTACH REQUEST message to the MME"
+    },
+    "67": {
+      "grade": 2,
+      "quote": "When the HSS+UDM is required to provide the subscription data to the MME, for each APN, only one SMF+PGW-C FQDN and associated APN is provided to the MME"
+    },
+    "610": {
+      "grade": 2,
+      "quote": "When UE performs Initial Attach in EPC (with or without \"Handover\" indication in PDN CONNECTIVITY Request message) and indicates that it is moving from 5GC, the MME indicates to the HSS+UDM not to cancel the registration of AMF"
+    },
+    "1508": {
+      "grade": 1,
+      "note": "HSS+UDM cancels AMF registration during TAU/Attach"
+    },
+    "367": {
+      "grade": 1,
+      "note": "HSS+UDM and MME in interworking"
+    },
+    "277": {
+      "grade": 1,
+      "note": "SMF+PGW-C info stored via HSS+UDM during attach"
+    },
+    "303": {
+      "grade": 1,
+      "note": "UDM is a 5GS NF"
+    },
+    "599": {
+      "grade": 1,
+      "note": "MME gets monitoring config from HSS"
+    },
+    "647": {
+      "grade": 1,
+      "note": "MME uses subscription data from HSS"
+    },
+    "513": {
+      "grade": 2,
+      "quote": "The periodic tracking area updating procedure is used to periodically notify the availability of the UE to the network. The procedure is controlled in the UE by timer T3412."
+    },
+    "1477": {
+      "grade": 2,
+      "quote": "The procedure is controlled in the UE by the periodic registration update timer, T3512."
+    },
+    "624": {
+      "grade": 1,
+      "note": "T3412 expiry handling"
+    },
+    "681": {
+      "grade": 1,
+      "note": "T3512 value sent in REGISTRATION ACCEPT"
+    },
+    "441": {
+      "grade": 1,
+      "note": "AMF allocates periodic registration timer"
+    },
+    "253": {
+      "grade": 1,
+      "note": "T3412 in TAU"
+    },
+    "1424": {
+      "grade": 2,
+      "quote": "-EPS Bearer ID allocation for interworking with EPS."
+    },
+    "1581": {
+      "grade": 2,
+      "quote": "The MME shall assign and include an EPS bearer identity in the ACTIVATE DEFAULT EPS BEARER CONTEXT REQUEST message"
+    },
+    "615": {
+      "grade": 1,
+      "note": "MME selects EBI value range"
+    },
+    "331": {
+      "grade": 1,
+      "note": "EBI associated with QoS flows after S1->N1"
+    },
+    "1529": {
+      "grade": 1,
+      "note": "new EBI in Mapped EPS bearer context IE"
+    },
+    "1408": {
+      "grade": 1,
+      "note": "MME assigns EBI for dedicated bearer"
+    },
+    "299": {
+      "grade": 2,
+      "quote": "In order to support the interworking with EPC, the SMF+PGW-C provides information over N4 to the UPF+PGW-U related to the handling of traffic over S5-U."
+    },
+    "1163": {
+      "grade": 1,
+      "note": "interworking architecture with SGW"
+    },
+    "1232": {
+      "grade": 1,
+      "note": "SGW sends PDN connection request to SMF+PGW-C"
+    },
+    "1369": {
+      "grade": 2,
+      "quote": "PGW-C + SMF and UPF + PGW-U are dedicated for interworking between 5GS and EPC"
+    },
+    "347": {
+      "grade": 1,
+      "note": "SMF binds PCC rules to QoS flows"
+    },
+    "1292": {
+      "grade": 1,
+      "note": "5G QoS model is based on QoS flows"
+    },
+    "405": {
+      "grade": 1,
+      "note": "default QoS flow non-GBR for EPS interworking"
+    },
+    "470": {
+      "grade": 1,
+      "note": "SMF+PGW-C handles QoS at EPS/5GS mobility"
+    },
+    "1520": {
+      "grade": 1,
+      "note": "QoS flow mapped from EPS bearer context"
+    },
+    "1494": {
+      "grade": 2,
+      "quote": "Message type: TRACKING AREA UPDATE REQUEST Significance: dual Direction: UE to network"
+    },
+    "909": {
+      "grade": 1,
+      "note": "TAU ACCEPT message definition (EMM)"
+    },
+    "569": {
+      "grade": 1,
+      "note": "TAU ACCEPT content"
+    },
+    "88": {
+      "grade": 1,
+      "note": "TAU COMPLETE content"
+    },
+    "531": {
+      "grade": 1,
+      "note": "5GSM messages ride in 5GMM transport messages"
+    },
+    "66": {
+      "grade": 1,
+      "note": "5G equivalent: mobility registration update"
+    },
+    "1335": {
+      "grade": 2,
+      "quote": "When the 3GPP access and the non-3GPP access for the same UE are served by the same PLMN, the AMF assigns the same 5G-GUTI for use over both accesses."
+    },
+    "816": {
+      "grade": 2,
+      "quote": "the UE and the AMF maintain one 5G-GUTI that is common to both 3GPP and non-3GPP access"
+    },
+    "1133": {
+      "grade": 2,
+      "quote": "The AMF shall allocate a 5G Globally Unique Temporary Identifier (5G-GUTI) to the UE that is common to both 3GPP and non-3GPP access."
+    },
+    "1547": {
+      "grade": 2,
+      "quote": "-a 5G-GUTI that is common to both 3GPP and Non-3GPP accesses. This 5G-GUTI is globally unique."
+    },
+    "595": {
+      "grade": 1,
+      "note": "single AMF serves both accesses"
+    },
+    "552": {
+      "grade": 1,
+      "note": "two PLMNs mean two 5G-GUTIs"
+    },
+    "321": {
+      "grade": 1,
+      "note": "second-access registration uses the same 5G-GUTI"
+    },
+    "279": {
+      "grade": 1,
+      "note": "5G-GUTI reuse across accesses"
+    },
+    "985": {
+      "grade": 1,
+      "note": "per-access registration state with 5G-GUTI"
+    },
+    "1031": {
+      "grade": 1,
+      "note": "different PLMNs per access"
+    },
+    "880": {
+      "grade": 2,
+      "quote": "When the UE CM state in the AMF is CM-IDLE for 3GPP access and CM-CONNECTED for Non-3GPP access, the AMF shall perform a network triggered Service Request procedure"
+    },
+    "369": {
+      "grade": 2,
+      "quote": "In case the UE is in 5GMM-IDLE mode over 3GPP access and in 5GMM-CONNECTED mode over non3GPP access and downlink signalling or user data pending over 3GPP access needs to be transferred, the AMF can trigger either the notification procedure or the paging"
+    },
+    "791": {
+      "grade": 1,
+      "note": "service request when DL data pending over 3GPP access"
+    },
+    "382": {
+      "grade": 1,
+      "note": "NOTIFICATION over non-3GPP indicating 3GPP access"
+    },
+    "53": {
+      "grade": 1,
+      "note": "CM-IDLE: network triggered service request"
+    },
+    "961": {
+      "grade": 2,
+      "quote": "The AMF uses the destination address to route the message to the correct AMF via the N14 interface."
+    },
+    "1282": {
+      "grade": 1,
+      "note": "messages routed independently; N2 messages"
+    },
+    "1053": {
+      "grade": 1,
+      "note": "addressing of RAN nodes"
+    },
+    "614": {
+      "grade": 1,
+      "note": "purpose of Configuration Transfer"
+    },
+    "1210": {
+      "grade": 1,
+      "note": "routing via AMF/MME by destination address"
+    },
+    "378": {
+      "grade": 1,
+      "note": "routed and relayed independently"
+    },
+    "1274": {
+      "grade": 1,
+      "note": "Configuration Transfer between NG-RAN and E-UTRAN"
+    },
+    "857": {
+      "grade": 2,
+      "quote": "shall start enforcing the wireline access service area restrictions and shall enter the state 5GMMREGISTERED.NON-ALLOWED-SERVICE"
+    },
+    "648": {
+      "grade": 1,
+      "note": "#28 leads to NON-ALLOWED-SERVICE"
+    },
+    "322": {
+      "grade": 1,
+      "note": "DL NAS TRANSPORT #28 leads to NON-ALLOWED-SERVICE"
+    },
+    "843": {
+      "grade": 1,
+      "note": "#28 in REGISTRATION ACCEPT leads to NON-ALLOWED-SERVICE"
+    },
+    "530": {
+      "grade": 1,
+      "note": "service area restrictions apply to wireline"
+    },
+    "560": {
+      "grade": 1,
+      "note": "NORMAL-SERVICE when wireline restrictions not enforced"
+    },
+    "1368": {
+      "grade": 1,
+      "note": "when wireline restrictions stop"
+    },
+    "306": {
+      "grade": 1,
+      "note": "cause #28 definition incl. wireline"
+    },
+    "422": {
+      "grade": 2,
+      "quote": "Transmission failure of DEREGISTRATION ACCEPT message indication from lower layers. The de-registration procedure shall be progressed and the UE shall send the DEREGISTRATION ACCEPT message."
+    },
+    "548": {
+      "grade": 1,
+      "note": "general 5GMM uplink transmission failure handling"
+    },
+    "275": {
+      "grade": 1,
+      "note": "UE sends DEREGISTRATION ACCEPT on network de-registration"
+    },
+    "582": {
+      "grade": 1,
+      "note": "UE sends DEREGISTRATION ACCEPT on network de-registration"
+    },
+    "1236": {
+      "grade": 2,
+      "quote": "The UE initiates the registration procedure for initial registration by sending a REGISTRATION REQUEST message to the AMF, starting timer T3510."
+    },
+    "431": {
+      "grade": 1,
+      "note": "5GMM timer table incl. registration timers"
+    },
+    "793": {
+      "grade": 1,
+      "note": "UE in 5GMM-DEREGISTERED initiates initial registration with REGISTRATION REQUEST"
+    },
+    "785": {
+      "grade": 2,
+      "quote": "If the EMM INFORMATION message could not be delivered due to an intra MME handover and the target TA is included in the TAI list, then upon successful completion of the intra MME handover the MME shall retransmit the EMM INFORMATION message."
+    },
+    "1054": {
+      "grade": 1,
+      "note": "EMM information procedure initiation"
+    },
+    "238": {
+      "grade": 2,
+      "quote": "limit the rate at which it generates uplink NAS messages with user data over control plane to comply with the serving PLMN policy provided by the network"
+    },
+    "1383": {
+      "grade": 1,
+      "note": "APN rate control limits uplink user data messages (LTE)"
+    },
+    "539": {
+      "grade": 1,
+      "note": "congestion control for user data via control plane (T3448)"
+    },
+    "937": {
+      "grade": 2,
+      "quote": "If lower layers indicate a TAI change, but the current TAI is not in the TAI list, the ESM procedure shall be aborted and re-initiated after successfully performing a tracking area updating procedure."
+    },
+    "1183": {
+      "grade": 1,
+      "note": "same rule for CP user data transport"
+    },
+    "670": {
+      "grade": 1,
+      "note": "ESM abnormal case continuation"
+    },
+    "838": {
+      "grade": 2,
+      "quote": "The tracking area updating procedure is used to construct a TRACKING AREA UPDATE REQUEST message for the inter-system change from S1 mode to N1 mode for further security verification by the MME."
+    },
+    "64": {
+      "grade": 1,
+      "note": "REGISTRATION REQUEST carries the TAU REQUEST"
+    },
+    "312": {
+      "grade": 1,
+      "note": "EPS NAS message container holds the TAU REQUEST"
+    },
+    "735": {
+      "grade": 2,
+      "quote": "the EMM entity in the MME initiates the procedure by sending a DOWNLINK GENERIC NAS TRANSPORT message including the corresponding message in the generic message container IE"
+    },
+    "116": {
+      "grade": 1,
+      "note": "purpose of generic NAS transport"
+    },
+    "1523": {
+      "grade": 2,
+      "quote": "To request a change of the GBR without changing the packet filter(s), the UE shall set the TFT operation code in the Traffic flow aggregate IE to \"no TFT operation\""
+    },
+    "1295": {
+      "grade": 1,
+      "note": "related TFT operation codes and GBR"
+    },
+    "859": {
+      "grade": 1,
+      "note": "bearer resource modification request contents"
+    },
+    "1370": {
+      "grade": 1,
+      "note": "Required traffic flow QoS QCI rule"
+    },
+    "1007": {
+      "grade": 2,
+      "quote": "the EMM entity in the MME initiates the procedure by sending a DOWNLINK GENERIC NAS TRANSPORT message including the corresponding message in the generic message container IE"
+    },
+    "933": {
+      "grade": 2,
+      "quote": "In 5GMM-CONNECTED mode, the AMF initiates the NAS transport procedure by sending the DL NAS TRANSPORT message"
+    },
+    "576": {
+      "grade": 1,
+      "note": "DOWNLINK GENERIC NAS TRANSPORT content: generic message container"
+    },
+    "1504": {
+      "grade": 1,
+      "note": "DOWNLINK GENERIC NAS TRANSPORT definition"
+    },
+    "1096": {
+      "grade": 1,
+      "note": "5G NAS-MM transports payloads with a payload type"
+    },
+    "261": {
+      "grade": 1,
+      "note": "purpose of generic NAS transport"
+    }
+  }
+}

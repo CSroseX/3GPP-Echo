@@ -86,12 +86,14 @@ def _text(chunk: Dict[str, Any]) -> str:
 
 
 def answer_chunk_ids(record: Dict[str, Any], chunks: Sequence[Dict[str, Any]]) -> List[str]:
-    """Chunks under the record's gold clauses that contain a fragment of an
-    answer quote (same fragment rule as tests/test_golden_set.py)."""
+    """Chunks under the record's gold clauses that contain the longest
+    fragment of an answer quote (fragments split on the ellipsis, as in
+    tests/test_golden_set.py). Only the longest counts, so a generic piece
+    like "Direction: UE to network" doesn't mark every message definition."""
     fragments = []
     for quote in record.get("answer_quotes", []):
         body = quote[quote.index('"') + 1: quote.rindex('"')]
-        fragments += [f for f in (" ".join(x.split()) for x in body.split("…")) if len(f) >= 12]
+        fragments.append(max((" ".join(x.split()) for x in body.split("…")), key=len))
     ids = []
     for c in chunks:
         under_gold = any(c["spec_id"] == g["spec_id"] and (c["clause_id"] == g["clause_id"]
@@ -127,13 +129,6 @@ class Pooler:
             ).points
             ids.extend(p.payload["chunk_id"] for p in points)
         return ids
-
-    def dense_no_rerank(self, question: str) -> List[str]:
-        vector = list(self.retriever.model.embed([question]))[0].tolist()
-        points = self.retriever.q_client.query_points(
-            collection_name=self.retriever.collection_name, query=vector, limit=DEPTH,
-        ).points
-        return [p.payload["chunk_id"] for p in points]
 
     def bm25_stemmed(self, question: str) -> List[str]:
         scores = self.bm25.get_scores(stem_tokens(question))
@@ -212,7 +207,7 @@ class Pooler:
                         ids.append(nid)
         return ids
 
-    METHODS = ("dense_per_spec", "dense_no_rerank", "dense_rewritten", "bm25_stemmed", "exact_term",
+    METHODS = ("dense_per_spec", "dense_rewritten", "bm25_stemmed", "exact_term",
                "clause_title", "system", "system_neighbours")
 
     def pool(self, q: Dict[str, Any]) -> Dict[str, Any]:
