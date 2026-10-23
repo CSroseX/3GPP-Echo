@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" width="760" height="520" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="12">
+<rect width="760" height="520" fill="#ffffff"/>
+<text x="20" y="28" font-size="15" font-weight="600" fill="#1f1f1f">Triage tier 2: max centroid cosine per golden-set question</text>
+<text x="20" y="46" fill="#5c5c5c">Shaded band goes to the tier-3 LLM; refuse below 0.595, accept at or above 0.720.</text>
+<rect x="415.7" y="70" width="137.1" height="102" fill="#f2f2f2"/>
+<line x1="190" x2="730" y1="87.0" y2="87.0" stroke="#e4e4e4"/>
+<text x="180" y="91.0" text-anchor="end" fill="#1f1f1f">In domain (normal + adversarial)</text>
+<circle cx="615.8" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q1 (0.777): What is the role of the AMF in the 5G system architecture?</title></circle>
+<circle cx="675.0" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q2 (0.831): How does the UE initiate a PDU session establishment in 5GS?</title></circle>
+<circle cx="651.7" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q3 (0.810): Which network function is responsible for selecting the SMF?</title></circle>
+<circle cx="574.9" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q4 (0.740): What is the structure of the 5G-GUTI?</title></circle>
+<circle cx="638.0" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q5 (0.797): Describe the states of 5GMM (5GS Mobility Management) in the UE.</title></circle>
+<circle cx="666.2" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q6 (0.823): What is the purpose of the Network Slice Selection Assistance Information (NSSAI)?</title></circle>
+<circle cx="645.6" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q7 (0.804): When an MME receives an Attach Request, does it communicate with the UDM?</title></circle>
+<circle cx="621.0" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q8 (0.782): What timer does the AMF use for a Tracking Area Update in EPS?</title></circle>
+<circle cx="622.1" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q9 (0.783): During a 5G registration, how is the EPS bearer identity allocated?</title></circle>
+<circle cx="597.9" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q10 (0.761): Does the SGW connect to the SMF for user plane traffic?</title></circle>
+<circle cx="639.9" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q11 (0.799): Explain how the PDN Gateway handles 5G QoS flows.</title></circle>
+<circle cx="595.2" cy="87.0" r="5" fill="#2a78d6" stroke="#ffffff" stroke-width="2"><title>Q12 (0.758): What is the message format for a 5G Session Management Tracking Area Update?</title></circle>
+<line x1="190" x2="730" y1="121.0" y2="121.0" stroke="#e4e4e4"/>
+<text x="180" y="125.0" text-anchor="end" fill="#1f1f1f">Out of scope (hard gate)</text>
+<circle cx="258.2" cy="121.0" r="5" fill="#eb6834" stroke="#ffffff" stroke-width="2"><title>Q13 (0.452): What is the capital of France?</title></circle>
+<circle cx="263.0" cy="121.0" r="5" fill="#eb6834" stroke="#ffffff" stroke-width="2"><title>Q14 (0.456): Can you explain how to bake a chocolate cake?</title></circle>
+<circle cx="245.0" cy="121.0" r="5" fill="#eb6834" stroke="#ffffff" stroke-width="2"><title>Q16 (0.440): Who won the World Cup in 2022?</title></circle>
+<circle cx="393.8" cy="121.0" r="5" fill="#eb6834" stroke="#ffffff" stroke-width="2"><title>Q17 (0.575): Write a python script to parse an XML file.</title></circle>
+<circle cx="303.1" cy="121.0" r="5" fill="#eb6834" stroke="#ffffff" stroke-width="2"><title>Q18 (0.493): What are the side effects of aspirin?</title></circle>
+<line x1="190" x2="730" y1="155.0" y2="155.0" stroke="#e4e4e4"/>
+<text x="180" y="159.0" text-anchor="end" fill="#1f1f1f">Borderline (excluded)</text>
+<circle cx="492.4" cy="155.0" r="5" fill="#8a8a8a" stroke="#ffffff" stroke-width="2"><title>Q15 (0.665): What is the difference between TCP and UDP?</title></circle>
+<line x1="415.7" x2="415.7" y1="64" y2="172" stroke="#5c5c5c" stroke-dasharray="4 3"/>
+<text x="415.7" y="60" text-anchor="middle" fill="#5c5c5c">refuse below 0.595</text>
+<line x1="552.9" x2="552.9" y1="64" y2="172" stroke="#5c5c5c" stroke-dasharray="4 3"/>
+<text x="552.9" y="60" text-anchor="middle" fill="#5c5c5c">accept above 0.720</text>
+<text x="20" y="214" font-weight="600" fill="#1f1f1f">Questions refused by tier 2 alone, as the refuse threshold sweeps</text>
+<line x1="190" x2="730" y1="460.0" y2="460.0" stroke="#e4e4e4"/>
+<text x="182" y="464.0" text-anchor="end" fill="#5c5c5c">0</text>
+<line x1="190" x2="730" y1="403.0" y2="403.0" stroke="#e4e4e4"/>
+<text x="182" y="407.0" text-anchor="end" fill="#5c5c5c">3</text>
+<line x1="190" x2="730" y1="346.0" y2="346.0" stroke="#e4e4e4"/>
+<text x="182" y="350.0" text-anchor="end" fill="#5c5c5c">6</text>
+<line x1="190" x2="730" y1="289.0" y2="289.0" stroke="#e4e4e4"/>
+<text x="182" y="293.0" text-anchor="end" fill="#5c5c5c">9</text>
+<line x1="190" x2="730" y1="232.0" y2="232.0" stroke="#e4e4e4"/>
+<text x="182" y="236.0" text-anchor="end" fill="#5c5c5c">12</text>
+<path d="M190.3,460.0 L195.8,460.0 L201.3,460.0 L206.8,460.0 L212.3,460.0 L217.8,460.0 L223.3,460.0 L228.8,460.0 L234.3,460.0 L239.8,460.0 L245.3,460.0 L250.8,460.0 L256.3,460.0 L261.8,460.0 L267.3,460.0 L272.8,460.0 L278.3,460.0 L283.8,460.0 L289.3,460.0 L294.8,460.0 L300.3,460.0 L305.8,460.0 L311.3,460.0 L316.8,460.0 L322.3,460.0 L327.8,460.0 L333.3,460.0 L338.8,460.0 L344.3,460.0 L349.8,460.0 L355.3,460.0 L360.8,460.0 L366.3,460.0 L371.8,460.0 L377.3,460.0 L382.8,460.0 L388.3,460.0 L393.8,460.0 L399.2,460.0 L404.7,460.0 L410.2,460.0 L415.7,460.0 L421.2,460.0 L426.7,460.0 L432.2,460.0 L437.7,460.0 L443.2,460.0 L448.7,460.0 L454.2,460.0 L459.7,460.0 L465.2,460.0 L470.7,460.0 L476.2,460.0 L481.7,460.0 L487.2,460.0 L492.7,460.0 L498.2,460.0 L503.7,460.0 L509.2,460.0 L514.7,460.0 L520.2,460.0 L525.7,460.0 L531.2,460.0 L536.7,460.0 L542.2,460.0 L547.7,460.0 L553.2,460.0 L558.7,460.0 L564.2,460.0 L569.7,460.0 L575.2,441.0 L580.7,441.0 L586.2,441.0 L591.7,441.0 L597.2,422.0 L602.7,403.0 L608.2,403.0 L613.7,403.0 L619.2,384.0 L624.7,346.0 L630.2,346.0 L635.7,346.0 L641.2,308.0 L646.7,289.0 L652.2,270.0 L657.6,270.0 L663.1,270.0 L668.6,251.0 L674.1,251.0 L679.6,232.0 L685.1,232.0 L690.6,232.0 L696.1,232.0 L701.6,232.0 L707.1,232.0 L712.6,232.0 L718.1,232.0 L723.6,232.0 L729.1,232.0" fill="none" stroke="#2a78d6" stroke-width="2"/>
+<text x="725.1" y="224.0" text-anchor="end" fill="#1f1f1f">In domain wrongly refused (of 12)</text>
+<path d="M190.3,460.0 L195.8,460.0 L201.3,460.0 L206.8,460.0 L212.3,460.0 L217.8,460.0 L223.3,460.0 L228.8,460.0 L234.3,460.0 L239.8,460.0 L245.3,441.0 L250.8,441.0 L256.3,441.0 L261.8,422.0 L267.3,403.0 L272.8,403.0 L278.3,403.0 L283.8,403.0 L289.3,403.0 L294.8,403.0 L300.3,403.0 L305.8,384.0 L311.3,384.0 L316.8,384.0 L322.3,384.0 L327.8,384.0 L333.3,384.0 L338.8,384.0 L344.3,384.0 L349.8,384.0 L355.3,384.0 L360.8,384.0 L366.3,384.0 L371.8,384.0 L377.3,384.0 L382.8,384.0 L388.3,384.0 L393.8,384.0 L399.2,365.0 L404.7,365.0 L410.2,365.0 L415.7,365.0 L421.2,365.0 L426.7,365.0 L432.2,365.0 L437.7,365.0 L443.2,365.0 L448.7,365.0 L454.2,365.0 L459.7,365.0 L465.2,365.0 L470.7,365.0 L476.2,365.0 L481.7,365.0 L487.2,365.0 L492.7,365.0 L498.2,365.0 L503.7,365.0 L509.2,365.0 L514.7,365.0 L520.2,365.0 L525.7,365.0 L531.2,365.0 L536.7,365.0 L542.2,365.0 L547.7,365.0 L553.2,365.0 L558.7,365.0 L564.2,365.0 L569.7,365.0 L575.2,365.0 L580.7,365.0 L586.2,365.0 L591.7,365.0 L597.2,365.0 L602.7,365.0 L608.2,365.0 L613.7,365.0 L619.2,365.0 L624.7,365.0 L630.2,365.0 L635.7,365.0 L641.2,365.0 L646.7,365.0 L652.2,365.0 L657.6,365.0 L663.1,365.0 L668.6,365.0 L674.1,365.0 L679.6,365.0 L685.1,365.0 L690.6,365.0 L696.1,365.0 L701.6,365.0 L707.1,365.0 L712.6,365.0 L718.1,365.0 L723.6,365.0 L729.1,365.0" fill="none" stroke="#eb6834" stroke-width="2"/>
+<text x="725.1" y="357.0" text-anchor="end" fill="#1f1f1f">Out of scope correctly refused (of 5)</text>
+<line x1="415.7" x2="415.7" y1="232" y2="460" stroke="#5c5c5c" stroke-dasharray="4 3"/>
+<line x1="552.9" x2="552.9" y1="232" y2="460" stroke="#5c5c5c" stroke-dasharray="4 3"/>
+<text x="190.0" y="478" text-anchor="middle" fill="#5c5c5c">0.39</text>
+<text x="245.0" y="478" text-anchor="middle" fill="#5c5c5c">0.44</text>
+<text x="300.0" y="478" text-anchor="middle" fill="#5c5c5c">0.49</text>
+<text x="354.9" y="478" text-anchor="middle" fill="#5c5c5c">0.54</text>
+<text x="409.9" y="478" text-anchor="middle" fill="#5c5c5c">0.59</text>
+<text x="464.9" y="478" text-anchor="middle" fill="#5c5c5c">0.64</text>
+<text x="519.9" y="478" text-anchor="middle" fill="#5c5c5c">0.69</text>
+<text x="574.9" y="478" text-anchor="middle" fill="#5c5c5c">0.74</text>
+<text x="629.8" y="478" text-anchor="middle" fill="#5c5c5c">0.79</text>
+<text x="684.8" y="478" text-anchor="middle" fill="#5c5c5c">0.84</text>
+<text x="460.0" y="500" text-anchor="middle" fill="#1f1f1f">max cosine to a domain centroid / refuse threshold</text>
+</svg>
