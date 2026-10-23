@@ -1,0 +1,2583 @@
+{
+  "golden_set_path": "eval/golden/golden_set.v2.json",
+  "git_commit": "58ade58",
+  "depth": 10,
+  "per_spec_depth": 5,
+  "seed": 20261023,
+  "system_settings": {
+    "rerank_multiplier": 4,
+    "default_top_k": 5,
+    "hybrid_bm25": false,
+    "lineage_boost": 2.0
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "What is the role of the AMF in the 5G system architecture?",
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        }
+      ],
+      "exact_terms": [
+        "AMF",
+        "5G"
+      ],
+      "candidates": [
+        {
+          "chunk_id": "ac637f54f7d9e5008394e74f4470265723250bff",
+          "spec_id": "23.501",
+          "clause_id": "6.3.5",
+          "found_by": {
+            "dense_per_spec": 1,
+            "dense_no_rerank": 1,
+            "dense_rewritten": 8,
+            "exact_term": 3,
+            "system": 10
+          }
+        },
+        {
+          "chunk_id": "52d9742625a6d786b3a24bb9ec0c2d8f65f55df1",
+          "spec_id": "23.501",
+          "clause_id": "6.3.5",
+          "found_by": {
+            "dense_per_spec": 2,
+            "dense_no_rerank": 2,
+            "dense_rewritten": 10,
+            "exact_term": 4
+          }
+        },
+        {
+          "chunk_id": "18ffebbb773e37168d1fbbba08bedc5cf899c3b9",
+          "spec_id": "23.501",
+          "clause_id": "5.21.2.1",
+          "found_by": {
+            "dense_per_spec": 3,
+            "dense_no_rerank": 3,
+            "system": 9
+          }
+        },
+        {
+          "chunk_id": "ab52ef075e2459e95c5b72c542935b1506f3d3c8",
+          "spec_id": "23.501",
+          "clause_id": "6.3.5",
+          "found_by": {
+            "dense_per_spec": 4,
+            "dense_no_rerank": 4,
+            "system_neighbours": 7
+          }
+        },
+        {
+          "chunk_id": "d12a634061bc11b6198db07ab46381f3a568b645",
+          "spec_id": "23.501",
+          "clause_id": "5.19.3",
+          "found_by": {
+            "dense_per_spec": 5,
+            "dense_no_rerank": 5,
+            "exact_term": 9
+          }
+        },
+        {
+          "chunk_id": "b9f0d7f8d2636d3045d063d8bf63e584683f9ae3",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.4",
+          "found_by": {
+            "dense_per_spec": 6
+          }
+        },
+        {
+          "chunk_id": "c319aa5bc0c5ac488b055b17cbd8f76806ebd688",
+          "spec_id": "24.501",
+          "clause_id": "4.4.2.3",
+          "found_by": {
+            "dense_per_spec": 7
+          }
+        },
+        {
+          "chunk_id": "ec449118ba9ae0f3cf29bd64d4ca868c7ccee5e9",
+          "spec_id": "24.501",
+          "clause_id": "5.3.3",
+          "found_by": {
+            "dense_per_spec": 8
+          }
+        },
+        {
+          "chunk_id": "69b93c895ced521b0984dfeeaff62aa22ecb52a0",
+          "spec_id": "24.501",
+          "clause_id": "5.4.2.2",
+          "found_by": {
+            "dense_per_spec": 9
+          }
+        },
+        {
+          "chunk_id": "282e26fd74da260209c8dbbb6b2e4aedc288ee09",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.4",
+          "found_by": {
+            "dense_per_spec": 10
+          }
+        },
+        {
+          "chunk_id": "a0a77fabf49a0eb1d522e64bc86477f45e23bc63",
+          "spec_id": "24.301",
+          "clause_id": "0",
+          "found_by": {
+            "dense_per_spec": 11
+          }
+        },
+        {
+          "chunk_id": "60cbf7bf7a7473f1da27898f6941a2141ed6dfe2",
+          "spec_id": "24.301",
+          "clause_id": "5.6.1.1",
+          "found_by": {
+            "dense_per_spec": 12
+          }
+        },
+        {
+          "chunk_id": "af804a21ceaf0e6496adf06486081b26068da279",
+          "spec_id": "24.301",
+          "clause_id": "6.1.4",
+          "found_by": {
+            "dense_per_spec": 13
+          }
+        },
+        {
+          "chunk_id": "b938d9c1b8397a8f65c9fff2935be056a60eba69",
+          "spec_id": "24.301",
+          "clause_id": "2",
+          "found_by": {
+            "dense_per_spec": 14
+          }
+        },
+        {
+          "chunk_id": "8eeccd36d42c59e518e08bc5f0bc37aea81de9df",
+          "spec_id": "24.301",
+          "clause_id": "3.2",
+          "found_by": {
+            "dense_per_spec": 15
+          }
+        },
+        {
+          "chunk_id": "44a642f4f693fc0849f1d9fbd09536c809c3ba0e",
+          "spec_id": "23.501",
+          "clause_id": "6.2.1",
+          "found_by": {
+            "dense_no_rerank": 6,
+            "dense_rewritten": 3,
+            "clause_title": 10,
+            "system": 6,
+            "answer_quote": 1
+          }
+        },
+        {
+          "chunk_id": "c97e0518a317940786e088e5920c5b6860ef39eb",
+          "spec_id": "23.501",
+          "clause_id": "4.2.2",
+          "found_by": {
+            "dense_no_rerank": 7,
+            "dense_rewritten": 2,
+            "system": 1
+          }
+        },
+        {
+          "chunk_id": "aeee3da688c9545a913a6058648e93336c1f9500",
+          "spec_id": "23.501",
+          "clause_id": "5.19.2",
+          "found_by": {
+            "dense_no_rerank": 8,
+            "system": 2
+          }
+        },
+        {
+          "chunk_id": "c9456757468b40ffe64c563392e391a05b7b7ce2",
+          "spec_id": "23.501",
+          "clause_id": "5.21.2.1",
+          "found_by": {
+            "dense_no_rerank": 9,
+            "system": 4
+          }
+        },
+        {
+          "chunk_id": "268a4f0f098be4a16c5c1f73cebaf2035799476d",
+          "spec_id": "23.501",
+          "clause_id": "5.19.4",
+          "found_by": {
+            "dense_no_rerank": 10,
+            "exact_term": 6,
+            "system_neighbours": 6
+          }
+        },
+        {
+          "chunk_id": "dc7265cc9a32e27a8feb34d00067dcb0aa9caee3",
+          "spec_id": "23.501",
+          "clause_id": "4.1",
+          "found_by": {
+            "dense_rewritten": 1,
+            "system": 5
+          }
+        },
+        {
+          "chunk_id": "7040a0272d51c899a150dbefd6b0e1885493b602",
+          "spec_id": "24.501",
+          "clause_id": "A",
+          "found_by": {
+            "dense_rewritten": 4
+          }
+        },
+        {
+          "chunk_id": "4b4752a8d14aa04ac5faf561823cf30a4800e0de",
+          "spec_id": "24.501",
+          "clause_id": "1",
+          "found_by": {
+            "dense_rewritten": 5
+          }
+        },
+        {
+          "chunk_id": "7035f8ed585ef291375c7d70083774e3d474548d",
+          "spec_id": "23.501",
+          "clause_id": "4.2.1",
+          "found_by": {
+            "dense_rewritten": 6,
+            "bm25_stemmed": 8
+          }
+        },
+        {
+          "chunk_id": "87e9d175f336924ae2348de50e3aebff53688bd5",
+          "spec_id": "23.501",
+          "clause_id": "4.2.7",
+          "found_by": {
+            "dense_rewritten": 7,
+            "system": 3
+          }
+        },
+        {
+          "chunk_id": "203a0f691f59077cc5108f87b1c1527c8b69ee68",
+          "spec_id": "23.501",
+          "clause_id": "5.20",
+          "found_by": {
+            "dense_rewritten": 9,
+            "system": 7
+          }
+        },
+        {
+          "chunk_id": "2fe4fddc4a383f0a501341ec44d7f436710e6ce0",
+          "spec_id": "23.501",
+          "clause_id": "2",
+          "found_by": {
+            "bm25_stemmed": 1
+          }
+        },
+        {
+          "chunk_id": "9688f9ad6f28e3c99fc1974f8bb442794fbd6888",
+          "spec_id": "23.501",
+          "clause_id": "2",
+          "found_by": {
+            "bm25_stemmed": 2
+          }
+        },
+        {
+          "chunk_id": "8f71548a861b3db3d26fe9521e5dbe193be7e5bb",
+          "spec_id": "23.501",
+          "clause_id": "2",
+          "found_by": {
+            "bm25_stemmed": 3
+          }
+        },
+        {
+          "chunk_id": "5554262e929cb77c87c302604a8ae64c1bf324d6",
+          "spec_id": "23.501",
+          "clause_id": "1",
+          "found_by": {
+            "bm25_stemmed": 4
+          }
+        },
+        {
+          "chunk_id": "174aa9bca4e40bd0c648417f99cf98a4f56b45c8",
+          "spec_id": "23.501",
+          "clause_id": "4.2.10",
+          "found_by": {
+            "bm25_stemmed": 5
+          }
+        },
+        {
+          "chunk_id": "f823c4ff6a364c5831915bc49b19b044bed62d98",
+          "spec_id": "23.501",
+          "clause_id": "4.2.4",
+          "found_by": {
+            "bm25_stemmed": 6
+          }
+        },
+        {
+          "chunk_id": "6e30a22e07b66b999f8063977ff5b66d7fa3cf01",
+          "spec_id": "24.501",
+          "clause_id": "2",
+          "found_by": {
+            "bm25_stemmed": 7
+          }
+        },
+        {
+          "chunk_id": "4527f48d5ddeef396d486a25cc7377774fe5c026",
+          "spec_id": "23.501",
+          "clause_id": "4.4.1",
+          "found_by": {
+            "bm25_stemmed": 9
+          }
+        },
+        {
+          "chunk_id": "0298c64c66fa7bfff295ec240f8f8d7782b8724e",
+          "spec_id": "23.501",
+          "clause_id": "4.2.12",
+          "found_by": {
+            "bm25_stemmed": 10
+          }
+        },
+        {
+          "chunk_id": "a9c43aa41c2298091855854054849095aa00eb30",
+          "spec_id": "24.501",
+          "clause_id": "9.11.3.4",
+          "found_by": {
+            "exact_term": 1
+          }
+        },
+        {
+          "chunk_id": "db5d3d44ffce847e8c60218997d724990947463f",
+          "spec_id": "23.501",
+          "clause_id": "5.9.4",
+          "found_by": {
+            "exact_term": 2
+          }
+        },
+        {
+          "chunk_id": "b5ea65b4e7e418598af198e6037937ee7bbc8fd5",
+          "spec_id": "23.501",
+          "clause_id": "5.21.2.3",
+          "found_by": {
+            "exact_term": 5
+          }
+        },
+        {
+          "chunk_id": "c623d69452ada0412d40d034892aa31e221e19a9",
+          "spec_id": "23.501",
+          "clause_id": "5.21.2.3",
+          "found_by": {
+            "exact_term": 7
+          }
+        },
+        {
+          "chunk_id": "5f3d7ee643812685dd9939889566611fe0b854d0",
+          "spec_id": "24.501",
+          "clause_id": "4.4.2.1",
+          "found_by": {
+            "exact_term": 8
+          }
+        },
+        {
+          "chunk_id": "2ce57f9f2ca405b8bb44d2ab1f09d3d353c470e0",
+          "spec_id": "23.501",
+          "clause_id": "5.21.2.2.2",
+          "found_by": {
+            "exact_term": 10
+          }
+        },
+        {
+          "chunk_id": "1372ae983dec0cd4f8c676d8d4d31c69d98c5139",
+          "spec_id": "23.501",
+          "clause_id": "8.2.1.2",
+          "found_by": {
+            "clause_title": 1
+          }
+        },
+        {
+          "chunk_id": "e2e5e873859817c1754becd3fc54f400c622af89",
+          "spec_id": "23.501",
+          "clause_id": "5.27.5",
+          "found_by": {
+            "clause_title": 2
+          }
+        },
+        {
+          "chunk_id": "87c5567e8c69061f16fe5612ce383df3991c7787",
+          "spec_id": "23.501",
+          "clause_id": "5.27.1.2.1",
+          "found_by": {
+            "clause_title": 3
+          }
+        },
+        {
+          "chunk_id": "a4cdcdddac1c6ef081f0cc4dcc5f1a5f9253d813",
+          "spec_id": "23.501",
+          "clause_id": "5.35.2",
+          "found_by": {
+            "clause_title": 4
+          }
+        },
+        {
+          "chunk_id": "c9f651b7b9dd61b35744e973d931e038e5304932",
+          "spec_id": "23.501",
+          "clause_id": "4.2.11",
+          "found_by": {
+            "clause_title": 5
+          }
+        },
+        {
+          "chunk_id": "90ff039bbcca7999c048e3eb9802b7cbb2355f69",
+          "spec_id": "23.501",
+          "clause_id": "4.2.14",
+          "found_by": {
+            "clause_title": 6
+          }
+        },
+        {
+          "chunk_id": "a14224437510f2fedd749d877d6cd4243468e060",
+          "spec_id": "23.501",
+          "clause_id": "4.4.6.1",
+          "found_by": {
+            "clause_title": 7
+          }
+        },
+        {
+          "chunk_id": "778441c87536a14cbd1d54a576628bc4719e1c8f",
+          "spec_id": "23.501",
+          "clause_id": "4.2.15",
+          "found_by": {
+            "clause_title": 8
+          }
+        },
+        {
+          "chunk_id": "1c9d3e2d232536af8fe1cc1b1a9871f8d7512d48",
+          "spec_id": "24.501",
+          "clause_id": "4.4.2.2",
+          "found_by": {
+            "clause_title": 9
+          }
+        },
+        {
+          "chunk_id": "ad76a6b822a35806af180e81326573149b98eb71",
+          "spec_id": "23.501",
+          "clause_id": "5.19.4",
+          "found_by": {
+            "system": 8
+          }
+        },
+        {
+          "chunk_id": "1604028f2b6ed3ed3666f1c0dc377a31d744db51",
+          "spec_id": "23.501",
+          "clause_id": "4.2.2",
+          "found_by": {
+            "system_neighbours": 1
+          }
+        },
+        {
+          "chunk_id": "5555415d03d2f3a733ac81635dbedebd9f264d83",
+          "spec_id": "23.501",
+          "clause_id": "4.2.7",
+          "found_by": {
+            "system_neighbours": 2
+          }
+        },
+        {
+          "chunk_id": "0d96209a47496eba8a65b7e94e5272dc9eb732f3",
+          "spec_id": "23.501",
+          "clause_id": "4.1",
+          "found_by": {
+            "system_neighbours": 3
+          }
+        },
+        {
+          "chunk_id": "16a05653359bcd85ba39642d5ed986a3bd19d73f",
+          "spec_id": "23.501",
+          "clause_id": "6.2.1",
+          "found_by": {
+            "system_neighbours": 4
+          }
+        },
+        {
+          "chunk_id": "1eb4a6261c334fa21cb440fee7737299d1003010",
+          "spec_id": "23.501",
+          "clause_id": "5.20",
+          "found_by": {
+            "system_neighbours": 5
+          }
+        },
+        {
+          "chunk_id": "3dc26d2ce9819a09c7f1efa8ce4cbfe25cf0f31a",
+          "spec_id": "23.501",
+          "clause_id": "6.3.5",
+          "found_by": {
+            "system_neighbours": 8
+          }
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "question": "When a UE performs a registration update only because its periodic timer T3512 expired, what registration type does it indicate?",
+      "gold_clauses": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2"
+        }
+      ],
+      "exact_terms": [
+        "UE",
+        "T3512"
+      ],
+      "candidates": [
+        {
+          "chunk_id": "021c46696e364bf9cad90db4f7309885da8f3a17",
+          "spec_id": "23.501",
+          "clause_id": "5.31.7.5",
+          "found_by": {
+            "dense_per_spec": 1,
+            "dense_no_rerank": 6,
+            "dense_rewritten": 8,
+            "bm25_stemmed": 7,
+            "clause_title": 4,
+            "system": 5
+          }
+        },
+        {
+          "chunk_id": "f4fb5c4fe4eaf631c578327815dccc63934aaf70",
+          "spec_id": "23.501",
+          "clause_id": "5.31.7.5",
+          "found_by": {
+            "dense_per_spec": 2,
+            "system_neighbours": 3
+          }
+        },
+        {
+          "chunk_id": "7e607ee98d8be30e888c68ac0e8b589848bb1b26",
+          "spec_id": "23.501",
+          "clause_id": "5.16.4.4",
+          "found_by": {
+            "dense_per_spec": 3
+          }
+        },
+        {
+          "chunk_id": "6517ee9bf72df2360d1e2d45c9559bd4ca52bc9f",
+          "spec_id": "23.501",
+          "clause_id": "5.4.1.1",
+          "found_by": {
+            "dense_per_spec": 4
+          }
+        },
+        {
+          "chunk_id": "e3fabc3f3663b1e2ad944f7a6a9f5b9a84cd7e64",
+          "spec_id": "23.501",
+          "clause_id": "5.3.2.4",
+          "found_by": {
+            "dense_per_spec": 5
+          }
+        },
+        {
+          "chunk_id": "b580d5a09e20f64a8e7912b3e4c3fd54a134c0a8",
+          "spec_id": "24.501",
+          "clause_id": "5.3.7",
+          "found_by": {
+            "dense_per_spec": 6,
+            "dense_no_rerank": 1,
+            "dense_rewritten": 1,
+            "bm25_stemmed": 1,
+            "exact_term": 5,
+            "clause_title": 1,
+            "system": 1
+          }
+        },
+        {
+          "chunk_id": "2940b60e4b0d099d162ec942e7c1cd437b0f4606",
+          "spec_id": "24.501",
+          "clause_id": "5.3.7",
+          "found_by": {
+            "dense_per_spec": 7,
+            "dense_no_rerank": 2,
+            "dense_rewritten": 2,
+            "bm25_stemmed": 3,
+            "exact_term": 9,
+            "system": 3
+          }
+        },
+        {
+          "chunk_id": "56ae58eb9976baba5e2b52ae042f0328f4513e20",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.5",
+          "found_by": {
+            "dense_per_spec": 8,
+            "dense_no_rerank": 3,
+            "dense_rewritten": 6,
+            "system": 8
+          }
+        },
+        {
+          "chunk_id": "22916b372ee06fcb1747189d92bb7885d7d6399a",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.1",
+          "found_by": {
+            "dense_per_spec": 9,
+            "dense_no_rerank": 5,
+            "dense_rewritten": 7,
+            "bm25_stemmed": 2,
+            "system": 2
+          }
+        },
+        {
+          "chunk_id": "c68085f100198cce3aad94bbb47206bb398fe110",
+          "spec_id": "24.501",
+          "clause_id": "8.2.6.3",
+          "found_by": {
+            "dense_per_spec": 10,
+            "dense_no_rerank": 7,
+            "dense_rewritten": 4
+          }
+        },
+        {
+          "chunk_id": "e8da7ece5443d3c3b32afe45ba01c43f86511afb",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.1",
+          "found_by": {
+            "dense_per_spec": 11,
+            "dense_no_rerank": 4,
+            "dense_rewritten": 3
+          }
+        },
+        {
+          "chunk_id": "b1db7505f91830b6848c7554c879ad09ff8271bf",
+          "spec_id": "24.301",
+          "clause_id": "5.3.5",
+          "found_by": {
+            "dense_per_spec": 12,
+            "dense_no_rerank": 10,
+            "dense_rewritten": 5,
+            "system": 9
+          }
+        },
+        {
+          "chunk_id": "8d4ebe811c06e738ddc75400cf05f419ffedef6f",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.5",
+          "found_by": {
+            "dense_per_spec": 13
+          }
+        },
+        {
+          "chunk_id": "33ce758812b48a38949579e4d7e9e2c34d363286",
+          "spec_id": "24.301",
+          "clause_id": "8.2.1.12",
+          "found_by": {
+            "dense_per_spec": 14
+          }
+        },
+        {
+          "chunk_id": "d65c9c55045cbc84417d145a60cdfc75bcab5894",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4",
+          "found_by": {
+            "dense_per_spec": 15
+          }
+        },
+        {
+          "chunk_id": "91938cec6ed0d5024591fcdf7705988c12dd93e1",
+          "spec_id": "24.501",
+          "clause_id": "5.3.7",
+          "found_by": {
+            "dense_no_rerank": 8,
+            "dense_rewritten": 9,
+            "system": 4
+          }
+        },
+        {
+          "chunk_id": "970b09dd2802ae4d0bf7ab57cf5be050b167328d",
+          "spec_id": "24.501",
+          "clause_id": "D.2.1.5",
+          "found_by": {
+            "dense_no_rerank": 9
+          }
+        },
+        {
+          "chunk_id": "672abc0b145281a49279671ab4bf30060044b513",
+          "spec_id": "24.501",
+          "clause_id": "5.3.8",
+          "found_by": {
+            "dense_rewritten": 10
+          }
+        },
+        {
+          "chunk_id": "2bcd1f91a77ce3085c05d6f0eda617d164a7dd30",
+          "spec_id": "24.501",
+          "clause_id": "5.3.6",
+          "found_by": {
+            "bm25_stemmed": 4
+          }
+        },
+        {
+          "chunk_id": "ab376f5cad76434d663ef749c96d8ec03042430a",
+          "spec_id": "24.501",
+          "clause_id": "10.2",
+          "found_by": {
+            "bm25_stemmed": 5
+          }
+        },
+        {
+          "chunk_id": "e8b9ce103fe74fb6cf71d88f270e731ac3e10bed",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.4",
+          "found_by": {
+            "bm25_stemmed": 6
+          }
+        },
+        {
+          "chunk_id": "ec100a6c945dc71a44ce6dbdc4e55819971c24f3",
+          "spec_id": "24.501",
+          "clause_id": "5.3.7",
+          "found_by": {
+            "bm25_stemmed": 8,
+            "system_neighbours": 1
+          }
+        },
+        {
+          "chunk_id": "3c7a474e0a63f3b7af6f8afbfc75634e4baae250",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2",
+          "found_by": {
+            "bm25_stemmed": 9,
+            "exact_term": 3
+          }
+        },
+        {
+          "chunk_id": "08789dbae5584a4f7fee213238269e48686ec078",
+          "spec_id": "24.501",
+          "clause_id": "5.3.7",
+          "found_by": {
+            "bm25_stemmed": 10,
+            "system": 6
+          }
+        },
+        {
+          "chunk_id": "86b7e26bb1863575df55f98e8b411c981e230008",
+          "spec_id": "24.501",
+          "clause_id": "10.2",
+          "found_by": {
+            "exact_term": 1
+          }
+        },
+        {
+          "chunk_id": "fcefa0b4c286008c05f4025149202d1ce8b4f0a9",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.2",
+          "found_by": {
+            "exact_term": 2
+          }
+        },
+        {
+          "chunk_id": "8ad5f47a10f613378e06bcbf25e93d431e9900e8",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.4",
+          "found_by": {
+            "exact_term": 4
+          }
+        },
+        {
+          "chunk_id": "3206219e17e7c8dc1a399df3adbce17779bc3cf7",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2",
+          "found_by": {
+            "exact_term": 6
+          }
+        },
+        {
+          "chunk_id": "4c4623bddf89a5e03ba50925846f644f83cdbab6",
+          "spec_id": "24.501",
+          "clause_id": "F",
+          "found_by": {
+            "exact_term": 7
+          }
+        },
+        {
+          "chunk_id": "a8c8b08990b447816f97eff46f65a054790b8f26",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "exact_term": 8
+          }
+        },
+        {
+          "chunk_id": "2efacbec50d8f5eb6cb3e7412753b1aa26787fce",
+          "spec_id": "24.501",
+          "clause_id": "5.3.6",
+          "found_by": {
+            "exact_term": 10
+          }
+        },
+        {
+          "chunk_id": "8bd71dd35f69d0e0c484211f4b59f107db327312",
+          "spec_id": "24.301",
+          "clause_id": "5.3.5",
+          "found_by": {
+            "clause_title": 2,
+            "system_neighbours": 9
+          }
+        },
+        {
+          "chunk_id": "9bd9f76c7f27e51ce6cc9adb91c9850b192b890b",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2",
+          "found_by": {
+            "clause_title": 3,
+            "answer_quote": 1
+          }
+        },
+        {
+          "chunk_id": "4001604ccd84ec5da7cf1e7f3d73052244775880",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.4",
+          "found_by": {
+            "clause_title": 5
+          }
+        },
+        {
+          "chunk_id": "6b5568786f8be72dd71171aa1ba7116221cee7c8",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.5",
+          "found_by": {
+            "clause_title": 6
+          }
+        },
+        {
+          "chunk_id": "8d7776fc85256272b1ef0ae5265fb2f0aca4debb",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.6A",
+          "found_by": {
+            "clause_title": 7
+          }
+        },
+        {
+          "chunk_id": "37521d41929da92665287df21152230f6545ded5",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.6",
+          "found_by": {
+            "clause_title": 8
+          }
+        },
+        {
+          "chunk_id": "fa40ca3b263b25352eb7a82f22e7590324a08f3a",
+          "spec_id": "23.501",
+          "clause_id": "5.30.2.10.2.6",
+          "found_by": {
+            "clause_title": 9
+          }
+        },
+        {
+          "chunk_id": "2833fa55a11c88573d25c7a91c3794cd8f7546e2",
+          "spec_id": "24.301",
+          "clause_id": "8.2.4.12",
+          "found_by": {
+            "clause_title": 10
+          }
+        },
+        {
+          "chunk_id": "30e3495b775dde84eaafbe7cc62946c2fe7d5d7d",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.7",
+          "found_by": {
+            "system": 7
+          }
+        },
+        {
+          "chunk_id": "2c15e35b0382d576d175547daeef85344ce790fb",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.4",
+          "found_by": {
+            "system": 10
+          }
+        },
+        {
+          "chunk_id": "692df38eaf33966ea8475926b86485715cc75d20",
+          "spec_id": "23.501",
+          "clause_id": "5.31.7.5",
+          "found_by": {
+            "system_neighbours": 2
+          }
+        },
+        {
+          "chunk_id": "a8199bece8d94f574a4dcc9555414d20e9ea2e5f",
+          "spec_id": "24.501",
+          "clause_id": "5.3.7",
+          "found_by": {
+            "system_neighbours": 4
+          }
+        },
+        {
+          "chunk_id": "cdb7eebcea5484475567c40dc55a9b626697e501",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.7",
+          "found_by": {
+            "system_neighbours": 5
+          }
+        },
+        {
+          "chunk_id": "b9c20ac6981fc63c150ce2756e6785c5984be6ff",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.7",
+          "found_by": {
+            "system_neighbours": 6
+          }
+        },
+        {
+          "chunk_id": "c0fe0cd22d5052c64974a976e2657c92570525a3",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.5",
+          "found_by": {
+            "system_neighbours": 7
+          }
+        },
+        {
+          "chunk_id": "b59bfdf05770c606c27aaddaa6540ee92d102980",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.5",
+          "found_by": {
+            "system_neighbours": 8
+          }
+        },
+        {
+          "chunk_id": "8652061182bb5c27caa7d3a9c485ca05b9524c0f",
+          "spec_id": "24.301",
+          "clause_id": "5.3.5",
+          "found_by": {
+            "system_neighbours": 10
+          }
+        },
+        {
+          "chunk_id": "c76d4bec543757b75735c4096807f2e209cda1c8",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.4",
+          "found_by": {
+            "system_neighbours": 11
+          }
+        },
+        {
+          "chunk_id": "237af4148372a792c4e8d5a2ade4e3a38ba350b1",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.4",
+          "found_by": {
+            "system_neighbours": 12
+          }
+        },
+        {
+          "chunk_id": "397622827156666fdb67a4541eefff98f7eaec19",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2",
+          "found_by": {
+            "answer_quote": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "question": "What are the possible values of the EPS update status?",
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.1.3.3"
+        }
+      ],
+      "exact_terms": [
+        "EPS"
+      ],
+      "candidates": [
+        {
+          "chunk_id": "79d0f069858e1e721116614ffffd967309565c93",
+          "spec_id": "23.501",
+          "clause_id": "5.17.2.2.1",
+          "found_by": {
+            "dense_per_spec": 1
+          }
+        },
+        {
+          "chunk_id": "6017e6859801c30ac62a8777c93523a5fdef5d80",
+          "spec_id": "23.501",
+          "clause_id": "5.17.2.1",
+          "found_by": {
+            "dense_per_spec": 2
+          }
+        },
+        {
+          "chunk_id": "97ce2c7c7d9e5204fbdef671dcc2633bb93fbf24",
+          "spec_id": "23.501",
+          "clause_id": "5.27.0",
+          "found_by": {
+            "dense_per_spec": 3
+          }
+        },
+        {
+          "chunk_id": "7527046470b9076a2c9cedc8ba2ec3a4178b7aa4",
+          "spec_id": "23.501",
+          "clause_id": "5.16.3.2",
+          "found_by": {
+            "dense_per_spec": 4
+          }
+        },
+        {
+          "chunk_id": "3a54948fc88cac9cfd354b82659a37a856c9c3df",
+          "spec_id": "23.501",
+          "clause_id": "B",
+          "found_by": {
+            "dense_per_spec": 5
+          }
+        },
+        {
+          "chunk_id": "d3175e76a0f5b69b426265e84509a463dffde4a6",
+          "spec_id": "24.501",
+          "clause_id": "9.11.3.23A",
+          "found_by": {
+            "dense_per_spec": 6,
+            "dense_no_rerank": 5
+          }
+        },
+        {
+          "chunk_id": "19e1ffcbc30335837c945a1c7263013c589ef631",
+          "spec_id": "24.501",
+          "clause_id": "5.5.2.3.4",
+          "found_by": {
+            "dense_per_spec": 7,
+            "dense_no_rerank": 6,
+            "system": 10
+          }
+        },
+        {
+          "chunk_id": "2bd7fd6879be5728823367b46def38d60ec87cb1",
+          "spec_id": "24.501",
+          "clause_id": "8.2.7.31",
+          "found_by": {
+            "dense_per_spec": 8
+          }
+        },
+        {
+          "chunk_id": "1ff5a88efd51a3e6f83c98f9d3ff4f07055a01bc",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.7",
+          "found_by": {
+            "dense_per_spec": 9,
+            "system": 7
+          }
+        },
+        {
+          "chunk_id": "351b1579fcba35a95b902d4dffa602f76e671cba",
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.5",
+          "found_by": {
+            "dense_per_spec": 10
+          }
+        },
+        {
+          "chunk_id": "b96253dddec0d576376e5cad462974c00f60a83a",
+          "spec_id": "24.301",
+          "clause_id": "5.1.3.3",
+          "found_by": {
+            "dense_per_spec": 11,
+            "dense_no_rerank": 1,
+            "bm25_stemmed": 7,
+            "clause_title": 1,
+            "system": 1,
+            "answer_quote": 1
+          }
+        },
+        {
+          "chunk_id": "522c7449d5c4fdd6966d344e3e1372d927838128",
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.13",
+          "found_by": {
+            "dense_per_spec": 12,
+            "dense_no_rerank": 2,
+            "clause_title": 2,
+            "system": 3
+          }
+        },
+        {
+          "chunk_id": "536b0ac178c03bf8ee87c3bf23f8069504d827b1",
+          "spec_id": "24.301",
+          "clause_id": "A",
+          "found_by": {
+            "dense_per_spec": 13,
+            "dense_no_rerank": 3,
+            "dense_rewritten": 1
+          }
+        },
+        {
+          "chunk_id": "41fa5af6b614c553bf1bf33a3d0aa71337154c0d",
+          "spec_id": "24.301",
+          "clause_id": "8.2.26.19",
+          "found_by": {
+            "dense_per_spec": 14,
+            "dense_no_rerank": 4
+          }
+        },
+        {
+          "chunk_id": "6aa7abe03c8976991c5f0d92eba6acbf07af657e",
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.14",
+          "found_by": {
+            "dense_per_spec": 15,
+            "dense_no_rerank": 7,
+            "clause_title": 3,
+            "system": 2
+          }
+        },
+        {
+          "chunk_id": "1b3be2271a958ced685b06d28b80350a7343e717",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.3.4.1",
+          "found_by": {
+            "dense_no_rerank": 8,
+            "system": 4
+          }
+        },
+        {
+          "chunk_id": "5be72fc601fab26a449280a7bf1568e7daaab84c",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.3.4.3",
+          "found_by": {
+            "dense_no_rerank": 9,
+            "dense_rewritten": 2
+          }
+        },
+        {
+          "chunk_id": "1d6ca7b67b478ade09bea7beccc37eb9ab28da9f",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.3.4.3",
+          "found_by": {
+            "dense_no_rerank": 10,
+            "dense_rewritten": 6
+          }
+        },
+        {
+          "chunk_id": "cc357ee21af302a61b9b2c7aadbcc3322ac9a26a",
+          "spec_id": "24.301",
+          "clause_id": "2",
+          "found_by": {
+            "dense_rewritten": 3
+          }
+        },
+        {
+          "chunk_id": "bed3ddb7614886a00446e7f698e087d8244ee001",
+          "spec_id": "24.301",
+          "clause_id": "1",
+          "found_by": {
+            "dense_rewritten": 4
+          }
+        },
+        {
+          "chunk_id": "ae1ec7af645f5bb32d373dfd9843e8006525ada6",
+          "spec_id": "24.301",
+          "clause_id": "9.8",
+          "found_by": {
+            "dense_rewritten": 5
+          }
+        },
+        {
+          "chunk_id": "8d03e36cb58f338893d73ef60f896af5fb51f2ab",
+          "spec_id": "23.501",
+          "clause_id": "2",
+          "found_by": {
+            "dense_rewritten": 7
+          }
+        },
+        {
+          "chunk_id": "52f546ea6d4ad643172cbcecc56d47c2bc608aec",
+          "spec_id": "24.301",
+          "clause_id": "9.8",
+          "found_by": {
+            "dense_rewritten": 8
+          }
+        },
+        {
+          "chunk_id": "d25297aa34f14517ba5caa5d1d175495820d09b8",
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.12A",
+          "found_by": {
+            "dense_rewritten": 9
+          }
+        },
+        {
+          "chunk_id": "877eb974376462f7056f7f449719ad02b5eb8ff0",
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.12A",
+          "found_by": {
+            "dense_rewritten": 10
+          }
+        },
+        {
+          "chunk_id": "4a22dc7913b784845b1ff31cb71f9ec9a031bae2",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.5",
+          "found_by": {
+            "bm25_stemmed": 1,
+            "system_neighbours": 4
+          }
+        },
+        {
+          "chunk_id": "0934a9a024e7866be0bc3c1db66829a631501bab",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.5",
+          "found_by": {
+            "bm25_stemmed": 2
+          }
+        },
+        {
+          "chunk_id": "81acbee45adcea9556b1a1cd5dc17546f571c572",
+          "spec_id": "24.301",
+          "clause_id": "5.6.1.5",
+          "found_by": {
+            "bm25_stemmed": 3
+          }
+        },
+        {
+          "chunk_id": "71560dae5dea49d262489896173d4cf7a5384604",
+          "spec_id": "24.301",
+          "clause_id": "5.5.2.3.2",
+          "found_by": {
+            "bm25_stemmed": 4
+          }
+        },
+        {
+          "chunk_id": "21725fd124955a7f5d369caf42574ab75f4fd287",
+          "spec_id": "24.301",
+          "clause_id": "6.7",
+          "found_by": {
+            "bm25_stemmed": 5
+          }
+        },
+        {
+          "chunk_id": "b25c0ad452d983abb7cea8d3c552fd4702ddcbb6",
+          "spec_id": "24.301",
+          "clause_id": "5.4.3.2",
+          "found_by": {
+            "bm25_stemmed": 6
+          }
+        },
+        {
+          "chunk_id": "2c541e16b50657259f98fdf3c6234752c59e2b27",
+          "spec_id": "24.301",
+          "clause_id": "6.5.4.2",
+          "found_by": {
+            "bm25_stemmed": 8
+          }
+        },
+        {
+          "chunk_id": "9a599c65ccc7dbf94d6af2712536e41ec6acebb3",
+          "spec_id": "24.501",
+          "clause_id": "6.5.2",
+          "found_by": {
+            "bm25_stemmed": 9
+          }
+        },
+        {
+          "chunk_id": "358eb0780c1362ec3b937dbe68999794b76b46f2",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4",
+          "found_by": {
+            "bm25_stemmed": 10,
+            "system_neighbours": 2
+          }
+        },
+        {
+          "chunk_id": "64ae86327adc21eb6670806b88962e5a03bdd0a8",
+          "spec_id": "24.501",
+          "clause_id": "9.11.3.54",
+          "found_by": {
+            "exact_term": 1
+          }
+        },
+        {
+          "chunk_id": "61e237830f7448729fea7cfce4fef9b17ef02ffe",
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.36",
+          "found_by": {
+            "exact_term": 2
+          }
+        },
+        {
+          "chunk_id": "cfb844cef43eaf698417bf42b06c2b858abe80d9",
+          "spec_id": "24.501",
+          "clause_id": "9.11.4.8",
+          "found_by": {
+            "exact_term": 3
+          }
+        },
+        {
+          "chunk_id": "af2f78ca071f1778e10f099ed133b04f97fd8f58",
+          "spec_id": "24.301",
+          "clause_id": "0",
+          "found_by": {
+            "exact_term": 4
+          }
+        },
+        {
+          "chunk_id": "b3c4c341d912c3a5686ac74db61bf9464b7370a3",
+          "spec_id": "24.301",
+          "clause_id": "6.4.2.5",
+          "found_by": {
+            "exact_term": 5
+          }
+        },
+        {
+          "chunk_id": "a059ddd899209202090167f38b46ea427e454694",
+          "spec_id": "24.501",
+          "clause_id": "6.1.4.1",
+          "found_by": {
+            "exact_term": 6
+          }
+        },
+        {
+          "chunk_id": "888c447c631f090c379653803fd1896bafea19cc",
+          "spec_id": "24.301",
+          "clause_id": "9.9.4.6",
+          "found_by": {
+            "exact_term": 7
+          }
+        },
+        {
+          "chunk_id": "a319e0f61265393fb0a3f396e7600cdef6f45dfd",
+          "spec_id": "24.301",
+          "clause_id": "G",
+          "found_by": {
+            "exact_term": 8
+          }
+        },
+        {
+          "chunk_id": "fc311d5a9a632115d218761e1310cb2d94142d0b",
+          "spec_id": "24.501",
+          "clause_id": "6.3.2.3",
+          "found_by": {
+            "exact_term": 9
+          }
+        },
+        {
+          "chunk_id": "1ecc09153fbbc297627aff6b38b58caea233ce5c",
+          "spec_id": "24.301",
+          "clause_id": "7.3.2",
+          "found_by": {
+            "exact_term": 10
+          }
+        },
+        {
+          "chunk_id": "06888cd4d12c9abfac7cae3797b21a378d49cf55",
+          "spec_id": "24.301",
+          "clause_id": "8.2.15.3",
+          "found_by": {
+            "clause_title": 4
+          }
+        },
+        {
+          "chunk_id": "1a6f05a2adc53c5aae20ad459f139948f0586093",
+          "spec_id": "24.301",
+          "clause_id": "8.2.26.5",
+          "found_by": {
+            "clause_title": 5
+          }
+        },
+        {
+          "chunk_id": "d073689f49059bdbe6a936fbd197bd5d367a93d1",
+          "spec_id": "24.301",
+          "clause_id": "8.2.29.11",
+          "found_by": {
+            "clause_title": 6
+          }
+        },
+        {
+          "chunk_id": "7d3166b0c49e36283be6369c680c994f05141853",
+          "spec_id": "24.301",
+          "clause_id": "8.2.33.4",
+          "found_by": {
+            "clause_title": 7
+          }
+        },
+        {
+          "chunk_id": "b7802a392ff75aa61046fefcdcc11a4061d3ffee",
+          "spec_id": "24.301",
+          "clause_id": "8.2.34.2",
+          "found_by": {
+            "clause_title": 8
+          }
+        },
+        {
+          "chunk_id": "a8702800cf60cc207c02dff96e5c93103d72b547",
+          "spec_id": "24.301",
+          "clause_id": "9.9.2.1",
+          "found_by": {
+            "clause_title": 9
+          }
+        },
+        {
+          "chunk_id": "c065be10c31a5f6b247d9f54d6c46b518890489a",
+          "spec_id": "24.501",
+          "clause_id": "5.1.3.2.2",
+          "found_by": {
+            "clause_title": 10
+          }
+        },
+        {
+          "chunk_id": "a0c779d56a3fb14b222432aa098cf3bbaa2e7246",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4",
+          "found_by": {
+            "system": 5
+          }
+        },
+        {
+          "chunk_id": "c0d77fb50dfe6e5d0964555db3cd5f515beff056",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.6A",
+          "found_by": {
+            "system": 6
+          }
+        },
+        {
+          "chunk_id": "fd9148ffb3d095bf1e3a89c63ce98f7572c929f3",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.5",
+          "found_by": {
+            "system": 8
+          }
+        },
+        {
+          "chunk_id": "02958fe295e2019507856e952d9ccb84f56bdd05",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.6A",
+          "found_by": {
+            "system": 9
+          }
+        },
+        {
+          "chunk_id": "828b587715339772dd98bdbed27644fc13e11c13",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4",
+          "found_by": {
+            "system_neighbours": 1
+          }
+        },
+        {
+          "chunk_id": "a106724c2609c28e0ff485e30bc525a3fb99f5da",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.7",
+          "found_by": {
+            "system_neighbours": 3
+          }
+        },
+        {
+          "chunk_id": "4b40750d28bb4fdd90b445297ea24cea0f2e5c8d",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.5",
+          "found_by": {
+            "system_neighbours": 5
+          }
+        },
+        {
+          "chunk_id": "36a5f0307ec97d75381ecec4225b51816b18c83f",
+          "spec_id": "24.501",
+          "clause_id": "5.5.2.3.4",
+          "found_by": {
+            "system_neighbours": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "question": "How should an LTE UE respond when it receives an EPS NAS message that is missing a mandatory information element?",
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "7.5.1"
+        }
+      ],
+      "exact_terms": [
+        "LTE UE",
+        "EPS NAS"
+      ],
+      "candidates": [
+        {
+          "chunk_id": "ab42b964ccd040efbe0277269806097912417d49",
+          "spec_id": "23.501",
+          "clause_id": "5.16.3.8.2",
+          "found_by": {
+            "dense_per_spec": 1
+          }
+        },
+        {
+          "chunk_id": "73be04a63ab7910db06934b2514b3128a3d41045",
+          "spec_id": "23.501",
+          "clause_id": "5.19.7.2",
+          "found_by": {
+            "dense_per_spec": 2
+          }
+        },
+        {
+          "chunk_id": "d98de9349f9b503dd0e646b552bf8efb90e2df7f",
+          "spec_id": "23.501",
+          "clause_id": "5.31.3",
+          "found_by": {
+            "dense_per_spec": 3
+          }
+        },
+        {
+          "chunk_id": "46ee618e08d039a6b982d3b70843d60bef5889be",
+          "spec_id": "23.501",
+          "clause_id": "5.4.4.1",
+          "found_by": {
+            "dense_per_spec": 4
+          }
+        },
+        {
+          "chunk_id": "e57b8f0bc02e8e4213ec21d7a821e58a9895f5f9",
+          "spec_id": "23.501",
+          "clause_id": "5.4.4.1",
+          "found_by": {
+            "dense_per_spec": 5
+          }
+        },
+        {
+          "chunk_id": "e11ab99685bc26b70da6e27f9d3d37d1d56779f1",
+          "spec_id": "24.501",
+          "clause_id": "8.2.6.16",
+          "found_by": {
+            "dense_per_spec": 6,
+            "dense_no_rerank": 1,
+            "dense_rewritten": 4,
+            "clause_title": 1,
+            "system": 2
+          }
+        },
+        {
+          "chunk_id": "909bae7180155ffd8dd2f4c3b91695a6f8097c0c",
+          "spec_id": "24.501",
+          "clause_id": "5.4.2.3",
+          "found_by": {
+            "dense_per_spec": 7,
+            "dense_no_rerank": 6,
+            "exact_term": 7,
+            "system": 3
+          }
+        },
+        {
+          "chunk_id": "92ba1a422a166957c5e77879e57aefa98ab89240",
+          "spec_id": "24.501",
+          "clause_id": "8.2.26.3",
+          "found_by": {
+            "dense_per_spec": 8,
+            "dense_no_rerank": 7,
+            "system": 5
+          }
+        },
+        {
+          "chunk_id": "9617801d673cd1b45a995acd2541e566a00cd2f4",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.5",
+          "found_by": {
+            "dense_per_spec": 9,
+            "system": 10
+          }
+        },
+        {
+          "chunk_id": "aa25135f11e08a2168d91ba154843becf8e191bf",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2",
+          "found_by": {
+            "dense_per_spec": 10
+          }
+        },
+        {
+          "chunk_id": "b86957f1ad185943b1b3fa330fb7e5aaefd589e1",
+          "spec_id": "24.301",
+          "clause_id": "4.4.4.3",
+          "found_by": {
+            "dense_per_spec": 11,
+            "dense_no_rerank": 2,
+            "dense_rewritten": 6,
+            "system": 8
+          }
+        },
+        {
+          "chunk_id": "22dc84d7cff19879f54ca190e1eded191ba2ad42",
+          "spec_id": "24.301",
+          "clause_id": "4.4.4.3",
+          "found_by": {
+            "dense_per_spec": 12,
+            "dense_no_rerank": 3,
+            "system_neighbours": 8
+          }
+        },
+        {
+          "chunk_id": "cfdf3cb60c323d966f8d59617fa1f415abd728f2",
+          "spec_id": "24.301",
+          "clause_id": "5.3.7b",
+          "found_by": {
+            "dense_per_spec": 13,
+            "dense_no_rerank": 4,
+            "dense_rewritten": 10,
+            "clause_title": 9
+          }
+        },
+        {
+          "chunk_id": "f32f14deefa9c9ce9c8ee4dc1eb3db2861bfc320",
+          "spec_id": "24.301",
+          "clause_id": "5.6.1.2.1",
+          "found_by": {
+            "dense_per_spec": 14,
+            "dense_no_rerank": 5,
+            "dense_rewritten": 3
+          }
+        },
+        {
+          "chunk_id": "1f2966419fee1d2c01e0b0edc31d3b34c47d19ba",
+          "spec_id": "24.301",
+          "clause_id": "7.5.3",
+          "found_by": {
+            "dense_per_spec": 15,
+            "dense_no_rerank": 8,
+            "bm25_stemmed": 4,
+            "system": 1
+          }
+        },
+        {
+          "chunk_id": "ec0ec42ab608e50bce2367eeccf71a9892ae20fa",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.5",
+          "found_by": {
+            "dense_no_rerank": 9
+          }
+        },
+        {
+          "chunk_id": "e39dd532f565468a199bb9818c310895f094acf5",
+          "spec_id": "24.301",
+          "clause_id": "5.3.1.3",
+          "found_by": {
+            "dense_no_rerank": 10,
+            "dense_rewritten": 7
+          }
+        },
+        {
+          "chunk_id": "67c4e7806529ca401be0511431fdfb49bb10b543",
+          "spec_id": "24.301",
+          "clause_id": "4.1",
+          "found_by": {
+            "dense_rewritten": 1
+          }
+        },
+        {
+          "chunk_id": "bed3ddb7614886a00446e7f698e087d8244ee001",
+          "spec_id": "24.301",
+          "clause_id": "1",
+          "found_by": {
+            "dense_rewritten": 2
+          }
+        },
+        {
+          "chunk_id": "8d03e36cb58f338893d73ef60f896af5fb51f2ab",
+          "spec_id": "23.501",
+          "clause_id": "2",
+          "found_by": {
+            "dense_rewritten": 5
+          }
+        },
+        {
+          "chunk_id": "e14874424b1cfc0549a9ac49aef13716b67bddf2",
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.5",
+          "found_by": {
+            "dense_rewritten": 8
+          }
+        },
+        {
+          "chunk_id": "fba8c6526781b7032e78fc3b1ddbdfd360b82fb9",
+          "spec_id": "24.301",
+          "clause_id": "4.4.4.3",
+          "found_by": {
+            "dense_rewritten": 9,
+            "system": 7
+          }
+        },
+        {
+          "chunk_id": "78e9a542c5420d1b9ae16b00c66918f5a49ed1ef",
+          "spec_id": "24.501",
+          "clause_id": "7.5.1",
+          "found_by": {
+            "bm25_stemmed": 1
+          }
+        },
+        {
+          "chunk_id": "cf6e2b8ec2f14cdbcb988603401890df93d71b86",
+          "spec_id": "24.301",
+          "clause_id": "7.5.1",
+          "found_by": {
+            "bm25_stemmed": 2,
+            "answer_quote": 1
+          }
+        },
+        {
+          "chunk_id": "611fd26ea297f8bb0bf748ed799e97e868fbe4d7",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.7",
+          "found_by": {
+            "bm25_stemmed": 3
+          }
+        },
+        {
+          "chunk_id": "46791e859baa744477118bb911465fb89f840a44",
+          "spec_id": "23.501",
+          "clause_id": "5.31.20",
+          "found_by": {
+            "bm25_stemmed": 5
+          }
+        },
+        {
+          "chunk_id": "f0d27f855bf0e730f677a7f935df254daf1094c1",
+          "spec_id": "24.301",
+          "clause_id": "5.5.6",
+          "found_by": {
+            "bm25_stemmed": 6
+          }
+        },
+        {
+          "chunk_id": "1a69be0ce3172e63b572927c825716516502429b",
+          "spec_id": "24.501",
+          "clause_id": "7.5.3",
+          "found_by": {
+            "bm25_stemmed": 7
+          }
+        },
+        {
+          "chunk_id": "7cd8e42fe8cbdfac75d60e6b5651d6e064374225",
+          "spec_id": "24.501",
+          "clause_id": "D.8.5.1",
+          "found_by": {
+            "bm25_stemmed": 8
+          }
+        },
+        {
+          "chunk_id": "89bfc2de055bb166bda3919dd83b3f9ffc25d1d7",
+          "spec_id": "24.301",
+          "clause_id": "5.6.2.3.1",
+          "found_by": {
+            "bm25_stemmed": 9
+          }
+        },
+        {
+          "chunk_id": "48af459e6335e3e0a305314da1c3d7aedbc6b75c",
+          "spec_id": "24.301",
+          "clause_id": "7.3.1",
+          "found_by": {
+            "bm25_stemmed": 10
+          }
+        },
+        {
+          "chunk_id": "ad445434292bde305a013a6c8e2a2fc54f4d103c",
+          "spec_id": "24.501",
+          "clause_id": "9.11.3.24",
+          "found_by": {
+            "exact_term": 1,
+            "clause_title": 2
+          }
+        },
+        {
+          "chunk_id": "50a45dab90a3b5a8d324d7dd8533b3ae0445083d",
+          "spec_id": "24.301",
+          "clause_id": "4.4.2.3",
+          "found_by": {
+            "exact_term": 2,
+            "system": 4
+          }
+        },
+        {
+          "chunk_id": "0bd07d7f8ebf1282842693a33252d9e2db52453d",
+          "spec_id": "24.501",
+          "clause_id": "F",
+          "found_by": {
+            "exact_term": 3
+          }
+        },
+        {
+          "chunk_id": "4b8eafd51cff83cdafed629cefc00ed0e3589833",
+          "spec_id": "24.501",
+          "clause_id": "8.2.25.1",
+          "found_by": {
+            "exact_term": 4
+          }
+        },
+        {
+          "chunk_id": "b6c5e2098b166d3aefaf9766faf3c68fdd8972e8",
+          "spec_id": "24.501",
+          "clause_id": "8.2.6.1",
+          "found_by": {
+            "exact_term": 5
+          }
+        },
+        {
+          "chunk_id": "fbf53ce17ff43b43cfdb29832d45807bf7326a40",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2",
+          "found_by": {
+            "exact_term": 6
+          }
+        },
+        {
+          "chunk_id": "9ab55534cc46ebeb37cde527bdd89becd7b8883f",
+          "spec_id": "24.501",
+          "clause_id": "5.4.2.2",
+          "found_by": {
+            "exact_term": 8
+          }
+        },
+        {
+          "chunk_id": "cc219162f9732329d524b7c87e72533ccf7eeb90",
+          "spec_id": "24.501",
+          "clause_id": "5.4.2.2",
+          "found_by": {
+            "exact_term": 9
+          }
+        },
+        {
+          "chunk_id": "848d7785618fb9e7f20401f25601ad9bea581274",
+          "spec_id": "24.501",
+          "clause_id": "5.4.2.2",
+          "found_by": {
+            "exact_term": 10
+          }
+        },
+        {
+          "chunk_id": "7d21ba0d54d0effaddd54d72e944492ef8b591cb",
+          "spec_id": "24.301",
+          "clause_id": "5.6.3.2",
+          "found_by": {
+            "clause_title": 3
+          }
+        },
+        {
+          "chunk_id": "7dcd37803e2ba252ae2f6d57d799a080202e4257",
+          "spec_id": "24.301",
+          "clause_id": "4.4.4.2",
+          "found_by": {
+            "clause_title": 4
+          }
+        },
+        {
+          "chunk_id": "5afc4f080e8000654018f508dca64490e90e7133",
+          "spec_id": "24.301",
+          "clause_id": "5.6.4.2",
+          "found_by": {
+            "clause_title": 5
+          }
+        },
+        {
+          "chunk_id": "1650148aca1987ad95d6d7e29749169a4a042d2c",
+          "spec_id": "24.501",
+          "clause_id": "4.4.4.2",
+          "found_by": {
+            "clause_title": 6
+          }
+        },
+        {
+          "chunk_id": "709faf751045cce0ddba5a386bde20f42468c64a",
+          "spec_id": "24.501",
+          "clause_id": "5.4.5.2.3",
+          "found_by": {
+            "clause_title": 7
+          }
+        },
+        {
+          "chunk_id": "49156107aa28a33e91465228ecd0abe63a142b9c",
+          "spec_id": "24.501",
+          "clause_id": "5.4.5.2.4",
+          "found_by": {
+            "clause_title": 8
+          }
+        },
+        {
+          "chunk_id": "dec08b6f9901ade9e35254c364ee50382b3181f2",
+          "spec_id": "24.301",
+          "clause_id": "9.7",
+          "found_by": {
+            "clause_title": 10
+          }
+        },
+        {
+          "chunk_id": "2f1c519a4e15f7c9f440a1c45b53dc788b9ffb45",
+          "spec_id": "24.301",
+          "clause_id": "4.4.2.3",
+          "found_by": {
+            "system": 6
+          }
+        },
+        {
+          "chunk_id": "bc1461919741f6e54091c58ddc5150c114853f94",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.3.5",
+          "found_by": {
+            "system": 9
+          }
+        },
+        {
+          "chunk_id": "a5ff8db9dfa5278da9981986862f529dc7a915b9",
+          "spec_id": "24.301",
+          "clause_id": "7.5.3",
+          "found_by": {
+            "system_neighbours": 1
+          }
+        },
+        {
+          "chunk_id": "e7985011525727e21434dfcdb1b134c205e111fa",
+          "spec_id": "24.501",
+          "clause_id": "5.4.2.3",
+          "found_by": {
+            "system_neighbours": 2
+          }
+        },
+        {
+          "chunk_id": "c5c57a0be76e75b33a12c74fb77e732c9e594106",
+          "spec_id": "24.301",
+          "clause_id": "4.4.2.3",
+          "found_by": {
+            "system_neighbours": 3
+          }
+        },
+        {
+          "chunk_id": "7765097c85604f4420225a3eed837adc4977da73",
+          "spec_id": "24.301",
+          "clause_id": "4.4.2.3",
+          "found_by": {
+            "system_neighbours": 4
+          }
+        },
+        {
+          "chunk_id": "9303c3f4bfd945021851eee67d92cc070140aa53",
+          "spec_id": "24.301",
+          "clause_id": "4.4.2.3",
+          "found_by": {
+            "system_neighbours": 5
+          }
+        },
+        {
+          "chunk_id": "cdaf5073324a83228c47e48b3e708b66cc5e88ec",
+          "spec_id": "24.301",
+          "clause_id": "4.4.2.3",
+          "found_by": {
+            "system_neighbours": 6
+          }
+        },
+        {
+          "chunk_id": "0f8f1f9f38df9df95220d4676c18d63cf1709cd4",
+          "spec_id": "24.301",
+          "clause_id": "4.4.4.3",
+          "found_by": {
+            "system_neighbours": 7
+          }
+        },
+        {
+          "chunk_id": "d086d2266b8db7deecb708bf493e233e1b735a79",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.3.5",
+          "found_by": {
+            "system_neighbours": 9
+          }
+        },
+        {
+          "chunk_id": "5c12f3f726eb08ee096ecee3f51eb30513e952dd",
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.3.5",
+          "found_by": {
+            "system_neighbours": 10
+          }
+        },
+        {
+          "chunk_id": "243e01a234d875819497440fbc5efaf3d8714d0b",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.5",
+          "found_by": {
+            "system_neighbours": 11
+          }
+        },
+        {
+          "chunk_id": "73a76470972700e49e61fc12014896eba4e38f82",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.5",
+          "found_by": {
+            "system_neighbours": 12
+          }
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "question": "Does the UE start timer T3510 when it sends an ATTACH REQUEST to the MME?",
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.2"
+        }
+      ],
+      "exact_terms": [
+        "T3510",
+        "MME",
+        "ATTACH REQUEST"
+      ],
+      "candidates": [
+        {
+          "chunk_id": "73893c3f37213f1771785aa396b29a3ede89efa4",
+          "spec_id": "23.501",
+          "clause_id": "5.31.16",
+          "found_by": {
+            "dense_per_spec": 1
+          }
+        },
+        {
+          "chunk_id": "8d82b8597c4bf04463383befbeffac1113ff863a",
+          "spec_id": "23.501",
+          "clause_id": "5.31.16",
+          "found_by": {
+            "dense_per_spec": 2
+          }
+        },
+        {
+          "chunk_id": "c7387da120bc5a406590d3c4a823093dda95117c",
+          "spec_id": "23.501",
+          "clause_id": "5.19.7.2",
+          "found_by": {
+            "dense_per_spec": 3
+          }
+        },
+        {
+          "chunk_id": "021c46696e364bf9cad90db4f7309885da8f3a17",
+          "spec_id": "23.501",
+          "clause_id": "5.31.7.5",
+          "found_by": {
+            "dense_per_spec": 4
+          }
+        },
+        {
+          "chunk_id": "3483609f8aff5a748966e49b4c1fbb6d0cdbd251",
+          "spec_id": "23.501",
+          "clause_id": "5.17.2.1",
+          "found_by": {
+            "dense_per_spec": 5
+          }
+        },
+        {
+          "chunk_id": "c3af5e6829ce5f813a94a036b2926eff0bc144f6",
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.7",
+          "found_by": {
+            "dense_per_spec": 6,
+            "dense_no_rerank": 2,
+            "dense_rewritten": 3,
+            "system": 2
+          }
+        },
+        {
+          "chunk_id": "447015ecbe47234a23c0cd21f3f905fdfab08a5e",
+          "spec_id": "24.501",
+          "clause_id": "6.4.2.4.2",
+          "found_by": {
+            "dense_per_spec": 7,
+            "dense_no_rerank": 5,
+            "dense_rewritten": 5
+          }
+        },
+        {
+          "chunk_id": "dc1e162fc54a85a9a54754575dcd09d7b2ffa266",
+          "spec_id": "24.501",
+          "clause_id": "6.3.3.3",
+          "found_by": {
+            "dense_per_spec": 8,
+            "dense_no_rerank": 8,
+            "dense_rewritten": 8
+          }
+        },
+        {
+          "chunk_id": "119e8231d156c1f0017995027b12734ee54f5f04",
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.5",
+          "found_by": {
+            "dense_per_spec": 9,
+            "system": 9
+          }
+        },
+        {
+          "chunk_id": "afa3a53d480e3b71397388d4a4e8e7b67232d9c5",
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.4.2",
+          "found_by": {
+            "dense_per_spec": 10
+          }
+        },
+        {
+          "chunk_id": "67abb0a059ea6a7833562424263ca934730f35ed",
+          "spec_id": "24.301",
+          "clause_id": "5.2.2.3.1",
+          "found_by": {
+            "dense_per_spec": 11,
+            "dense_no_rerank": 1,
+            "dense_rewritten": 2,
+            "system": 8
+          }
+        },
+        {
+          "chunk_id": "15ee9a8875e41c4e3316dfb3606f71e9e0d6d2af",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.6",
+          "found_by": {
+            "dense_per_spec": 12,
+            "dense_no_rerank": 3,
+            "dense_rewritten": 1,
+            "system": 3
+          }
+        },
+        {
+          "chunk_id": "70dd2f6d23bc8aa35b22f61d7dc44a4256fea2c3",
+          "spec_id": "24.301",
+          "clause_id": "5.3.17",
+          "found_by": {
+            "dense_per_spec": 13,
+            "dense_no_rerank": 4,
+            "dense_rewritten": 4
+          }
+        },
+        {
+          "chunk_id": "4468226308a9a75a168a2693189ccd18e0751c12",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "dense_per_spec": 14,
+            "dense_no_rerank": 6,
+            "system": 6
+          }
+        },
+        {
+          "chunk_id": "8d227447868ae99695b915e41ec1035914f59276",
+          "spec_id": "24.301",
+          "clause_id": "6.5.1.4.2",
+          "found_by": {
+            "dense_per_spec": 15,
+            "dense_no_rerank": 7,
+            "dense_rewritten": 6
+          }
+        },
+        {
+          "chunk_id": "5c76527a2bb606039258e8878fab123ca0ae3b5c",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.5",
+          "found_by": {
+            "dense_no_rerank": 9
+          }
+        },
+        {
+          "chunk_id": "96ca48f709aee7a29639f623d61871acf3d76516",
+          "spec_id": "24.301",
+          "clause_id": "5.2.2.3.3",
+          "found_by": {
+            "dense_no_rerank": 10,
+            "dense_rewritten": 7,
+            "system": 1
+          }
+        },
+        {
+          "chunk_id": "d3d84433ec45b789241f122490f57a7e8dfe8a07",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.3.4.3",
+          "found_by": {
+            "dense_rewritten": 9,
+            "system": 10
+          }
+        },
+        {
+          "chunk_id": "c274caf478b683e1404b3485c0ebf5ecfc7610f8",
+          "spec_id": "24.301",
+          "clause_id": "6.5.3.4.2",
+          "found_by": {
+            "dense_rewritten": 10
+          }
+        },
+        {
+          "chunk_id": "fccbcc89677a2402a939c6e583e4d4c1700ba019",
+          "spec_id": "24.501",
+          "clause_id": "5.4.1.3.7",
+          "found_by": {
+            "bm25_stemmed": 1
+          }
+        },
+        {
+          "chunk_id": "139b3334a83bb553efba6f19b6f0bbe6e018e499",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2",
+          "found_by": {
+            "bm25_stemmed": 2
+          }
+        },
+        {
+          "chunk_id": "5353e79701767887be7e84cff3593b0bb096f0d4",
+          "spec_id": "24.501",
+          "clause_id": "5.4.1.2.4.5",
+          "found_by": {
+            "bm25_stemmed": 3
+          }
+        },
+        {
+          "chunk_id": "775f334bd5ef1d529cc140557d44723ff0605d70",
+          "spec_id": "24.501",
+          "clause_id": "5.4.1.3.7",
+          "found_by": {
+            "bm25_stemmed": 4
+          }
+        },
+        {
+          "chunk_id": "c9e123e0ffe8a9e3609c7a9a1a5e314629c30b9d",
+          "spec_id": "24.301",
+          "clause_id": "6.4.1.2",
+          "found_by": {
+            "bm25_stemmed": 5
+          }
+        },
+        {
+          "chunk_id": "8652061182bb5c27caa7d3a9c485ca05b9524c0f",
+          "spec_id": "24.301",
+          "clause_id": "5.3.5",
+          "found_by": {
+            "bm25_stemmed": 6
+          }
+        },
+        {
+          "chunk_id": "d0642a1054807187a081cb9b095ff2a6db678401",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "bm25_stemmed": 7
+          }
+        },
+        {
+          "chunk_id": "7cd44b391e1e52edf76b2302c362ac82b34182b8",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.6",
+          "found_by": {
+            "bm25_stemmed": 8,
+            "system": 4
+          }
+        },
+        {
+          "chunk_id": "0afcde45577a75502289f31934142d045448fe98",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.2",
+          "found_by": {
+            "bm25_stemmed": 9
+          }
+        },
+        {
+          "chunk_id": "9e5760d1fcd0f0dee2a31c00f0fe7bc7f82991b0",
+          "spec_id": "24.301",
+          "clause_id": "5.3.5",
+          "found_by": {
+            "bm25_stemmed": 10
+          }
+        },
+        {
+          "chunk_id": "f9c197e79774b11a70c57aa4a4bdbb0e0879bd80",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "exact_term": 1
+          }
+        },
+        {
+          "chunk_id": "0c46ae85179beb39b261345c96ef08456a8ecc7e",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "exact_term": 2
+          }
+        },
+        {
+          "chunk_id": "6da9cea427cb32497d5fd0ce43864c71cff17154",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "exact_term": 3
+          }
+        },
+        {
+          "chunk_id": "692006e38514cba26b62a0d291269b3d8b913320",
+          "spec_id": "24.301",
+          "clause_id": "5.4.3.2",
+          "found_by": {
+            "exact_term": 4
+          }
+        },
+        {
+          "chunk_id": "7765097c85604f4420225a3eed837adc4977da73",
+          "spec_id": "24.301",
+          "clause_id": "4.4.2.3",
+          "found_by": {
+            "exact_term": 5
+          }
+        },
+        {
+          "chunk_id": "2f37175dd80824a6d5359bf6d177e1875474dbf1",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "exact_term": 6
+          }
+        },
+        {
+          "chunk_id": "1305ff7338e8438755ffeaf17fd931e7f2f0ce17",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "exact_term": 7
+          }
+        },
+        {
+          "chunk_id": "29689378710c86558f9cbbbd44f90b230689b513",
+          "spec_id": "24.301",
+          "clause_id": "4.4.4.3",
+          "found_by": {
+            "exact_term": 8
+          }
+        },
+        {
+          "chunk_id": "3110fd32bd882cf741d0733111a5486f5aa0b0d7",
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.50",
+          "found_by": {
+            "exact_term": 9
+          }
+        },
+        {
+          "chunk_id": "50a45dab90a3b5a8d324d7dd8533b3ae0445083d",
+          "spec_id": "24.301",
+          "clause_id": "4.4.2.3",
+          "found_by": {
+            "exact_term": 10
+          }
+        },
+        {
+          "chunk_id": "f3e98d619ea209af0cb68f94cbbcf02bf7d840bf",
+          "spec_id": "24.301",
+          "clause_id": "5.6.1.5B",
+          "found_by": {
+            "clause_title": 1
+          }
+        },
+        {
+          "chunk_id": "e43708597b56e1653994364399f2d40bf78e9847",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.5B1",
+          "found_by": {
+            "clause_title": 2
+          }
+        },
+        {
+          "chunk_id": "49a1eda06a301ba8723df20710718000f775be54",
+          "spec_id": "24.301",
+          "clause_id": "8.2.15.5",
+          "found_by": {
+            "clause_title": 3
+          }
+        },
+        {
+          "chunk_id": "4b46a22cd594ae099009baa173a164ffbceb07ad",
+          "spec_id": "24.301",
+          "clause_id": "8.2.29.35",
+          "found_by": {
+            "clause_title": 4
+          }
+        },
+        {
+          "chunk_id": "7c2552df2ca68d2b33e7ef2dd85c41e28be23f64",
+          "spec_id": "24.301",
+          "clause_id": "8.2.33.6",
+          "found_by": {
+            "clause_title": 5
+          }
+        },
+        {
+          "chunk_id": "0f0ce999a7d3b633a9339cdb924e33d8c6e20484",
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.65",
+          "found_by": {
+            "clause_title": 6
+          }
+        },
+        {
+          "chunk_id": "cfa0a8c9f9b390f84d307be45dc617ff67e25eb9",
+          "spec_id": "24.501",
+          "clause_id": "8.2.6.34",
+          "found_by": {
+            "clause_title": 7
+          }
+        },
+        {
+          "chunk_id": "a089e937c6269e06e990d23a54701f02de0753ff",
+          "spec_id": "24.501",
+          "clause_id": "8.2.16.6",
+          "found_by": {
+            "clause_title": 8
+          }
+        },
+        {
+          "chunk_id": "307c10d780037227ef06965e31ceb7abfb3d654f",
+          "spec_id": "24.501",
+          "clause_id": "8.2.30.12",
+          "found_by": {
+            "clause_title": 9
+          }
+        },
+        {
+          "chunk_id": "3445c12c7e0e7d63dbe50e9a586f94c31787d75e",
+          "spec_id": "24.501",
+          "clause_id": "9.11.3.76",
+          "found_by": {
+            "clause_title": 10
+          }
+        },
+        {
+          "chunk_id": "4de332d0f45c9fac08f1e25f4fd5d594f81a518c",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.3.4.3",
+          "found_by": {
+            "system": 5
+          }
+        },
+        {
+          "chunk_id": "da6aa50528fa51d54018088cb69d729f4579fa13",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.3.6",
+          "found_by": {
+            "system": 7
+          }
+        },
+        {
+          "chunk_id": "ffe3e84c5c05162ca2bdad8dc1ff2defc906e2a7",
+          "spec_id": "24.301",
+          "clause_id": "5.2.2.3.3",
+          "found_by": {
+            "system_neighbours": 1
+          }
+        },
+        {
+          "chunk_id": "932c8be46a308700fb38a77d7dc0e718cdc39cda",
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.7",
+          "found_by": {
+            "system_neighbours": 2
+          }
+        },
+        {
+          "chunk_id": "87c85c7360d0e3f001a926ce174097c99107b08d",
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.7",
+          "found_by": {
+            "system_neighbours": 3
+          }
+        },
+        {
+          "chunk_id": "1ff00559b90285867fa9e8aa57d295c2afc0ae09",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.6",
+          "found_by": {
+            "system_neighbours": 4
+          }
+        },
+        {
+          "chunk_id": "6d1e27fcc4adbcd4fe255bce857f4998df9eb498",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.6",
+          "found_by": {
+            "system_neighbours": 5
+          }
+        },
+        {
+          "chunk_id": "69bb198f2473fe3f80a9715611c6bbdd3fab0b83",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.6",
+          "found_by": {
+            "system_neighbours": 6
+          }
+        },
+        {
+          "chunk_id": "545a434cf2c2385e4f2c2078beded51e68f00bd5",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.3.4.3",
+          "found_by": {
+            "system_neighbours": 7
+          }
+        },
+        {
+          "chunk_id": "98e8d94d20167ceeb9a6bad95e96bfd0ea5548f3",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "system_neighbours": 8
+          }
+        },
+        {
+          "chunk_id": "b5b0e1f6a55aa77b0077ac3b0b53cf1d96d88db3",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4",
+          "found_by": {
+            "system_neighbours": 9
+          }
+        },
+        {
+          "chunk_id": "d3c0f8f1996a43346d79541a697ce5ef4a009678",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.3.6",
+          "found_by": {
+            "system_neighbours": 10
+          }
+        },
+        {
+          "chunk_id": "2fef5e3f566bbd33b2cd9afd03327f831ac95014",
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.5",
+          "found_by": {
+            "system_neighbours": 11
+          }
+        },
+        {
+          "chunk_id": "9f551dedc685df8b0b69bd99e3c55fabfcaee36d",
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.5",
+          "found_by": {
+            "system_neighbours": 12
+          }
+        },
+        {
+          "chunk_id": "3573e1fc47baea989e78719f7e0d148fecaaf284",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.3.4.3",
+          "found_by": {
+            "system_neighbours": 13
+          }
+        },
+        {
+          "chunk_id": "e454bcd6c74f6146e7e895a3a51c35c8a5baae8f",
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.2",
+          "found_by": {
+            "answer_quote": 1
+          }
+        },
+        {
+          "chunk_id": "89b0ee2e2e33d2946221b00c2ce4665dcdf3dac8",
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.2",
+          "found_by": {
+            "answer_quote": 2
+          }
+        }
+      ]
+    }
+  ]
+}

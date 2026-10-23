@@ -7,7 +7,8 @@ retriever finds. Read-only against Qdrant; zero LLM tokens.
 
 Writes to --out-dir (default eval/pooling/):
   pool.json            which methods found each chunk, and at what rank
-                       (kept away from the grader)
+                       (kept away from the grader); each question's answer
+                       chunks are always added, labelled "answer_quote"
   grading_sheet.jsonl  one line per (question, chunk) in shuffled order,
                        with text and section path but no method names
 """
@@ -33,6 +34,7 @@ from rank_bm25 import BM25Okapi
 
 from src.config import get_settings
 from src.generation.lexicon import get_lexicon
+from src.generation.nodes.rewrite import rewrite_query
 from src.retrieval.hybrid import _STOPWORDS, chunk_text
 from src.retrieval.retriever import Retriever
 
@@ -41,7 +43,6 @@ OUT_DIR = "eval/pooling"
 SPECS = ("23.501", "24.501", "24.301")
 DEPTH = 10            # top-N chunks per method
 PER_SPEC_DEPTH = 5    # dense-per-spec takes this many from each spec
-RANDOM_PER_QUESTION = 3
 SEED = 20261023
 
 _STEMMER = snowballstemmer.stemmer("english")
@@ -84,6 +85,23 @@ def _text(chunk: Dict[str, Any]) -> str:
     return content if isinstance(content, str) else " ".join(str(c) for row in content for c in row)
 
 
+def answer_chunk_ids(record: Dict[str, Any], chunks: Sequence[Dict[str, Any]]) -> List[str]:
+    """Chunks under the record's gold clauses that contain a fragment of an
+    answer quote (same fragment rule as tests/test_golden_set.py)."""
+    fragments = []
+    for quote in record.get("answer_quotes", []):
+        body = quote[quote.index('"') + 1: quote.rindex('"')]
+        fragments += [f for f in (" ".join(x.split()) for x in body.split("…")) if len(f) >= 12]
+    ids = []
+    for c in chunks:
+        under_gold = any(c["spec_id"] == g["spec_id"] and (c["clause_id"] == g["clause_id"]
+                         or c["clause_id"].startswith(g["clause_id"] + "."))
+                         for g in record["gold_clauses"])
+        if under_gold and any(f in " ".join(_text(c).split()) for f in fragments):
+            ids.append(c["chunk_id"])
+    return ids
+
+
 class Pooler:
     def __init__(self, retriever: Retriever):
         self.retriever = retriever
@@ -95,6 +113,8 @@ class Pooler:
         self.clauses: Dict[tuple, List[Dict[str, Any]]] = defaultdict(list)
         for c in self.chunks:
             self.clauses[(c["spec_id"], c["clause_id"])].append(c)
+        # Position of each chunk within its clause, for neighbour lookup.
+        self.position = {c["chunk_id"]: (key, i) for key, cs in self.clauses.items() for i, c in enumerate(cs)}
 
     # ── methods: each returns chunk_ids, best first ──────────────────
     def dense_per_spec(self, question: str) -> List[str]:
@@ -154,21 +174,54 @@ class Pooler:
         cfg = get_settings()
         results = self.retriever.search(question, top_k=DEPTH,
                                         candidate_k=cfg.rerank_multiplier * cfg.default_top_k)
-        return [r["chunk_id"] for r in results]
+        self._system_cache = [r["chunk_id"] for r in results]  # read by system_neighbours
+        return self._system_cache
 
-    def random_sample(self, question_id: int) -> List[str]:
-        rng = random.Random(SEED + question_id)
-        return [c["chunk_id"] for c in rng.sample(self.chunks, RANDOM_PER_QUESTION)]
+    def dense_rewritten(self, question: str) -> List[str]:
+        """Dense search on the deterministic rewrite (acronym expansion; a
+        4G/5G question becomes two queries, the 4G one pinned to 24.301),
+        results interleaved."""
+        per_query = []
+        for query in rewrite_query(question):
+            spec_id, _ = self.retriever._parse_query(query)
+            query_filter = (Filter(must=[FieldCondition(key="spec_id", match=MatchValue(value=spec_id))])
+                            if spec_id else None)
+            vector = list(self.retriever.model.embed([query]))[0].tolist()
+            points = self.retriever.q_client.query_points(
+                collection_name=self.retriever.collection_name, query=vector, limit=DEPTH,
+                query_filter=query_filter,
+            ).points
+            per_query.append([p.payload["chunk_id"] for p in points])
+        ids: List[str] = []
+        for rank in range(DEPTH):
+            for ranked in per_query:
+                if rank < len(ranked) and ranked[rank] not in ids:
+                    ids.append(ranked[rank])
+        return ids[:DEPTH]
 
-    METHODS = ("dense_per_spec", "dense_no_rerank", "bm25_stemmed", "exact_term", "clause_title", "system")
+    def system_neighbours(self, question: str) -> List[str]:
+        """The chunks just before and after each of the system's top results
+        within the same clause (small-to-big context)."""
+        ids: List[str] = []
+        for cid in self._system_cache:
+            key, i = self.position[cid]
+            for j in (i - 1, i + 1):
+                if 0 <= j < len(self.clauses[key]):
+                    nid = self.clauses[key][j]["chunk_id"]
+                    if nid not in ids and nid not in self._system_cache:
+                        ids.append(nid)
+        return ids
+
+    METHODS = ("dense_per_spec", "dense_no_rerank", "dense_rewritten", "bm25_stemmed", "exact_term",
+               "clause_title", "system", "system_neighbours")
 
     def pool(self, q: Dict[str, Any]) -> Dict[str, Any]:
         found: Dict[str, Dict[str, int]] = defaultdict(dict)
         for method in self.METHODS:
             for rank, cid in enumerate(getattr(self, method)(q["question"]), 1):
                 found[cid].setdefault(method, rank)
-        for rank, cid in enumerate(self.random_sample(q["id"]), 1):
-            found[cid].setdefault("random", rank)
+        for rank, cid in enumerate(answer_chunk_ids(q, self.chunks), 1):
+            found[cid].setdefault("answer_quote", rank)
         candidates = []
         for cid, methods in found.items():
             c = self.by_id[cid]
@@ -221,7 +274,7 @@ def main():
     cfg = get_settings()
     with open(os.path.join(args.out_dir, "pool.json"), "w", encoding="utf-8") as f:
         json.dump({"golden_set_path": GOLDEN_SET_PATH, "git_commit": _git_commit(),
-                   "depth": DEPTH, "per_spec_depth": PER_SPEC_DEPTH, "random_per_question": RANDOM_PER_QUESTION,
+                   "depth": DEPTH, "per_spec_depth": PER_SPEC_DEPTH,
                    "seed": SEED, "system_settings": {"rerank_multiplier": cfg.rerank_multiplier,
                                                      "default_top_k": cfg.default_top_k,
                                                      "hybrid_bm25": cfg.hybrid_bm25,
@@ -236,12 +289,16 @@ def main():
     for p in pools:
         only = defaultdict(int)
         for cand in p["candidates"]:
-            real = [m for m in cand["found_by"] if m != "random"]
+            real = [m for m in cand["found_by"] if m != "answer_quote"]
             if len(real) == 1:
                 only[real[0]] += 1
         print(f"{p['id']:>3} {len(p['candidates']):>4}  "
               + "  ".join(f"{only[m]:>12}" for m in Pooler.METHODS) + f"   terms={p['exact_terms']}")
     print("(columns: chunks found ONLY by that method)")
+    for p in pools:
+        answers = [c for c in p["candidates"] if "answer_quote" in c["found_by"]]
+        found = sum(1 for c in answers if len(c["found_by"]) > 1)
+        print(f"Q{p['id']}: {found}/{len(answers)} answer chunks found by a search method")
 
 
 if __name__ == "__main__":

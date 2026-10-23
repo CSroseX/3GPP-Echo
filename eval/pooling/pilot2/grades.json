@@ -1,0 +1,140 @@
+{
+  "grader": "Claude (blind: graded from grading_sheet.jsonl without method names)",
+  "scale": {
+    "2": "states the answer (quote required)",
+    "1": "states a fact that helps build the answer",
+    "0": "not relevant, including same-topic chunks that don't help"
+  },
+  "default_grade": 0,
+  "note": "Grades for (question, chunk) pairs already graded blind in pilot 1 are carried over; the rest were graded blind here. Answer-quote chunks are grade 2 by construction.",
+  "grades": {
+    "8": {
+      "grade": 1,
+      "note": "sets EPS update status to EU1 UPDATED"
+    },
+    "14": {
+      "grade": 1,
+      "note": "periodic registration update controlled by T3512"
+    },
+    "24": {
+      "grade": 1,
+      "note": "T3512 expiry in 5GMM-IDLE starts the periodic registration update"
+    },
+    "56": {
+      "grade": 1,
+      "note": "sets EPS update status to EU1 UPDATED"
+    },
+    "57": {
+      "grade": 1,
+      "note": "sets EPS update status to EU1 UPDATED"
+    },
+    "83": {
+      "grade": 1,
+      "note": "UE stops T3410 on combined attach"
+    },
+    "87": {
+      "grade": 1,
+      "note": "AMF allocates the 5G-GUTI"
+    },
+    "100": {
+      "grade": 1,
+      "note": "AMF assigns a new 5G-GUTI"
+    },
+    "126": {
+      "grade": 1,
+      "note": "sets EPS update status to EU1 UPDATED"
+    },
+    "132": {
+      "grade": 1,
+      "note": "lists T3512 expiry as a trigger for the procedure; the registration-type sentence is in another chunk"
+    },
+    "139": {
+      "grade": 1,
+      "note": "UE stops T3410 on combined attach, i.e. T3410 is the attach timer"
+    },
+    "152": {
+      "grade": 1,
+      "note": "5GMM capability IE is omitted for periodic registration updating"
+    },
+    "159": {
+      "grade": 1,
+      "note": "AMF runs NAS security mode control"
+    },
+    "167": {
+      "grade": 1,
+      "note": "sets EPS update status to EU3 ROAMING NOT ALLOWED"
+    },
+    "170": {
+      "grade": 2,
+      "quote": "EU1: UPDATED … EU2: NOT UPDATED … EU3: ROAMING NOT ALLOWED"
+    },
+    "171": {
+      "grade": 1,
+      "note": "figure: REGISTRATION REQUEST starts T3510 (5G)"
+    },
+    "172": {
+      "grade": 1,
+      "note": "NG-AP over N2 between 5G-AN and AMF"
+    },
+    "173": {
+      "grade": 1,
+      "note": "refers to EPS update status EU1 UPDATED"
+    },
+    "193": {
+      "grade": 1,
+      "note": "periodic registration update is controlled by T3512"
+    },
+    "207": {
+      "grade": 1,
+      "note": "sets EPS update status to EU2 NOT UPDATED"
+    },
+    "219": {
+      "grade": 1,
+      "note": "after expiry of the periodic registration timer the UE performs a periodic registration"
+    },
+    "237": {
+      "grade": 1,
+      "note": "N1 and N2 reference points terminate at the AMF"
+    },
+    "253": {
+      "grade": 2,
+      "quote": "the UE shall return a status message (EMM STATUS or ESM STATUS depending on the PD) with cause #96 \"invalid mandatory information\""
+    },
+    "260": {
+      "grade": 2,
+      "quote": "The Access and Mobility Management function (AMF) includes the following functionality."
+    },
+    "277": {
+      "grade": 1,
+      "note": "ESM-specific handling of mandatory IE errors (cause #96)"
+    },
+    "33": {
+      "grade": 1,
+      "note": "more AMF functions (non-3GPP access support)"
+    },
+    "276": {
+      "grade": 1,
+      "note": "24.501 scope: mobility management between UE and AMF"
+    },
+    "158": {
+      "grade": 2,
+      "quote": "If case b) is the only reason for initiating the registration procedure for mobility and periodic registration update, the UE shall indicate \"periodic registration updating\" in the 5GS registration type IE"
+    },
+    "227": {
+      "grade": 1,
+      "note": "sets EPS update status to EU2 NOT UPDATED"
+    },
+    "111": {
+      "grade": 1,
+      "note": "ESM: BEARER RESOURCE MODIFICATION REJECT with cause #96"
+    },
+    "254": {
+      "grade": 2,
+      "quote": "In state EMM-DEREGISTERED, the UE initiates the attach procedure by sending an ATTACH REQUEST message to the MME, starting timer T3410"
+    },
+    "34": {
+      "grade": 2,
+      "quote": "The UE initiates the registration procedure for initial registration by sending a REGISTRATION REQUEST message to the AMF, starting timer T3510."
+    }
+  }
+}

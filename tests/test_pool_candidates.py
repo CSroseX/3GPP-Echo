@@ -43,3 +43,16 @@ def test_grading_rows_hide_methods_and_are_shuffled():
     assert all("found_by" not in r for r in rows)
     assert [r["chunk_id"] for r in rows] != [f"c{i}" for i in range(20)]
     assert [r["grade_id"] for r in rows] == list(range(1, 21))
+
+
+def test_answer_chunk_ids_only_under_gold_clauses():
+    from src.eval.pool_candidates import answer_chunk_ids
+
+    chunks = [
+        {"chunk_id": "a", "spec_id": "24.301", "clause_id": "5.5.1.2.2", "content": "x starting timer T3410 and y"},
+        {"chunk_id": "b", "spec_id": "24.301", "clause_id": "5.5.1.2.2", "content": "unrelated text here"},
+        {"chunk_id": "c", "spec_id": "24.501", "clause_id": "5.5.1.2.2", "content": "x starting timer T3410 and y"},
+    ]
+    record = {"gold_clauses": [{"spec_id": "24.301", "clause_id": "5.5.1"}],
+              "answer_quotes": ['24.301: "…starting timer T3410…"']}
+    assert answer_chunk_ids(record, chunks) == ["a"]
