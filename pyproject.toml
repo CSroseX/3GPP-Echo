@@ -15,6 +15,7 @@ dependencies = [
     "pydantic-settings==2.15.0",
     "structlog==26.1.0",
     "rank-bm25==0.2.2",
+    "snowballstemmer==3.1.1",
 ]
 
 [project.optional-dependencies]
