@@ -30,10 +30,12 @@ if cfg.use_remote_llm:
         api_key = openrouter_key
         base_url = preferred_base_url or cfg.openrouter_base_url
         default_model = cfg.remote_llm_model_openrouter
+        LLM_PROVIDER = "openrouter"
     else:
         api_key = openai_key or "dummy"
         base_url = preferred_base_url or cfg.openai_base_url
         default_model = cfg.remote_llm_model_openai
+        LLM_PROVIDER = "openai"
 
     client = make_llm_client(api_key=api_key, base_url=base_url)
     MODEL_NAME = cfg.model_name or default_model
@@ -44,6 +46,7 @@ else:
         base_url=cfg.ollama_base_url,
     )
     MODEL_NAME = cfg.local_llm_model
+    LLM_PROVIDER = "ollama"
 
 # Word-boundary regexes: bare substring matching on "retrieved"/"chunks"
 # false-positives on legitimate 3GPP prose (e.g. "the UE retrieved the
@@ -87,18 +90,21 @@ def _build_generate_messages(query: str, chunks, feedback: str, leak_rephrase: b
     chunk_text = _format_chunks(chunks)
 
     system_prompt = (
-        "You are a senior 3GPP standards expert with deep knowledge of 4G and 5G core network architecture, "
-        "NAS procedures, and mobility management. Answer the user's question directly and confidently, "
-        "the way a telecom engineer would explain it to a colleague.\n\n"
+        "You are a 3GPP standards expert. Answer the user's question using only the information in the "
+        "source text below.\n\n"
         "Rules:\n"
+        "- Be brief: answer in 3-5 sentences or a short list. No introduction, no closing summary, and no "
+        "background the question didn't ask for.\n"
+        "- Every statement must be supported by the source text. Do not add facts from general knowledge, "
+        "even if you believe them to be true.\n"
+        "- Use the exact 3GPP terms the source text uses (for example, 5G uses \"registration\" where 4G "
+        "uses \"attach\").\n"
+        "- If the source text doesn't cover part of the question, say so in one sentence of natural expert "
+        "language — e.g. \"This detail isn't defined in the 5G specifications for this procedure\" — never "
+        "\"the provided chunks don't mention X.\"\n"
         "- Never mention \"chunks,\" \"provided source,\" \"provided text,\" \"provided specifications,\" "
         "\"retrieved information,\" or any variation referring to how you got this information. "
         "The user should never know this is a retrieval system.\n"
-        "- If the available information is incomplete or doesn't cover part of the question, say so in natural "
-        "expert language — e.g. \"The exact mechanism for X isn't specified for this scenario\" or \"This detail "
-        "isn't defined in the 5G specifications for this procedure\" — never \"the provided chunks don't mention X.\"\n"
-        "- Do not fabricate details not present in your context. Speak with the confidence of an expert citing "
-        "what's known, and plainly note what isn't, without exposing that this is a limitation of retrieved text.\n"
         "- Do not use citation brackets like [1]."
     )
 
@@ -141,7 +147,8 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
     response = client.chat.completions.create(
         model=MODEL_NAME,
         messages=messages_payload,
-        temperature=cfg.generate_temperature
+        temperature=cfg.generate_temperature,
+        max_tokens=cfg.generate_max_tokens,
     )
     answer = response.choices[0].message.content
 
@@ -158,7 +165,8 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
         rephrase_response = client.chat.completions.create(
             model=MODEL_NAME,
             messages=rephrase_messages,
-            temperature=cfg.generate_temperature
+            temperature=cfg.generate_temperature,
+            max_tokens=cfg.generate_max_tokens,
         )
         rephrased = re.sub(
             r'<think>.*?</think>', '', rephrase_response.choices[0].message.content, flags=re.DOTALL

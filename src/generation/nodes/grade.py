@@ -103,6 +103,7 @@ def make_grade_sufficiency_node(llm: Optional[Callable[..., str]] = None):
                     max_tokens=cfg.sufficiency_llm_max_tokens,
                     temperature=0.0,
                     json_mode=True,
+                    reasoning_effort=cfg.sufficiency_reasoning_effort or None,
                 )
                 flags = parse_relevance(raw, len(top))
                 signal = "llm"

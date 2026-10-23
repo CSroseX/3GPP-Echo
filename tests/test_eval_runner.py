@@ -168,6 +168,30 @@ class TestRunOneQuestionRecording:
         assert summary["total_tokens"] == 175
         assert summary["termination_reasons"] == {"verified": 1}
 
+    def test_records_how_each_decision_node_decided(self, tmp_path):
+        from src.eval.runner import run_one_question
+        from src.obs.metrics import RunRecorder
+
+        app = FakeApp([
+            ("triage", {"triage_decision": "in_domain", "triage_tier": "lexical", "triage_score": None}, None),
+            ("retrieve", {"chunks": [{"spec_id": "23.501", "clause_id": "6.2.1"}]}, None),
+            ("grade_sufficiency", {"sufficiency_signal": "cross_encoder_fallback", "n_relevant_chunks": 5,
+                                   "top1_cross_score": 4.59}, (700, 200)),
+            ("generate", {"answer": "The AMF ...", "attempt": 1}, (100, 20)),
+            ("verify", {"verification_passed": True, "termination_reason": "verified"}, (50, 5)),
+        ])
+        recorder = RunRecorder(run_id="test", output_dir=tmp_path)
+        recorder.start_run(model_name="fake-model")
+        result = run_one_question(app, {"id": 1, "question": "Q1?", "type": "normal"}, recorder=recorder)
+        recorder.end_run()
+
+        expected = {"triage_decision": "in_domain", "triage_tier": "lexical",
+                    "sufficiency_signal": "cross_encoder_fallback", "n_relevant_chunks": 5,
+                    "top1_cross_score": 4.59, "attempt": 1}
+        assert result["decisions"] == expected  # triage_score None is left out
+        record = json.loads((tmp_path / "per_question.jsonl").read_text(encoding="utf-8").strip())
+        assert record["decisions"] == expected
+
     def test_without_recorder_still_returns_result(self):
         from src.eval.runner import run_one_question
 
@@ -175,3 +199,19 @@ class TestRunOneQuestionRecording:
         result = run_one_question(app, {"id": 2, "question": "Q2?", "type": "out_of_scope"})
         assert result["termination_reason"] == "insufficient_context"
         assert result["status"] == "flagged_unverified"
+
+
+class TestRunMetadata:
+    def test_records_code_version_and_settings_without_secrets(self, monkeypatch):
+        from src.config import Settings
+        from src.eval.runner import run_metadata
+
+        monkeypatch.setenv("MAX_RETRIES", "1")
+        monkeypatch.setenv("OPEN_ROUTER_API_KEY", "sk-secret")
+        meta = run_metadata(Settings())
+
+        assert meta["settings"]["max_retries"] == 1
+        assert "sk-secret" not in json.dumps(meta)
+        assert not any("key" in k for k in meta["settings"])
+        # Inside the repo, git resolves a 40-character commit id.
+        assert meta["git_commit"] is None or len(meta["git_commit"]) == 40

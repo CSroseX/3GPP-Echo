@@ -39,6 +39,7 @@ import argparse
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -133,6 +134,38 @@ def atomic_write_json(path: Path, payload: Dict[str, Any]) -> None:
     os.replace(tmp_path, path)
 
 
+# How each decision node decided, e.g. triage_tier "centroid" vs "llm" vs
+# "fail_open", or sufficiency_signal "llm" vs "cross_encoder_fallback". A
+# silent fallback (an LLM call that returned nothing) is only visible here.
+DECISION_FIELDS = (
+    "triage_decision", "triage_tier", "triage_score",
+    "sufficiency_signal", "n_relevant_chunks", "top1_cross_score",
+    "rewrites", "retrieval_queries", "attempt", "grounding_retries", "transport_attempts",
+)
+
+
+def run_metadata(cfg) -> Dict[str, Any]:
+    """What a run needs to be reproducible: the code version and every
+    setting it ran with (env overrides such as MAX_RETRIES included).
+    Secrets are left out."""
+    root = cfg.project_root
+    try:
+        commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True,
+                                text=True, check=True).stdout.strip()
+        dirty = bool(subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"], cwd=root,
+                                    capture_output=True, text=True, check=True).stdout.strip())
+    except (OSError, subprocess.CalledProcessError):
+        commit, dirty = None, None
+    settings = {k: v for k, v in cfg.model_dump().items() if "key" not in k.lower()}
+    return {"git_commit": commit, "git_dirty": dirty, "settings": settings}
+
+
+def decision_signals(state: Dict[str, Any]) -> Dict[str, Any]:
+    """The decision fields the graph set; fields a question never reached
+    (e.g. sufficiency for a refused question) are left out."""
+    return {k: state[k] for k in DECISION_FIELDS if state.get(k) is not None}
+
+
 def run_one_question(app, item: Dict[str, Any], recorder: Optional[RunRecorder] = None) -> Dict[str, Any]:
     question = item["question"]
     if recorder is not None:
@@ -181,6 +214,7 @@ def run_one_question(app, item: Dict[str, Any], recorder: Optional[RunRecorder] 
         "termination_reason": final_state.get("termination_reason"),
         "status": status,
         "feedback": final_state.get("feedback", ""),
+        "decisions": decision_signals(final_state),
     }
     if recorder is not None:
         recorder.end_question(
@@ -190,6 +224,7 @@ def run_one_question(app, item: Dict[str, Any], recorder: Optional[RunRecorder] 
             attempt=final_state.get("attempt"),
             retries=result["retries"],
             sources=result["sources"],
+            decisions=result["decisions"],
         )
     return result
 
@@ -233,12 +268,18 @@ def run(
             results_path=str(results_path),
             limit=limit,
             types=types,
+            **run_metadata(cfg),
         )
         try:
             for idx, item in enumerate(pending, start=1):
                 print(f"\n[{idx}/{len(pending)}] (id={item['id']}, {item['type']}) {item['question']}")
+                started = time.perf_counter()
+                tokens_before = sum(c["total_tokens"] for c in usage_since(0))
                 result = run_one_question(app, item, recorder=recorder)
                 results_by_id[item["id"]] = result
+                tokens = sum(c["total_tokens"] for c in usage_since(0)) - tokens_before
+                print(f"  -> {result['termination_reason']} | {tokens} tokens | "
+                      f"{time.perf_counter() - started:.1f}s | {result['decisions']}", flush=True)
 
                 atomic_write_json(results_path, {
                     "golden_set_hash": expected_hash,

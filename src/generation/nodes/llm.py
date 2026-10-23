@@ -11,7 +11,7 @@ unit tests never need a client at all.
 from __future__ import annotations
 
 import re
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from openai import APIConnectionError, APIStatusError, APITimeoutError
 
@@ -26,10 +26,15 @@ def chat_completion(
     max_tokens: int,
     temperature: float = 0.0,
     json_mode: bool = False,
+    reasoning_effort: Optional[str] = None,
 ) -> str:
     """One chat call on the shared client; returns the visible text with any
     <think> block stripped ("" if the model returned no content — e.g. a
-    reasoning model that spent max_tokens before answering)."""
+    reasoning model that spent max_tokens before answering).
+
+    reasoning_effort ("low" | "medium" | "high") asks a reasoning model to
+    think less. Sent only to OpenRouter, whose unified `reasoning` parameter
+    other models ignore; other providers don't get it."""
     from src.generation.nodes import core
 
     kwargs = {
@@ -40,6 +45,8 @@ def chat_completion(
     }
     if json_mode:
         kwargs["response_format"] = {"type": "json_object"}
+    if reasoning_effort and core.LLM_PROVIDER == "openrouter":
+        kwargs["extra_body"] = {"reasoning": {"effort": reasoning_effort}}
     response = core.client.chat.completions.create(**kwargs)
     content = response.choices[0].message.content or ""
     return re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL).strip()

@@ -65,6 +65,11 @@ class Settings(BaseSettings):
     generate_temperature: float = 0.3
     verify_temperature: float = 0.0
     verify_max_tokens: int = 2000
+    # Safety net on answer length; the prompt asks for brevity. For a
+    # reasoning model (gpt-oss-20b) the cap also covers its hidden thinking
+    # (a generate call measured 745 output tokens), so too low a cap returns
+    # an empty answer.
+    generate_max_tokens: int = 1000
     max_retries: int = 3
 
     # ── Chunking ────────────────────────────────────────────────────
@@ -113,7 +118,11 @@ class Settings(BaseSettings):
     sufficiency_min_relevant: int = 2
     sufficiency_min_top1_score: float = 0.0
     sufficiency_fallback_min_score: float = 3.0
-    sufficiency_llm_max_tokens: int = 200
+    # 1000 with reasoning effort "low": at 200, gpt-oss-20b spent the whole
+    # allowance thinking and returned nothing, so the fallback always decided.
+    # Effort is sent only to OpenRouter; "" disables it.
+    sufficiency_llm_max_tokens: int = 1000
+    sufficiency_reasoning_effort: str = "low"
     sufficiency_chunk_char_cap: int = 1200
     sufficiency_filter_chunks: bool = True
 

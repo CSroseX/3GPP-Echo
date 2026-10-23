@@ -184,3 +184,33 @@ class TestPromptChunkCap:
         ver = _build_verify_prompt("a", chunks)
         assert "y" * cap in gen and "y" * (cap + 1) not in gen
         assert "y" * cap in ver and "y" * (cap + 1) not in ver
+
+
+class TestReasoningEffort:
+    def test_grade_asks_for_low_reasoning_effort(self):
+        get_settings.cache_clear()
+        assert get_settings().sufficiency_reasoning_effort == "low"
+
+    def test_effort_sent_to_openrouter_only(self, monkeypatch):
+        from types import SimpleNamespace
+
+        from src.generation import nodes as gen_nodes
+        from src.generation.nodes import core
+        from src.generation.nodes.llm import chat_completion
+
+        seen = []
+
+        def create(**kwargs):
+            seen.append(kwargs)
+            return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content="{}"))])
+
+        monkeypatch.setattr(gen_nodes.client.chat.completions, "create", create)
+        msgs = [{"role": "user", "content": "q"}]
+
+        monkeypatch.setattr(core, "LLM_PROVIDER", "openrouter")
+        chat_completion(msgs, max_tokens=10, reasoning_effort="low")
+        assert seen[-1]["extra_body"] == {"reasoning": {"effort": "low"}}
+
+        monkeypatch.setattr(core, "LLM_PROVIDER", "ollama")
+        chat_completion(msgs, max_tokens=10, reasoning_effort="low")
+        assert "extra_body" not in seen[-1]
