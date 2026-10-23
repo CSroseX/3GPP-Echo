@@ -1,0 +1,643 @@
+{
+  "golden_set_hash": "a4e7348ad4745e710dc972b5d9e55706287943973de46accce0f2d682d2c7f06",
+  "results": [
+    {
+      "id": 1,
+      "question": "What is the role of the AMF in the 5G system architecture?",
+      "type": "normal",
+      "expected_behavior": "Should describe AMF functions like registration management, connection management, mobility management based on TS 23.501.",
+      "generated_answer": "The AMF is a network function that manages access and mobility for UEs in the 5G System. It establishes and maintains associations with 5G\u2011AN nodes, and can be added to an AMF set with its GUAMI information published in DNS so that 5G\u2011AN can discover and set up links to the AMF. The AMF can support load\u2011balancing and re\u2011balancing of TNL associations between 5G\u2011AN and AMF (clause\u202f5.19.2). When a UE is redirected to a new serving AMF, that AMF re\u2011assigns the UE\u2019s GUTI using its own GUAMI(s) (clause\u202f5.19.4). The AMF can also influence policy decisions that may cause a Registration Request to be rerouted to another AMF (clause\u202f5.31.2).",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.21.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "4.2.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.19.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.19.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.31.2"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 1,
+      "termination_reason": "verification_failed",
+      "status": "flagged_unverified",
+      "feedback": "The following claims were NOT supported by the source text and must be removed or corrected:\n- The AMF is a network function that manages access and mobility for UEs in the 5G System.",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 5,
+        "top1_cross_score": 4.5869,
+        "attempt": 1,
+        "grounding_retries": 1,
+        "transport_attempts": 0
+      }
+    },
+    {
+      "id": 2,
+      "question": "How does the UE initiate a PDU session establishment in 5GS?",
+      "type": "normal",
+      "expected_behavior": "Should describe the UE sending a PDU Session Establishment Request via NAS as per TS 24.501.",
+      "generated_answer": "The UE starts a UE\u2011requested PDU session establishment by sending a **PDU SESSION ESTABLISHMENT REQUEST** message to the network.  \nIn that message the UE must include:  \n\n* the **Integrity protection maximum data rate IE** (uplink and downlink)  \n* the **5GSM capability IE** with the **MH6\u2011PDU** bit set if it supports multi\u2011homed IPv6 PDU sessions, and the **EPT\u2011S1** bit set if it supports Ethernet PDN type in S1 mode and requests an \u201cEthernet\u201d PDU session type  \n* the **Always\u2011on PDU session requested IE** if it is requesting an always\u2011on session (e.g., for time synchronization or TSC)  \n\nIf the UE has an emergency PDU session, it shall not initiate another emergency PDU session but may transfer the existing one.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 1,
+      "termination_reason": "verification_failed",
+      "status": "flagged_unverified",
+      "feedback": "The following claims were NOT supported by the source text and must be removed or corrected:\n- The UE starts a UE\u2011requested PDU session establishment by sending a PDU SESSION ESTABLISHMENT REQUEST message to the network.",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 2,
+        "top1_cross_score": 7.1984,
+        "rewrites": 1,
+        "retrieval_queries": [
+          "the UE initiate a PDU session establishment in 5GS User Equipment Protocol Data Unit 5G System"
+        ],
+        "attempt": 1,
+        "grounding_retries": 1,
+        "transport_attempts": 0
+      }
+    },
+    {
+      "id": 3,
+      "question": "Which network function is responsible for selecting the SMF?",
+      "type": "normal",
+      "expected_behavior": "Should state that the AMF is responsible for SMF selection.",
+      "generated_answer": "The SMF selection is performed by the AMF (and, where applicable, the SCP).",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.16.4.5"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.5.3"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.2"
+        }
+      ],
+      "verification_passed": true,
+      "retries": 0,
+      "termination_reason": "verified",
+      "status": "verified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 3,
+        "top1_cross_score": 6.9161,
+        "attempt": 1,
+        "grounding_retries": 0,
+        "transport_attempts": 0
+      }
+    },
+    {
+      "id": 4,
+      "question": "What is the structure of the 5G-GUTI?",
+      "type": "normal",
+      "expected_behavior": "Should explain the components of 5G-GUTI (GUAMI + 5G-TMSI, etc.).",
+      "generated_answer": "The specifications covered here (TS 23.501, TS 24.501, TS 24.301) don't contain enough relevant detail to answer this question reliably.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.3"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.9.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.9.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "3.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "3.2"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "insufficient_context",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 1,
+        "top1_cross_score": 8.6034,
+        "rewrites": 1,
+        "retrieval_queries": [
+          "the structure of the 5G-GUTI 5G Globally Unique Temporary Identifier"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "question": "Describe the states of 5GMM (5GS Mobility Management) in the UE.",
+      "type": "normal",
+      "expected_behavior": "Should list states like 5GMM-DEREGISTERED, 5GMM-REGISTERED, etc., from TS 24.501.",
+      "generated_answer": "The 5GS mobility management (5GMM) sublayer of the UE has a state machine that is managed per access type (3GPP or non\u20113GPP) independently.  \nThe states defined in the specification include 5GMM\u2011DEREGISTERED and 5GMM\u2011REGISTERED, whose detailed UE behaviour is described in subclause\u202f5.2.1.  \nThere is also a state in which 5GS services are disabled; in this state no 5GMM function shall be performed.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.1.3.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.2.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.1.3.2.1.2.1"
+        }
+      ],
+      "verification_passed": true,
+      "retries": 0,
+      "termination_reason": "verified",
+      "status": "verified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 3,
+        "top1_cross_score": 8.1277,
+        "attempt": 1,
+        "grounding_retries": 0,
+        "transport_attempts": 0
+      }
+    },
+    {
+      "id": 6,
+      "question": "What is the purpose of the Network Slice Selection Assistance Information (NSSAI)?",
+      "type": "normal",
+      "expected_behavior": "Should explain NSSAI is used for network slice selection.",
+      "generated_answer": "- The NSSAI is a collection of S\u2011NSSAIs that the UE can signal as **Requested** or receive as **Allowed**.  \n- The Requested NSSAI is used by the network to select the serving AMF, the network slice(s) and the network slice instance(s) that will serve the UE (clause\u202f5.15.5).  \n- The RAN also uses the Requested NSSAI in access\u2011stratum signalling to aid AMF selection (clause\u202f6.3.5).  \n- Thus, NSSAI provides slice\u2011selection assistance to the 5GC and the RAN for proper UE registration and service delivery.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.2.1"
+        }
+      ],
+      "verification_passed": true,
+      "retries": 0,
+      "termination_reason": "verified",
+      "status": "verified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 2,
+        "top1_cross_score": 7.5381,
+        "attempt": 1,
+        "grounding_retries": 0,
+        "transport_attempts": 0
+      }
+    },
+    {
+      "id": 7,
+      "question": "When an MME receives an Attach Request, does it communicate with the UDM?",
+      "type": "adversarial",
+      "expected_behavior": "Should point out that MME is an EPS (4G) entity and communicates with HSS, whereas UDM is a 5GS entity.",
+      "generated_answer": "The specifications covered here (TS 23.501, TS 24.501, TS 24.301) don't contain enough relevant detail to answer this question reliably.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.3.5"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.7"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "insufficient_context",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 0,
+        "top1_cross_score": 4.5558,
+        "rewrites": 1,
+        "retrieval_queries": [
+          "an MME receives an Attach Request, does it communicate with the Mobility Management Entity TS 24.301",
+          "an receives an Attach Request, does it communicate with the UDM Unified Data Management"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "question": "What timer does the AMF use for a Tracking Area Update in EPS?",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that AMF and 5G use Registration Update, whereas EPS and MME use Tracking Area Update.",
+      "generated_answer": "The specifications covered here (TS 23.501, TS 24.501, TS 24.301) don't contain enough relevant detail to answer this question reliably.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.6"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.4.1.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.5"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.16.4.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.2"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "insufficient_context",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 1,
+        "top1_cross_score": 5.7467,
+        "rewrites": 1,
+        "retrieval_queries": [
+          "timer does the use for a Tracking Area Update in EPS Evolved Packet System TS 24.301",
+          "timer does the AMF use for a Tracking Area Update in Access and Mobility Management Function"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "question": "During a 5G registration, how is the EPS bearer identity allocated?",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that 5GS uses PDU sessions and QoS flows, not EPS bearers.",
+      "generated_answer": "The specifications covered here (TS 23.501, TS 24.501, TS 24.301) don't contain enough relevant detail to answer this question reliably.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.5.3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.4.2.3"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "insufficient_context",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 1,
+        "top1_cross_score": 3.7599,
+        "rewrites": 1,
+        "retrieval_queries": [
+          "During a registration, how is the EPS bearer identity allocated Evolved Packet System EBI TS 24.301",
+          "During a 5G registration, how is the bearer identity allocated"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "question": "Does the SGW connect to the SMF for user plane traffic?",
+      "type": "adversarial",
+      "expected_behavior": "Should note that SGW is a 4G user plane node (connecting to PGW), whereas SMF is a 5G control plane node connecting to UPF.",
+      "generated_answer": "The specifications covered here (TS 23.501, TS 24.501, TS 24.301) don't contain enough relevant detail to answer this question reliably.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.8.2.13.3.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.2.3"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.29.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.8.2.6.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.8.2.5.1"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "insufficient_context",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 0,
+        "top1_cross_score": 4.5828,
+        "rewrites": 1,
+        "retrieval_queries": [
+          "Does the SGW connect to the SMF for user plane traffic Session Management Function"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "question": "Explain how the PDN Gateway handles 5G QoS flows.",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that PDN Gateway (PGW) is a 4G entity, and 5G QoS flows are handled by the UPF.",
+      "generated_answer": "The specifications covered here (TS 23.501, TS 24.501, TS 24.301) don't contain enough relevant detail to answer this question reliably.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.5.1.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.7.1.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "0"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.22.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.3.5"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "insufficient_context",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 0,
+        "top1_cross_score": 2.6608,
+        "rewrites": 1,
+        "retrieval_queries": [
+          "the PDN Gateway handles flows TS 24.301",
+          "the Gateway handles 5G QoS flows Quality of Service"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "question": "What is the message format for a 5G Session Management Tracking Area Update?",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that Tracking Area Update is an EPS concept, and 5G Session Management handles PDU Session Modification/Establishment.",
+      "generated_answer": "The specifications covered here (TS 23.501, TS 24.501, TS 24.301) don't contain enough relevant detail to answer this question reliably.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.5"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "4.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.8"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.5"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "insufficient_context",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 0,
+        "top1_cross_score": 4.4068,
+        "rewrites": 1,
+        "retrieval_queries": [
+          "the message format for a 5G Session Management Tracking Area Update SM TA"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "question": "What is the capital of France?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal. System should indicate it only answers 3GPP-related queries.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "out_of_domain",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.4517473578453064
+      }
+    },
+    {
+      "id": 14,
+      "question": "Can you explain how to bake a chocolate cake?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "out_of_domain",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.4561353921890259
+      }
+    },
+    {
+      "id": 15,
+      "question": "What is the difference between TCP and UDP?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal or state that it is out of scope of 3GPP specs unless specifically referenced as transport.",
+      "generated_answer": "The specifications covered here (TS 23.501, TS 24.501, TS 24.301) don't contain enough relevant detail to answer this question reliably.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "8.2.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "8.2.5"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "9.11.4.29"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "8.3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "8.3.3"
+        }
+      ],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "insufficient_context",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "sufficiency_signal": "llm",
+        "n_relevant_chunks": 0,
+        "top1_cross_score": 1.0524,
+        "rewrites": 1,
+        "retrieval_queries": [
+          "the difference between TCP and UDP"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "question": "Who won the World Cup in 2022?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "out_of_domain",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.43971824645996094
+      }
+    },
+    {
+      "id": 17,
+      "question": "Write a python script to parse an XML file.",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "out_of_domain",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.5750340819358826
+      }
+    },
+    {
+      "id": 18,
+      "question": "What are the side effects of aspirin?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "verification_passed": false,
+      "retries": 0,
+      "termination_reason": "out_of_domain",
+      "status": "flagged_unverified",
+      "feedback": "",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.4925667643547058
+      }
+    }
+  ]
+}

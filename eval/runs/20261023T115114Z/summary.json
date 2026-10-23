@@ -1,0 +1,73 @@
+{
+  "run_id": "20261023T115114Z",
+  "question_count": 18,
+  "total_tokens_in": 39575,
+  "total_tokens_out": 7176,
+  "total_tokens": 46751,
+  "total_cost_estimate_usd (ESTIMATE)": 0.0737145,
+  "per_node": {
+    "triage": {
+      "calls": 18,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 1548.62
+    },
+    "retrieve": {
+      "calls": 22,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 42600.2
+    },
+    "grade_sufficiency": {
+      "calls": 22,
+      "tokens_in": 29994,
+      "tokens_out": 2230,
+      "cost_estimate_usd": 0.049451,
+      "total_latency_ms": 104997.41
+    },
+    "generate": {
+      "calls": 5,
+      "tokens_in": 4485,
+      "tokens_out": 2079,
+      "cost_estimate_usd": 0.0108855,
+      "total_latency_ms": 23846.17
+    },
+    "verify": {
+      "calls": 5,
+      "tokens_in": 5096,
+      "tokens_out": 2867,
+      "cost_estimate_usd": 0.013378,
+      "total_latency_ms": 33456.28
+    },
+    "abstain": {
+      "calls": 10,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 5.13
+    },
+    "rewrite_query": {
+      "calls": 9,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 18.84
+    },
+    "refuse": {
+      "calls": 5,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 2.74
+    }
+  },
+  "termination_reasons": {
+    "verification_failed": 2,
+    "verified": 3,
+    "insufficient_context": 8,
+    "out_of_domain": 5
+  },
+  "_note": "All cost figures are ESTIMATES based on a static price table, not actual billing."
+}
