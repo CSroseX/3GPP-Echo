@@ -48,14 +48,17 @@ class Settings(BaseSettings):
     # Candidates sent to the cross-encoder = rerank_multiplier * top_k.
     # (Was a flat fetch_k=20 behind max(fetch_k, top_k), so top_k=5 and
     # top_k=20 both reranked the same 20 candidates.)
-    rerank_multiplier: int = 8
+    # 4 (= 20 candidates at top_k=5) measured as good as 8 at half the
+    # latency; see DECISIONS.md and eval/baselines/ablation_*.json.
+    rerank_multiplier: int = 4
     # BM25 (in-process, src/retrieval/hybrid.py) fused with dense via RRF.
-    hybrid_bm25: bool = True
+    # Off: with the current cross-encoder it lowered recall@5 (0.67 -> 0.50).
+    hybrid_bm25: bool = False
     rrf_k: int = 60
     # Added to the cross-encoder logit × lineage_match (src/retrieval/lineage.py).
-    # Off until swept against the reranker: it also fully matches decoys,
-    # e.g. 24.301 "GUTI" for a 5G-GUTI question.
-    lineage_boost: float = 0.0
+    # 2.0 measured best (prefix recall@5 0.67 -> 0.75); it can also match
+    # decoys (24.301 "GUTI" for a 5G-GUTI question), which the sweep didn't hit.
+    lineage_boost: float = 2.0
     verify_top_k: int = 3
 
     # ── Generation ──────────────────────────────────────────────────
@@ -118,14 +121,14 @@ class Settings(BaseSettings):
     # clause centroids (one per clause prefix at this depth, cached to the
     # .npz below): < refuse_below -> refuse, >= accept_above -> retrieve,
     # in between -> one tier-3 LLM yes/no capped at triage_llm_max_tokens.
-    # The two thresholds are PROVISIONAL until src/eval/triage_sweep.py has
-    # been run against the BGE model (it writes the recommended values);
-    # sweep_margin pads the golden-set extremes it derives them from.
+    # The two thresholds come from src/eval/triage_sweep.py run against the
+    # BGE model (eval/triage/sweep.json); sweep_margin pads the golden-set
+    # extremes it derives them from.
     triage_centroids_path: str = "data/domain_centroids.npz"
     triage_centroid_clause_depth: int = 2
     triage_centroid_exclude_clauses: list[str] = ["0", "2"]  # frontmatter, References
-    triage_refuse_below: float = 0.60
-    triage_accept_above: float = 0.72
+    triage_refuse_below: float = 0.595
+    triage_accept_above: float = 0.7197
     triage_llm_max_tokens: int = 10
     triage_sweep_margin: float = 0.02
 
