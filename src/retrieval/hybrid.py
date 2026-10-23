@@ -14,6 +14,7 @@ import re
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 import numpy as np
+import snowballstemmer
 from rank_bm25 import BM25Okapi
 
 # Lowercased alphanumeric runs: "S-NSSAI" → ["s", "nssai"], "T3412" → ["t3412"],
@@ -29,8 +30,25 @@ that the their this to used uses what when where which who why will with
 """.split())
 
 
+_STEMMER = snowballstemmer.stemmer("english")
+# Hyphen/dot-joined runs stay whole ("5g-guti", "t3510", "s-nssai") and also
+# contribute their parts, so "NSSAI" still matches "S-NSSAI".
+_JOINED_RE = re.compile(r"[a-z0-9]+(?:[-.][a-z0-9]+)*")
+
+
 def tokenize(text: str) -> List[str]:
     return [t for t in _TOKEN_RE.findall(text.lower()) if t not in _STOPWORDS]
+
+
+def stem_tokens(text: str) -> List[str]:
+    """BM25 tokens: stemmed, so "selecting" matches "selection"."""
+    out: List[str] = []
+    for joined in _JOINED_RE.findall(text.lower()):
+        parts = _TOKEN_RE.findall(joined)
+        if len(parts) > 1:
+            out.append(joined)
+        out.extend(_STEMMER.stemWord(p) for p in parts if p not in _STOPWORDS)
+    return out
 
 
 def chunk_text(chunk: Dict[str, Any]) -> str:
@@ -46,7 +64,7 @@ def chunk_text(chunk: Dict[str, Any]) -> str:
 class BM25Index:
     def __init__(self, chunks: Sequence[Dict[str, Any]]):
         self.chunks = list(chunks)
-        self._bm25 = BM25Okapi([tokenize(chunk_text(c)) for c in self.chunks])
+        self._bm25 = BM25Okapi([stem_tokens(chunk_text(c)) for c in self.chunks])
 
     def search(
         self,
@@ -57,7 +75,7 @@ class BM25Index:
     ) -> List[Tuple[Dict[str, Any], float]]:
         """Top-k (chunk, bm25_score) pairs with a positive score, honouring
         the same spec/clause targeting the dense path filters on."""
-        query_tokens = tokenize(query)
+        query_tokens = stem_tokens(query)
         if not query_tokens or k <= 0:
             return []
         allowed = set(clause_ids) if clause_ids is not None else None

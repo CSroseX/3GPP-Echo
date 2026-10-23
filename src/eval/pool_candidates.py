@@ -28,14 +28,13 @@ from typing import Any, Dict, List, Sequence
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-import snowballstemmer
 from qdrant_client.models import FieldCondition, Filter, MatchValue
 from rank_bm25 import BM25Okapi
 
 from src.config import get_settings
 from src.generation.lexicon import get_lexicon
 from src.generation.nodes.rewrite import rewrite_query
-from src.retrieval.hybrid import _STOPWORDS, chunk_text
+from src.retrieval.hybrid import chunk_text, stem_tokens
 from src.retrieval.retriever import Retriever
 
 GOLDEN_SET_PATH = "eval/golden/golden_set.v2.json"
@@ -45,27 +44,12 @@ DEPTH = 10            # top-N chunks per method
 PER_SPEC_DEPTH = 5    # dense-per-spec takes this many from each spec
 SEED = 20261023
 
-_STEMMER = snowballstemmer.stemmer("english")
-# Hyphen/dot-joined runs stay whole ("5g-guti", "t3510", "s-nssai") and also
-# contribute their parts, so "NSSAI" still matches "S-NSSAI".
-_JOINED_RE = re.compile(r"[a-z0-9]+(?:[-.][a-z0-9]+)*")
-_PART_RE = re.compile(r"[a-z0-9]+")
 # Exact 3GPP terms beyond lexicon acronyms: upper-case message names
 # ("REGISTRATION REQUEST"), timers, cause numbers, double-quoted phrases.
 _MESSAGE_NAME_RE = re.compile(r"\b[A-Z][A-Z0-9-]{2,}(?: [A-Z][A-Z0-9-]{1,})+\b")
 _TIMER_RE = re.compile(r"\bT\d{4}\b")
 _CAUSE_RE = re.compile(r"#\d+")
 _QUOTED_RE = re.compile(r"\"([^\"]{3,})\"")
-
-
-def stem_tokens(text: str) -> List[str]:
-    out: List[str] = []
-    for joined in _JOINED_RE.findall(text.lower()):
-        parts = _PART_RE.findall(joined)
-        if len(parts) > 1:
-            out.append(joined)
-        out.extend(_STEMMER.stemWord(p) for p in parts if p not in _STOPWORDS)
-    return out
 
 
 def exact_terms(question: str) -> List[str]:
