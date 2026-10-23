@@ -109,3 +109,17 @@ Times are medians on a laptop CPU. One run overlapped with other work, hence the
 
 **What this tells us:** the reranker (a general web-search model) is the likely bottleneck, since more candidates gave it more chances to rank wrong sections first. The next step is a reranker comparison ([#37](https://github.com/CSroseX/3GPP-Echo/issues/37)). The features remain in the code, switched off.
 **Limitation:** Only 6 questions, and the bonus value was picked on the same questions it's scored on. Evidence: `eval/baselines/ablation_*.json`.
+
+### 2026-10-23 · Index bulleted lists, which were silently dropped
+**Decision:** The step that rebuilds each spec's structure now includes bulleted lists. The index was rebuilt, growing from 4,860 to 6,124 chunks.
+**Why:** While drafting test questions, we noticed sentences ending in "the following functionality:" followed by nothing. The PDF parser stores lists separately, and our code skipped them, so about 37% of the spec text never reached search. 3GPP specs put most of their substance in lists: the AMF section had its introduction but none of the AMF's functions. The PDF didn't need re-parsing, because the lists were already in the parsed output.
+
+| Measure (6 questions) | Before | After |
+|---|---|---|
+| Correct section in top 5 | 0.75 | 0.75 |
+| Rank quality (MRR) | 0.45 | 0.58 |
+| Rank quality (nDCG@10) | 0.50 | 0.63 |
+| Typical search time | 1.4 s | 1.7 s |
+
+Correct sections moved up (AMF: position 11 → 6; PDU session: 2 → 1; SMF selection: 4 → 2), although none newly entered the top 5. The bigger expected gain is in answers, since the model now sees the list text; that needs an LLM run to measure.
+**Limitation:** Only 6 questions. Search time rose about 25%, probably because longer chunks give the reranker more text to read. Evidence: `eval/baselines/ablation_list_items.json` vs `ablation_G_sl20_nobm25_boost2.json`.

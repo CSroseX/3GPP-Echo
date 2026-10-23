@@ -10,6 +10,9 @@ NUMERIC_PATTERN = re.compile(r'^([1-9][0-9A-Za-z]*(?:\.[0-9A-Za-z]+)*)(?:\s+(.*)
 ANNEX_SUB_PATTERN = re.compile(r'^([A-Z](?:\.[0-9A-Za-z]+)+)(?:\s+(.*))?$')
 # 3. Annex top-level (e.g., "Annex D (informative): 5GS support...")
 ANNEX_TOP_PATTERN = re.compile(r'^Annex\s+([A-Z])\s*(?:\([^)]+\))?:\s*(.*)$', re.IGNORECASE)
+# Bit-position row of an IE format diagram ("8 7 6 5 4 3 2 1"), which Docling
+# sometimes labels section_header; it would otherwise parse as a fake clause "8".
+BIT_ROW_PATTERN = re.compile(r'^8\s+7\s+6\s+5\s+4\s+3\s+2\s+1\b')
 
 def parse_ref(ref_str):
     # e.g., "#/texts/45" -> ("texts", 45)
@@ -17,6 +20,22 @@ def parse_ref(ref_str):
     if len(parts) == 2:
         return parts[0], int(parts[1])
     return None, None
+
+def iter_reading_order(doc, refs):
+    # Docling stores each bulleted list as a group whose children are the list
+    # items (and nested sub-list groups). Expand groups in place so list text
+    # keeps its reading order instead of being skipped.
+    for ref_obj in refs:
+        ref_str = ref_obj.get('$ref')
+        if not ref_str:
+            continue
+        list_name, idx = parse_ref(ref_str)
+        if not list_name or list_name not in doc:
+            continue
+        if list_name == 'groups':
+            yield from iter_reading_order(doc, doc['groups'][idx].get('children', []))
+        else:
+            yield list_name, idx
 
 def get_depth(clause_id):
     # '5' -> 1
@@ -48,15 +67,7 @@ def build_tree(input_json_path, output_json_path):
     # Stack to maintain hierarchy
     stack = [current_clause]
 
-    for ref_obj in reading_order:
-        ref_str = ref_obj.get('$ref')
-        if not ref_str:
-            continue
-
-        list_name, idx = parse_ref(ref_str)
-        if not list_name or list_name not in doc:
-            continue
-
+    for list_name, idx in iter_reading_order(doc, reading_order):
         node = doc[list_name][idx]
 
         # Handle Tables
@@ -111,7 +122,7 @@ def build_tree(input_json_path, output_json_path):
             clause_id = None
             title = None
 
-            if label == 'section_header':
+            if label == 'section_header' and not BIT_ROW_PATTERN.match(text):
                 # Try to parse it
                 match = NUMERIC_PATTERN.match(text)
                 if match:
