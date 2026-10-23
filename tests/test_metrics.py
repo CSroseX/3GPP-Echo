@@ -8,6 +8,7 @@ from src.eval.metrics import (
     ndcg_at_k,
     normalize_pair,
     recall_at_k,
+    score_chunk_grades,
     score_question,
 )
 
@@ -152,3 +153,30 @@ class TestScoreQuestion:
         scores = score_question(results, gold)
         assert scores["strict"]["recall_at_5"] == 0.0
         assert scores["prefix_credit"]["recall_at_5"] == 1.0
+
+
+class TestScoreChunkGrades:
+    GRADES = {"ans": 2, "help": 1, "junk": 0}
+
+    def ranked(self, *chunk_ids):
+        return [{"chunk_id": cid} for cid in chunk_ids]
+
+    def test_answer_in_top_5(self):
+        out = score_chunk_grades(self.ranked("junk", "help", "ans"), self.GRADES)
+        assert out["answer_at_5"] == 1
+        assert out["answer_at_10"] == 1
+        assert out["relevant_at_5"] == 1
+        assert out["first_answer_rank"] == 3
+
+    def test_answer_at_rank_6_counts_only_for_top_10(self):
+        out = score_chunk_grades(self.ranked("junk", "x1", "x2", "x3", "x4", "ans"), self.GRADES)
+        assert out["answer_at_5"] == 0
+        assert out["answer_at_10"] == 1
+        assert out["first_answer_rank"] == 6
+
+    def test_unjudged_chunks_score_zero_and_are_counted(self):
+        out = score_chunk_grades(self.ranked("x1", "x2", "junk"), self.GRADES)
+        assert out["answer_at_5"] == 0
+        assert out["relevant_at_5"] == 0
+        assert out["first_answer_rank"] is None
+        assert out["unjudged_in_top_5"] == 2

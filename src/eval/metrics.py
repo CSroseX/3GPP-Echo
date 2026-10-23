@@ -142,3 +142,27 @@ def score_question(
             f"ndcg_at_{k_ndcg}": ndcg_at_k(results, pairs, k_ndcg, strict),
         }
     return out
+
+
+def score_chunk_grades(
+    results: Sequence[dict],
+    grades: dict[str, int],
+    k5: int = 5,
+    k10: int = 10,
+) -> dict:
+    """Chunk-level metrics against a graded answer key ({chunk_id: 2|1|0}).
+
+    Grade 2 = states the answer, 1 = a helpful fact. A retrieved chunk the key
+    never judged counts as 0, but is also counted in unjudged_in_top_5: when
+    that grows, a change is surfacing chunks nobody graded and the key needs
+    re-pooling before its numbers can be trusted.
+    """
+    ids = [r.get("chunk_id") for r in results]
+    first_answer = next((rank for rank, cid in enumerate(ids, start=1) if grades.get(cid) == 2), None)
+    return {
+        f"answer_at_{k5}": int(first_answer is not None and first_answer <= k5),
+        f"answer_at_{k10}": int(first_answer is not None and first_answer <= k10),
+        f"relevant_at_{k5}": int(any(grades.get(cid, 0) >= 1 for cid in ids[:k5])),
+        "first_answer_rank": first_answer,
+        f"unjudged_in_top_{k5}": sum(cid not in grades for cid in ids[:k5]),
+    }
