@@ -1,4 +1,4 @@
-"""Central configuration for the 3GPP RAG system, powered by pydantic-settings."""
+"""Central configuration for 3GPP-Echo, powered by pydantic-settings."""
 
 from __future__ import annotations
 

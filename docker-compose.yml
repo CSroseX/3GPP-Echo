@@ -93,8 +93,8 @@ services:
       LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://localhost:9090
       LANGFUSE_S3_MEDIA_UPLOAD_INTERNAL_ENDPOINT: http://minio:9000
       # Headless init: org, project and API keys exist on first boot.
-      LANGFUSE_INIT_ORG_ID: mavenir-3gpp-rag
-      LANGFUSE_INIT_ORG_NAME: Mavenir 3GPP RAG
+      LANGFUSE_INIT_ORG_ID: 3gpp-echo
+      LANGFUSE_INIT_ORG_NAME: 3GPP-Echo
       LANGFUSE_INIT_PROJECT_ID: rag-local
       LANGFUSE_INIT_PROJECT_NAME: rag-local
       LANGFUSE_INIT_PROJECT_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-pk-lf-local-dev}

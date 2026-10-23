@@ -12,7 +12,7 @@ from src.generation.graph import build_graph
 from src.obs.tracing import trace_attributes, trace_query, update_trace_attributes
 from src.retrieval.retriever import Retriever
 
-st.set_page_config(page_title="3GPP RAG Assistant", layout="wide")
+st.set_page_config(page_title="3GPP-Echo", layout="wide")
 
 @st.cache_resource
 def get_retriever():
@@ -74,7 +74,7 @@ def render_assistant_message(message: dict):
                 st.markdown(f"- {claim}")
 
 def main():
-    st.title("3GPP RAG Assistant")
+    st.title("3GPP-Echo")
 
     tab1, tab2 = st.tabs(["Chat", "Eval Dashboard"])
 

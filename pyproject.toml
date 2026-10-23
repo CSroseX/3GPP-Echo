@@ -1,5 +1,5 @@
 [project]
-name = "mavenir-3gpp-rag"
+name = "3gpp-echo"
 version = "0.1.0"
 description = "RAG system answering 3GPP telecom questions grounded in TS 23.501 / 24.501 / 24.301"
 requires-python = ">=3.11"

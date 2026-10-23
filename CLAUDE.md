@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A RAG system that answers 3GPP telecom questions grounded in three specs: TS 23.501 (5G system architecture), TS 24.501 (5G NAS), TS 24.301 (EPS NAS). The three specs were chosen deliberately because they share terminology but differ in procedural detail — cross-spec conflation is the hallucination mode this system is built to defeat.
+3GPP-Echo is a RAG system that answers 3GPP telecom questions grounded in three specs: TS 23.501 (5G system architecture), TS 24.501 (5G NAS), TS 24.301 (EPS NAS). The three specs were chosen deliberately because they share terminology but differ in procedural detail — cross-spec conflation is the hallucination mode this system is built to defeat.
 
 ## Commands
 
@@ -133,7 +133,7 @@ Every conditional edge is a pure function in `src/generation/routers.py` (`after
 
 The full production-hardening plan lives in [docs/production-hardening-plan.md](docs/production-hardening-plan.md) — read it before starting any phase. It carries the measured baseline, the defect diagnoses, and the per-phase verification steps.
 
-Measured starting state (frozen in `eval/baseline/`, 18 questions): 1/18 grounded on first pass, 0/6 out-of-scope refusals, 124,701 tokens per run, of which 46,452 (37%) are spent answering questions that should have been refused. Progress is tracked via GitHub issues on `CSroseX/Mavenir-Assignment` (one epic per phase, one sub-issue per item). **The tracker may lag the code** — issues are often left open after code merges because a checklist item needs a measurement run; verify against the code and the issue's comments before trusting its state.
+Measured starting state (frozen in `eval/baseline/`, 18 questions): 1/18 grounded on first pass, 0/6 out-of-scope refusals, 124,701 tokens per run, of which 46,452 (37%) are spent answering questions that should have been refused. Progress is tracked via GitHub issues on `CSroseX/3GPP-Echo`, formerly `Mavenir-Assignment` (one epic per phase, one sub-issue per item). **The tracker may lag the code** — issues are often left open after code merges because a checklist item needs a measurement run; verify against the code and the issue's comments before trusting its state.
 
 Many open items below are blocked on **measurement runs, not code**. Two kinds: zero-LLM-token runs (`retrieval_report`, `triage_sweep`) need only Qdrant plus the locally cached models; the LLM eval run (#21) spends real tokens and needs an explicit go-ahead.
 
@@ -142,4 +142,4 @@ Many open items below are blocked on **measurement runs, not code**. Two kinds: 
 - [ ] **Phase 3 — Observability (#22).** Done: traced client factory (#24), per-node spans and one trace per query (#25), `RunRecorder` (#26), since wired into the runner. Open: #23 — `docker-compose.yml` is merged and Qdrant was verified healthy, but the Langfuse services have never been brought up; #27 — Trace tab in `app.py`, and point the dashboard at `eval/runs/`.
 - [ ] **Phase 4 — Decision-nodes (#28).** All nodes and the topology are merged (#29–#33). Open checklist items: #30 — run `triage_sweep` to replace the provisional thresholds, and confirm 6/6 refusals (excluding borderline Q15) on a real-model run; #33 — the tokens-per-run drop from 124,701 and a committed `eval/runs/` full run. Both wait on #21.
 - [ ] **Phase 5 — Retrieval quality and judge validation (#34).** Code merged: `rerank_multiplier` (#35), BM25 + RRF (#36), lineage boost (#38, off by default). Each still needs its metric delta from `retrieval_report --output eval/baselines/ablation_<name>.json`; #38 also needs a `lineage_boost` value picked by sweeping it, and #36's sparse-vector future-work note belongs in the README (#45). Not started: reranker A/B (#37), label the 6 adversarial questions + cross-spec coverage (#39), Cohen's κ judge validation (#40), real conflation metric (#41), CI retrieval-regression ratchet with Qdrant snapshots (#42).
-- [ ] **Phase 6 — Polish (#43).** Nightly / `workflow_dispatch` LLM eval job (#44); README with before/after and ablation tables (#45). This file was updated for #46.
+- [ ] **Phase 6 — Polish (#43).** Nightly / `workflow_dispatch` LLM eval job (#44). README (#45) is rewritten for the current architecture with a before/after table whose "after" column is pending #21, and the ablation table pending the `retrieval_report` runs. This file was updated for #46.
