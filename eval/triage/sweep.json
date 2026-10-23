@@ -1,0 +1,1121 @@
+{
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "n_centroids": 246,
+  "golden_set": "eval\\golden\\golden_set.v1.json",
+  "recommendation": {
+    "triage_refuse_below": 0.595,
+    "triage_accept_above": 0.7197,
+    "separable": true,
+    "min_in_domain_score": 0.7397,
+    "max_out_of_scope_score": 0.575,
+    "margin": 0.02
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "What is the role of the AMF in the 5G system architecture?",
+      "type": "normal",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "AMF",
+          "5G"
+        ],
+        "long_forms": [
+          "5G system"
+        ]
+      },
+      "score": 0.7769,
+      "nearest_centroid": "23.501/5.31",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 2,
+      "question": "How does the UE initiate a PDU session establishment in 5GS?",
+      "type": "normal",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "UE",
+          "PDU",
+          "5GS"
+        ],
+        "title_bigrams": [
+          "pdu session",
+          "session establishment"
+        ]
+      },
+      "score": 0.8308,
+      "nearest_centroid": "24.501/6.4",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 3,
+      "question": "Which network function is responsible for selecting the SMF?",
+      "type": "normal",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "SMF"
+        ],
+        "long_forms": [
+          "network function"
+        ],
+        "title_bigrams": [
+          "network function"
+        ]
+      },
+      "score": 0.8096,
+      "nearest_centroid": "23.501/6.3",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 4,
+      "question": "What is the structure of the 5G-GUTI?",
+      "type": "normal",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "5G-GUTI"
+        ]
+      },
+      "score": 0.7397,
+      "nearest_centroid": "23.501/4.2",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 5,
+      "question": "Describe the states of 5GMM (5GS Mobility Management) in the UE.",
+      "type": "normal",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "5GMM",
+          "5GS",
+          "UE"
+        ],
+        "long_forms": [
+          "5GS Mobility Management"
+        ],
+        "title_bigrams": [
+          "mobility management"
+        ]
+      },
+      "score": 0.7971,
+      "nearest_centroid": "24.501/5.1",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 6,
+      "question": "What is the purpose of the Network Slice Selection Assistance Information (NSSAI)?",
+      "type": "normal",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "NSSAI"
+        ],
+        "title_bigrams": [
+          "network slice",
+          "assistance information"
+        ]
+      },
+      "score": 0.8228,
+      "nearest_centroid": "23.501/5.15",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 7,
+      "question": "When an MME receives an Attach Request, does it communicate with the UDM?",
+      "type": "adversarial",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "MME",
+          "UDM"
+        ],
+        "title_bigrams": [
+          "attach request"
+        ]
+      },
+      "score": 0.804,
+      "nearest_centroid": "24.301/5.5",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 8,
+      "question": "What timer does the AMF use for a Tracking Area Update in EPS?",
+      "type": "adversarial",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "AMF",
+          "EPS"
+        ],
+        "long_forms": [
+          "Tracking Area"
+        ],
+        "title_bigrams": [
+          "tracking area",
+          "area update"
+        ]
+      },
+      "score": 0.7817,
+      "nearest_centroid": "24.301/10.2",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 9,
+      "question": "During a 5G registration, how is the EPS bearer identity allocated?",
+      "type": "adversarial",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "5G",
+          "EPS"
+        ],
+        "long_forms": [
+          "EPS bearer identity"
+        ],
+        "title_bigrams": [
+          "eps bearer",
+          "bearer identity"
+        ]
+      },
+      "score": 0.7827,
+      "nearest_centroid": "24.301/6.4",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 10,
+      "question": "Does the SGW connect to the SMF for user plane traffic?",
+      "type": "adversarial",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "SMF"
+        ],
+        "title_bigrams": [
+          "user plane",
+          "plane traffic"
+        ]
+      },
+      "score": 0.7607,
+      "nearest_centroid": "23.501/5.34",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 11,
+      "question": "Explain how the PDN Gateway handles 5G QoS flows.",
+      "type": "adversarial",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "PDN",
+          "5G",
+          "QoS"
+        ],
+        "title_bigrams": [
+          "qos flows"
+        ]
+      },
+      "score": 0.7989,
+      "nearest_centroid": "23.501/5.29",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 12,
+      "question": "What is the message format for a 5G Session Management Tracking Area Update?",
+      "type": "adversarial",
+      "gate": "in",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "5G"
+        ],
+        "long_forms": [
+          "Session Management",
+          "Tracking Area"
+        ],
+        "title_bigrams": [
+          "message format",
+          "session management",
+          "tracking area",
+          "area update"
+        ]
+      },
+      "score": 0.7582,
+      "nearest_centroid": "24.501/10.3",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 13,
+      "question": "What is the capital of France?",
+      "type": "out_of_scope",
+      "gate": "out",
+      "tier1_hit": false,
+      "tier1_signals": {},
+      "score": 0.4517,
+      "nearest_centroid": "23.501/5.17",
+      "decision": "refuse (tier 2)"
+    },
+    {
+      "id": 14,
+      "question": "Can you explain how to bake a chocolate cake?",
+      "type": "out_of_scope",
+      "gate": "out",
+      "tier1_hit": false,
+      "tier1_signals": {},
+      "score": 0.4561,
+      "nearest_centroid": "23.501/8.3",
+      "decision": "refuse (tier 2)"
+    },
+    {
+      "id": 15,
+      "question": "What is the difference between TCP and UDP?",
+      "type": "out_of_scope",
+      "gate": "excluded",
+      "tier1_hit": true,
+      "tier1_signals": {
+        "acronyms": [
+          "TCP",
+          "UDP"
+        ]
+      },
+      "score": 0.6647,
+      "nearest_centroid": "24.301/3.1",
+      "decision": "retrieve (tier 1)"
+    },
+    {
+      "id": 16,
+      "question": "Who won the World Cup in 2022?",
+      "type": "out_of_scope",
+      "gate": "out",
+      "tier1_hit": false,
+      "tier1_signals": {},
+      "score": 0.4397,
+      "nearest_centroid": "23.501/M",
+      "decision": "refuse (tier 2)"
+    },
+    {
+      "id": 17,
+      "question": "Write a python script to parse an XML file.",
+      "type": "out_of_scope",
+      "gate": "out",
+      "tier1_hit": false,
+      "tier1_signals": {},
+      "score": 0.575,
+      "nearest_centroid": "24.301/7.6",
+      "decision": "refuse (tier 2)"
+    },
+    {
+      "id": 18,
+      "question": "What are the side effects of aspirin?",
+      "type": "out_of_scope",
+      "gate": "out",
+      "tier1_hit": false,
+      "tier1_signals": {},
+      "score": 0.4926,
+      "nearest_centroid": "24.501/5.6",
+      "decision": "refuse (tier 2)"
+    }
+  ],
+  "sweep": [
+    {
+      "threshold": 0.3,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.305,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.31,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.315,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.32,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.325,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.33,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.335,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.34,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.345,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.35,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.355,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.36,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.365,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.37,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.375,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.38,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.385,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.39,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.395,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.4,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.405,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.41,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.415,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.42,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.425,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.43,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.435,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 0
+    },
+    {
+      "threshold": 0.44,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 1
+    },
+    {
+      "threshold": 0.445,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 1
+    },
+    {
+      "threshold": 0.45,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 1
+    },
+    {
+      "threshold": 0.455,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 2
+    },
+    {
+      "threshold": 0.46,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 3
+    },
+    {
+      "threshold": 0.465,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 3
+    },
+    {
+      "threshold": 0.47,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 3
+    },
+    {
+      "threshold": 0.475,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 3
+    },
+    {
+      "threshold": 0.48,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 3
+    },
+    {
+      "threshold": 0.485,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 3
+    },
+    {
+      "threshold": 0.49,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 3
+    },
+    {
+      "threshold": 0.495,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.5,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.505,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.51,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.515,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.52,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.525,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.53,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.535,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.54,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.545,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.55,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.555,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.56,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.565,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.57,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.575,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 4
+    },
+    {
+      "threshold": 0.58,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.585,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.59,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.595,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.6,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.605,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.61,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.615,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.62,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.625,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.63,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.635,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.64,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.645,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.65,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.655,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.66,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.665,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.67,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.675,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.68,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.685,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.69,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.695,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.7,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.705,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.71,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.715,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.72,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.725,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.73,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.735,
+      "in_domain_refused_tier2_only": 0,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.74,
+      "in_domain_refused_tier2_only": 1,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.745,
+      "in_domain_refused_tier2_only": 1,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.75,
+      "in_domain_refused_tier2_only": 1,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.755,
+      "in_domain_refused_tier2_only": 1,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.76,
+      "in_domain_refused_tier2_only": 2,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.765,
+      "in_domain_refused_tier2_only": 3,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.77,
+      "in_domain_refused_tier2_only": 3,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.775,
+      "in_domain_refused_tier2_only": 3,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.78,
+      "in_domain_refused_tier2_only": 4,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.785,
+      "in_domain_refused_tier2_only": 6,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.79,
+      "in_domain_refused_tier2_only": 6,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.795,
+      "in_domain_refused_tier2_only": 6,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.8,
+      "in_domain_refused_tier2_only": 8,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.805,
+      "in_domain_refused_tier2_only": 9,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.81,
+      "in_domain_refused_tier2_only": 10,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.815,
+      "in_domain_refused_tier2_only": 10,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.82,
+      "in_domain_refused_tier2_only": 10,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.825,
+      "in_domain_refused_tier2_only": 11,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.83,
+      "in_domain_refused_tier2_only": 11,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.835,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.84,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.845,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.85,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.855,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.86,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.865,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.87,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.875,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.88,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.885,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.89,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.895,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.9,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.905,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.91,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.915,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.92,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.925,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.93,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.935,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.94,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.945,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    },
+    {
+      "threshold": 0.95,
+      "in_domain_refused_tier2_only": 12,
+      "in_domain_refused_with_tier1": 0,
+      "out_of_scope_refused": 5
+    }
+  ]
+}

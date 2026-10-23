@@ -22,7 +22,9 @@ class TestSettingsDefaults:
     def test_retrieval_defaults(self):
         s = Settings()
         assert s.default_top_k == 5
-        assert s.rerank_multiplier == 8
+        assert s.rerank_multiplier == 4
+        assert s.hybrid_bm25 is False
+        assert s.lineage_boost == 2.0
         assert s.verify_top_k == 3
 
     def test_generation_defaults(self):

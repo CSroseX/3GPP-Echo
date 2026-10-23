@@ -110,7 +110,7 @@ class TestCandidatePool:
 
 class TestRerankOrdering:
     def test_results_sorted_by_cross_encoder_and_truncated(self, make_retriever):
-        r = make_retriever(cross_scores={"6.2.1": 0.2, "5.3.2": 0.9, "5.5.3": -1.0})
+        r = make_retriever(cross_scores={"6.2.1": 0.2, "5.3.2": 0.9, "5.5.3": -1.0}, lineage_boost=0.0)
         results = r.search("What is the AMF?", top_k=2)
         assert [c["clause_id"] for c in results] == ["5.3.2", "6.2.1"]
         assert results[0]["score"] == 0.9
@@ -119,7 +119,7 @@ class TestRerankOrdering:
 class TestHybridFusion:
     def test_bm25_only_hit_reaches_the_reranker(self, make_retriever):
         # Dense misses the AMF chunk entirely; BM25 matches "AMF" lexically.
-        r = make_retriever(qdrant_order=(1, 2), cross_scores={"6.2.1": 5.0, "5.3.2": 1.0, "5.5.3": 0.0})
+        r = make_retriever(qdrant_order=(1, 2), cross_scores={"6.2.1": 5.0, "5.3.2": 1.0, "5.5.3": 0.0}, hybrid_bm25=True)
         results = r.search("AMF", top_k=1)
         assert results[0]["clause_id"] == "6.2.1"
         assert results[0]["qdrant_score"] is None
@@ -132,13 +132,13 @@ class TestHybridFusion:
         assert "6.2.1" not in [c["clause_id"] for c in results]
 
     def test_chunk_found_by_both_paths_is_not_duplicated(self, make_retriever):
-        r = make_retriever(qdrant_order=(0, 1, 2))
+        r = make_retriever(qdrant_order=(0, 1, 2), hybrid_bm25=True)
         results = r.search("AMF registration", top_k=10)
         ids = [c["chunk_id"] for c in results]
         assert len(ids) == len(set(ids)) == 3
 
     def test_bm25_respects_spec_targeting(self, make_retriever):
-        r = make_retriever(qdrant_order=())
+        r = make_retriever(qdrant_order=(), hybrid_bm25=True)
         results = r.search("tracking area timer T3412 in TS 24.301", top_k=5)
         assert {c["spec_id"] for c in results} == {"24.301"}
 
@@ -154,9 +154,9 @@ class TestLineageBoost:
         assert results[0]["lineage_match"] == 1.0
         assert results[0]["score"] == 3.0
 
-    def test_default_boost_is_off(self, make_retriever):
+    def test_zero_boost_leaves_cross_encoder_order(self, make_retriever):
         scores = {"6.2.1": 1.0, "5.3.2": 1.5, "5.5.3": -5.0}
-        r = make_retriever(cross_scores=scores)
+        r = make_retriever(cross_scores=scores, lineage_boost=0.0)
         results = r.search("What is the role of the AMF?", top_k=1)
         assert results[0]["clause_id"] == "5.3.2"
         assert results[0]["score"] == results[0]["cross_score"]
