@@ -133,7 +133,7 @@ Every conditional edge is a pure function in `src/generation/routers.py` (`after
 
 The full production-hardening plan lives in [docs/production-hardening-plan.md](docs/production-hardening-plan.md) — read it before starting any phase. It carries the measured baseline, the defect diagnoses, and the per-phase verification steps.
 
-Measured starting state (frozen in `eval/baseline/`, 18 questions): 1/18 grounded on first pass, 0/6 out-of-scope refusals, 124,701 tokens per run, of which 46,452 (37%) are spent answering questions that should have been refused. Progress is tracked via GitHub issues on `CSroseX/Mavenir-Assignment` (one epic per phase, one sub-issue per item). **The tracker may lag the code** — issues are often left open after code merges because a checklist item needs a measurement run; verify against the code and the issue's comments before trusting its state.
+Measured starting state (frozen in `eval/baseline/`, 18 questions): 1/18 grounded on first pass, 0/6 out-of-scope refusals, 124,701 tokens per run, of which 46,452 (37%) are spent answering questions that should have been refused. Progress is tracked via GitHub issues on `CSroseX/3GPP-Echo` (renamed from `Mavenir-Assignment`) (one epic per phase, one sub-issue per item). **The tracker may lag the code** — issues are often left open after code merges because a checklist item needs a measurement run; verify against the code and the issue's comments before trusting its state.
 
 Many open items below are blocked on **measurement runs, not code**. Two kinds: zero-LLM-token runs (`retrieval_report`, `triage_sweep`) need only Qdrant plus the locally cached models; the LLM eval run (#21) spends real tokens and needs an explicit go-ahead.
 
