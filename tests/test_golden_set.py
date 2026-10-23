@@ -173,3 +173,89 @@ class TestGoldenSetResolvesAgainstCorpus:
         clause_ids_by_spec = _load_clause_ids_by_spec()
         assert not _gold_clause_resolves("23.501", "99.99.99", clause_ids_by_spec)
         assert not _gold_clause_resolves("23.501", "6.2.1.999", clause_ids_by_spec)
+
+
+GOLDEN_SET_V2_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)), "eval", "golden", "golden_set.v2.json"
+)
+
+V2_CATEGORY_COUNTS = {
+    ("normal", "5G"): 13,
+    ("normal", "4G"): 8,
+    ("trap", "mixed"): 8,
+    ("off_topic_obvious", None): 5,
+    ("off_topic_telecom", None): 3,
+    ("off_topic_3gpp_not_indexed", None): 3,
+}
+
+
+def _load_golden_set_v2():
+    with open(GOLDEN_SET_V2_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _gold_text(record, chunks):
+    """Whitespace-normalised text of every chunk under the record's gold clauses."""
+    parts = []
+    for chunk in chunks:
+        for gc in record["gold_clauses"]:
+            if chunk["spec_id"] == gc["spec_id"] and is_prefix_match(gc["clause_id"], chunk["clause_id"]):
+                content = chunk["content"]
+                parts.append(content if isinstance(content, str) else json.dumps(content))
+    return " ".join(" ".join(parts).split())
+
+
+class TestGoldenSetV2:
+    def test_40_records_with_stable_ids(self):
+        assert [r["id"] for r in _load_golden_set_v2()] == list(range(1, 41))
+
+    def test_required_fields_and_types(self):
+        for r in _load_golden_set_v2():
+            missing = (REQUIRED_FIELDS | {"answer_quotes", "generation", "category", "origin"}) - set(r)
+            assert not missing, f"Q{r['id']} missing fields: {missing}"
+            assert r["type"] in VALID_TYPES
+
+    def test_category_mix(self):
+        counts = {}
+        for r in _load_golden_set_v2():
+            key = (r["category"], r["generation"])
+            counts[key] = counts.get(key, 0) + 1
+        assert counts == V2_CATEGORY_COUNTS
+
+    def test_v1_questions_unchanged(self):
+        v1 = {r["id"]: r["question"] for r in _load_golden_set()}
+        v2 = {r["id"]: r["question"] for r in _load_golden_set_v2() if r["origin"] == "v1"}
+        assert v2 == v1
+
+    def test_scored_questions_have_gold_and_quotes(self):
+        for r in _load_golden_set_v2():
+            assert r["retrieval_scored"] == (r["category"] in {"normal", "trap"}), f"Q{r['id']}"
+            if r["retrieval_scored"]:
+                assert r["gold_clauses"] and r["answer_quotes"], f"Q{r['id']} lacks gold or quotes"
+
+    def test_all_gold_clauses_resolve_to_a_chunk(self):
+        clause_ids_by_spec = _load_clause_ids_by_spec()
+        unresolved = [
+            (r["id"], gc["spec_id"], gc["clause_id"])
+            for r in _load_golden_set_v2()
+            for gc in r["gold_clauses"]
+            if not _gold_clause_resolves(gc["spec_id"], gc["clause_id"], clause_ids_by_spec)
+        ]
+        assert not unresolved, f"Gold clauses with no matching chunk: {unresolved}"
+
+    def test_answer_quotes_appear_verbatim_in_gold_chunks(self):
+        """Each quoted fragment (split on the ellipsis) must occur in the gold
+        clauses' chunk text, so a re-chunk that loses answer text fails loudly."""
+        chunks = []
+        for path in glob.glob(os.path.join(CHUNK_DIR, "*_chunks.json")):
+            with open(path, "r", encoding="utf-8") as f:
+                chunks.extend(json.load(f))
+        missing = []
+        for r in _load_golden_set_v2():
+            text = _gold_text(r, chunks)
+            for quote in r["answer_quotes"]:
+                body = quote[quote.index('"') + 1: quote.rindex('"')]
+                for fragment in (" ".join(f.split()) for f in body.split("…")):
+                    if len(fragment) >= 12 and fragment not in text:
+                        missing.append((r["id"], fragment[:80]))
+        assert not missing, f"Answer quotes not found in gold chunks: {missing}"

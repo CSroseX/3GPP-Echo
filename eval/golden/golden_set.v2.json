@@ -1,0 +1,911 @@
+[
+  {
+    "id": 1,
+    "question": "What is the role of the AMF in the 5G system architecture?",
+    "type": "normal",
+    "expected_behavior": "Should describe AMF functions like registration management, connection management, mobility management based on TS 23.501.",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "6.2.1"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "TS 23.501 Clause 6.2.1 explicitly defines the core roles, functions, and termination interfaces of the AMF in 5GS.",
+    "answer_quotes": [
+      "\"The Access and Mobility Management function (AMF) includes the following functionality. … -Termination of RAN CP interface (N2). -Termination of NAS (N1), NAS ciphering and integrity protection. -Registration management. -Connection management. -Reachability management. -Mobility Management.\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 2,
+    "question": "How does the UE initiate a PDU session establishment in 5GS?",
+    "type": "normal",
+    "expected_behavior": "Should describe the UE sending a PDU Session Establishment Request via NAS as per TS 24.501.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.501",
+        "clause_id": "6.4.1.2"
+      },
+      {
+        "spec_id": "24.501",
+        "clause_id": "6.4.1.1"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "TS 24.501 Clause 6.4.1.2 details the initiation steps and PDU SESSION ESTABLISHMENT REQUEST message sent by the UE.",
+    "answer_quotes": [
+      "\"In order to initiate the UE-requested PDU session establishment procedure, the UE shall create a PDU SESSION ESTABLISHMENT REQUEST message.\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 3,
+    "question": "Which network function is responsible for selecting the SMF?",
+    "type": "normal",
+    "expected_behavior": "Should state that the AMF is responsible for SMF selection.",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "6.3.2"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "TS 23.501 Clause 6.3.2 details the SMF selection function performed by the AMF.",
+    "answer_quotes": [
+      "\"The SMF selection functionality is supported by the AMF and SCP and is used to allocate an SMF that shall manage the PDU Session.\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 4,
+    "question": "What is the structure of the 5G-GUTI?",
+    "type": "normal",
+    "expected_behavior": "Should explain the components of 5G-GUTI (GUAMI + 5G-TMSI, etc.).",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.9.4"
+      },
+      {
+        "spec_id": "24.501",
+        "clause_id": "9.11.3.4"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "TS 23.501 Clause 5.9.4 defines the architectural components of 5G-GUTI (GUAMI + 5G-TMSI), while TS 24.501 Clause 9.11.3.4 defines its exact IE coding.",
+    "answer_quotes": [
+      "\"The 5G-GUTI shall be structured as: <5G-GUTI> := <GUAMI> <5G-TMSI>\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 5,
+    "question": "Describe the states of 5GMM (5GS Mobility Management) in the UE.",
+    "type": "normal",
+    "expected_behavior": "Should list states like 5GMM-DEREGISTERED, 5GMM-REGISTERED, etc., from TS 24.501.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.501",
+        "clause_id": "5.1.3.2"
+      },
+      {
+        "spec_id": "24.501",
+        "clause_id": "5.1.3.1"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "TS 24.501 Clause 5.1.3.2 explicitly enumerates and defines all 5GMM main states in the UE (NULL, DEREGISTERED, REGISTERED, etc.).",
+    "answer_quotes": [
+      "\"In the state 5GMM-DEREGISTERED, no 5GMM context has been established and the UE location is unknown to the network and hence it is unreachable by a network.\" (plus the sibling state sections 5GMM-NULL, -REGISTERED-INITIATED, -REGISTERED, -DEREGISTERED-INITIATED, -SERVICE-REQUEST-INITIATED)"
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 6,
+    "question": "What is the purpose of the Network Slice Selection Assistance Information (NSSAI)?",
+    "type": "normal",
+    "expected_behavior": "Should explain NSSAI is used for network slice selection.",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.15.1"
+      },
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.15.2"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "TS 23.501 Clause 5.15.1 and 5.15.2 define the purpose of NSSAI (collection of S-NSSAIs) to assist the network in selecting a Network Slice Instance.",
+    "answer_quotes": [
+      "\"The NSSAI is a collection of S-NSSAIs. … The Requested NSSAI signalled by the UE to the network allows the network to select the Serving AMF, Network Slice(s) and Network Slice instance(s) for this UE, as specified in clause 5.15.5.\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 7,
+    "question": "When an MME receives an Attach Request, does it communicate with the UDM?",
+    "type": "adversarial",
+    "expected_behavior": "Should point out that MME is an EPS (4G) entity and communicates with HSS, whereas UDM is a 5GS entity.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "5.5.1.2.2"
+      },
+      {
+        "spec_id": "23.501",
+        "clause_id": "6.2.7"
+      },
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.17.2.1"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": "Trap: MME is 4G, UDM is 5G; they meet only as the combined HSS+UDM in interworking. TS 24.301 Clause 5.5.1.2.2 details MME Attach handling and TS 23.501 Clause 6.2.7 defines UDM as a 5GS NF. Note: the 4G MME-HSS architectural interface (S6a) is specified in TS 23.401 which is outside the corpus, so full correction is not directly answerable from corpus alone.",
+    "answer_quotes": [
+      "24.301: \"In state EMM-DEREGISTERED, the UE initiates the attach procedure by sending an ATTACH REQUEST message to the MME…\"",
+      "23.501: \"When the HSS+UDM is required to provide the subscription data to the MME, for each APN, only one SMF+PGW-C FQDN and associated APN is provided to the MME…\""
+    ],
+    "generation": "mixed",
+    "category": "trap",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 8,
+    "question": "What timer does the AMF use for a Tracking Area Update in EPS?",
+    "type": "adversarial",
+    "expected_behavior": "Should clarify that AMF and 5G use Registration Update, whereas EPS and MME use Tracking Area Update.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "5.3.5"
+      },
+      {
+        "spec_id": "24.501",
+        "clause_id": "5.3.7"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Trap: AMF is 5G; EPS uses the MME and T3412; 5G uses periodic registration and T3512. TS 24.301 Clause 5.3.5 establishes timer T3412 for EPS TAU (MME), while TS 24.501 Clause 5.3.5 establishes timer T3512 for 5GS periodic registration (AMF).",
+    "answer_quotes": [
+      "24.301: \"The periodic tracking area updating procedure is used to periodically notify the availability of the UE to the network. The procedure is controlled in the UE by timer T3412.\"",
+      "24.501: \"The procedure is controlled in the UE by the periodic registration update timer, T3512.\""
+    ],
+    "generation": "mixed",
+    "category": "trap",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 9,
+    "question": "During a 5G registration, how is the EPS bearer identity allocated?",
+    "type": "adversarial",
+    "expected_behavior": "Should clarify that 5GS uses PDU sessions and QoS flows, not EPS bearers.",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "6.2.1"
+      },
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.17.2.1"
+      },
+      {
+        "spec_id": "24.301",
+        "clause_id": "6.4.1.2"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Trap: EBIs are a 4G concept; 5G allocates them only for interworking, via the AMF. TS 24.501 Clause 5.5.1.2.2 defines 5GS initial registration (using PDU Session ID and QFIs), whereas TS 24.301 Clause 6.4.1.2 defines EPS bearer identity allocation in 4G.",
+    "answer_quotes": [
+      "23.501 (AMF functions): \"-EPS Bearer ID allocation for interworking with EPS.\"",
+      "24.301: \"The MME shall assign and include an EPS bearer identity in the ACTIVATE DEFAULT EPS BEARER CONTEXT REQUEST message…\""
+    ],
+    "generation": "mixed",
+    "category": "trap",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 10,
+    "question": "Does the SGW connect to the SMF for user plane traffic?",
+    "type": "adversarial",
+    "expected_behavior": "Should note that SGW is a 4G user plane node (connecting to PGW), whereas SMF is a 5G control plane node connecting to UPF.",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.17.1.2"
+      },
+      {
+        "spec_id": "23.501",
+        "clause_id": "4.3.1"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Trap: SGW is 4G; in interworking its user plane goes to the combined UPF+PGW-U, controlled by SMF+PGW-C over N4. TS 23.501 Clause 6.2.3 and 5.17.1.2 establish that 5G user plane traffic routes via UPF under SMF control over N4, not via SGW-SMF user plane.",
+    "answer_quotes": [
+      "\"In order to support the interworking with EPC, the SMF+PGW-C provides information over N4 to the UPF+PGW-U related to the handling of traffic over S5-U.\""
+    ],
+    "generation": "mixed",
+    "category": "trap",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 11,
+    "question": "Explain how the PDN Gateway handles 5G QoS flows.",
+    "type": "adversarial",
+    "expected_behavior": "Should clarify that PDN Gateway (PGW) is a 4G entity, and 5G QoS flows are handled by the UPF.",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.7"
+      },
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.17.1.2"
+      },
+      {
+        "spec_id": "23.501",
+        "clause_id": "4.3.1"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Trap: PGW is 4G and handles EPS bearers; QoS flows are 5G (UPF/SMF); only the combined SMF+PGW-C / UPF+PGW-U spans both. TS 23.501 Clause 5.7.1 and 5.7.2 define 5G QoS flows as UPF-managed entities, whereas PGW is a legacy EPS entity handling EPS bearers.",
+    "answer_quotes": [
+      "\"NOTE 2: PGW-C + SMF and UPF + PGW-U are dedicated for interworking between 5GS and EPC… UEs that are not subject to 5GS and EPC interworking may be served by entities not dedicated for interworking, i.e. by either by PGW or SMF/UPF.\""
+    ],
+    "generation": "mixed",
+    "category": "trap",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 12,
+    "question": "What is the message format for a 5G Session Management Tracking Area Update?",
+    "type": "adversarial",
+    "expected_behavior": "Should clarify that Tracking Area Update is an EPS concept, and 5G Session Management handles PDU Session Modification/Establishment.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "8.2.29"
+      },
+      {
+        "spec_id": "24.501",
+        "clause_id": "8.3"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Trap: Tracking Area Update is a 4G EMM message; 5GSM has no such message. TS 24.501 Clause 8.3 defines all 5GSM messages (showing no Tracking Area Update exists in 5GSM), while TS 24.301 Clause 8.2.26 defines TAU in EPS mobility management.",
+    "answer_quotes": [
+      "24.301: \"Message type: TRACKING AREA UPDATE REQUEST … Direction: UE to network\" (the 5GSM message list in 24.501 8.3 contains no TAU message)"
+    ],
+    "generation": "mixed",
+    "category": "trap",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 13,
+    "question": "What is the capital of France?",
+    "type": "out_of_scope",
+    "expected_behavior": "Refusal. System should indicate it only answers 3GPP-related queries.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": null,
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_obvious",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 14,
+    "question": "Can you explain how to bake a chocolate cake?",
+    "type": "out_of_scope",
+    "expected_behavior": "Refusal.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": null,
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_obvious",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 15,
+    "question": "What is the difference between TCP and UDP?",
+    "type": "out_of_scope",
+    "expected_behavior": "Refusal or state that it is out of scope of 3GPP specs unless specifically referenced as transport.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": true,
+    "notes": "TCP/UDP are referenced as transport protocols within 3GPP specs, so a partial answer grounded in spec references is acceptable. Excluded from hard refusal gate.",
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_telecom",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 16,
+    "question": "Who won the World Cup in 2022?",
+    "type": "out_of_scope",
+    "expected_behavior": "Refusal.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": null,
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_obvious",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 17,
+    "question": "Write a python script to parse an XML file.",
+    "type": "out_of_scope",
+    "expected_behavior": "Refusal.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": null,
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_obvious",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 18,
+    "question": "What are the side effects of aspirin?",
+    "type": "out_of_scope",
+    "expected_behavior": "Refusal.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": null,
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_obvious",
+    "wording": null,
+    "origin": "v1"
+  },
+  {
+    "id": 19,
+    "question": "When a UE is registered over both 3GPP and non-3GPP access in the same PLMN, does the AMF give it one 5G-GUTI or one per access?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 23.501 clause 5.3.2.4; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.3.2.4"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"When the 3GPP access and the non-3GPP access for the same UE are served by the same PLMN, the AMF assigns the same 5G-GUTI for use over both accesses.\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": "title",
+    "origin": "v2"
+  },
+  {
+    "id": 20,
+    "question": "If a phone is idle on the cellular side but still connected to the 5G core over Wi-Fi, how does the network reach it when downlink data arrives for the cellular side?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 23.501 clause 5.3.3.4; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.3.3.4"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"When the UE CM state in the AMF is CM-IDLE for 3GPP access and CM-CONNECTED for Non-3GPP access, the AMF shall perform a network triggered Service Request procedure, when it has downlink data to be sent to this UE for 3GPP access, by sending either the Paging Request via 3GPP access or the NAS notification via Non-3GPP access to this UE\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": "body",
+    "origin": "v2"
+  },
+  {
+    "id": 21,
+    "question": "How are Configuration Transfer messages routed between RAN nodes in 5GS?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 23.501 clause 5.26.2.2; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "23.501",
+        "clause_id": "5.26.2.2"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"The AMF uses the destination address to route the message to the correct AMF via the N14 interface.\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": "title",
+    "origin": "v2"
+  },
+  {
+    "id": 22,
+    "question": "After a 5G residential gateway receives cause #28 \"Restricted service area\" over wireline access, which 5GMM state does it enter?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.501 clause 5.3.5.3; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.501",
+        "clause_id": "5.3.5.3"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"…shall start enforcing the wireline access service area restrictions and shall enter the state 5GMMREGISTERED.NON-ALLOWED-SERVICE.\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": "body",
+    "origin": "v2"
+  },
+  {
+    "id": 23,
+    "question": "When a UE performs a registration update only because its periodic timer T3512 expired, what registration type does it indicate?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.501 clause 5.5.1.3.2; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.501",
+        "clause_id": "5.5.1.3.2"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"If case b) is the only reason for initiating the registration procedure for mobility and periodic registration update, the UE shall indicate \"periodic registration updating\" in the 5GS registration type IE\"",
+      "case b): \"when the periodic registration updating timer T3512 expires in 5GMM-IDLE mode;\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": "body",
+    "origin": "v2"
+  },
+  {
+    "id": 24,
+    "question": "In the network-initiated de-registration procedure, what does the UE do if the lower layers report that the DEREGISTRATION ACCEPT message failed to transmit?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.501 clause 5.5.2.3.4; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.501",
+        "clause_id": "5.5.2.3.4"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"The de-registration procedure shall be progressed and the UE shall send the DEREGISTRATION ACCEPT message.\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": "title",
+    "origin": "v2"
+  },
+  {
+    "id": 25,
+    "question": "Which timer does a UE start when it sends its first REGISTRATION REQUEST to join the 5G network?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.501 clause 5.5.1.2.2; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.501",
+        "clause_id": "5.5.1.2.2"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"The UE initiates the registration procedure for initial registration by sending a REGISTRATION REQUEST message to the AMF, starting timer T3510.\""
+    ],
+    "generation": "5G",
+    "category": "normal",
+    "wording": "body",
+    "origin": "v2"
+  },
+  {
+    "id": 26,
+    "question": "What does the MME do if an EMM INFORMATION message is not delivered because of a handover?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.301 clause 5.4.5.4; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "5.4.5.4"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"If the EMM INFORMATION message could not be delivered due to an intra MME handover and the target TA is included in the TAI list, then upon successful completion of the intra MME handover the MME shall retransmit the EMM INFORMATION message.\""
+    ],
+    "generation": "4G",
+    "category": "normal",
+    "wording": "title",
+    "origin": "v2"
+  },
+  {
+    "id": 27,
+    "question": "In LTE, can the network limit how often an IoT device sends user data inside control-plane NAS messages, and how long does that limit last?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.301 clause 6.3.8; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "6.3.8"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"The UE shall limit the rate at which it generates uplink NAS messages with user data over control plane to comply with the serving PLMN policy provided by the network. The indicated rate in a NAS procedure applies to the PDN connection the NAS procedure corresponds to, and the indicated rate is valid until the PDN connection is released.\""
+    ],
+    "generation": "4G",
+    "category": "normal",
+    "wording": "body",
+    "origin": "v2"
+  },
+  {
+    "id": 28,
+    "question": "What are the possible values of the EPS update status?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.301 clause 5.1.3.3; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "5.1.3.3"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"EU1: UPDATED … EU2: NOT UPDATED … EU3: ROAMING NOT ALLOWED\""
+    ],
+    "generation": "4G",
+    "category": "normal",
+    "wording": "title",
+    "origin": "v2"
+  },
+  {
+    "id": 29,
+    "question": "In EPS, if an ESM uplink message fails to send and the UE has moved to a tracking area outside its TAI list, what happens to the ESM procedure?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.301 clause 6.3.3; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "6.3.3"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"If lower layers indicate a TAI change, but the current TAI is not in the TAI list, the ESM procedure shall be aborted and re-initiated after successfully performing a tracking area updating procedure.\""
+    ],
+    "generation": "4G",
+    "category": "normal",
+    "wording": "body",
+    "origin": "v2"
+  },
+  {
+    "id": 30,
+    "question": "What is the TRACKING AREA UPDATE REQUEST message used for in N1 mode?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.301 clause 5.5.5; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "5.5.5"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"The tracking area updating procedure is used to construct a TRACKING AREA UPDATE REQUEST message for the inter-system change from S1 mode to N1 mode for further security verification by the MME.\""
+    ],
+    "generation": "4G",
+    "category": "normal",
+    "wording": "title",
+    "origin": "v2"
+  },
+  {
+    "id": 31,
+    "question": "How should an LTE UE respond when it receives an EPS NAS message that is missing a mandatory information element?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.301 clause 7.5.1; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "7.5.1"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"…the UE shall return a status message (EMM STATUS or ESM STATUS depending on the PD) with cause #96 \"invalid mandatory information\"\""
+    ],
+    "generation": "4G",
+    "category": "normal",
+    "wording": "body",
+    "origin": "v2"
+  },
+  {
+    "id": 32,
+    "question": "How does the MME start a network-initiated transport of NAS messages?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.301 clause 5.6.4.3; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "5.6.4.3"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"Upon request from an application to send a message encapsulated in the generic transport of NAS message, the EMM entity in the MME initiates the procedure by sending a DOWNLINK GENERIC NAS TRANSPORT message including the corresponding message in the generic message container IE.\""
+    ],
+    "generation": "4G",
+    "category": "normal",
+    "wording": "title",
+    "origin": "v2"
+  },
+  {
+    "id": 33,
+    "question": "When an LTE UE wants to change the guaranteed bit rate of a bearer without touching its packet filters, what does it put in the request?",
+    "type": "normal",
+    "expected_behavior": "Answer grounded in TS 24.301 clause 6.5.4.2; the answer sentence is in answer_quotes.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "6.5.4.2"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Seeded random draw (seed 20261023) from eligible clauses.",
+    "answer_quotes": [
+      "\"To request a change of the GBR without changing the packet filter(s), the UE shall set the TFT operation code in the Traffic flow aggregate IE to \"no TFT operation\" and include the packet filter identifier(s) to which the change of the GBR applies in the Packet filter identifier parameter in the parameters list.\""
+    ],
+    "generation": "4G",
+    "category": "normal",
+    "wording": "body",
+    "origin": "v2"
+  },
+  {
+    "id": 34,
+    "question": "When the AMF sends a DOWNLINK GENERIC NAS TRANSPORT message to the UE, which IE carries the application's message?",
+    "type": "adversarial",
+    "expected_behavior": "Name the generation mismatch (DOWNLINK GENERIC NAS TRANSPORT is the 4G (MME) message; the AMF uses DL NAS TRANSPORT with a Payload container), then answer each part from its own spec.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "5.6.4.3"
+      },
+      {
+        "spec_id": "24.501",
+        "clause_id": "5.4.5.3"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Trap: DOWNLINK GENERIC NAS TRANSPORT is the 4G (MME) message; the AMF uses DL NAS TRANSPORT with a Payload container.",
+    "answer_quotes": [
+      "24.301: \"…the EMM entity in the MME initiates the procedure by sending a DOWNLINK GENERIC NAS TRANSPORT message including the corresponding message in the generic message container IE.\"",
+      "24.501: \"In 5GMM-CONNECTED mode, the AMF initiates the NAS transport procedure by sending the DL NAS TRANSPORT message\""
+    ],
+    "generation": "mixed",
+    "category": "trap",
+    "wording": null,
+    "origin": "v2"
+  },
+  {
+    "id": 35,
+    "question": "Does the UE start timer T3510 when it sends an ATTACH REQUEST to the MME?",
+    "type": "adversarial",
+    "expected_behavior": "Name the generation mismatch (T3510 is the 5G registration timer; a 4G attach starts T3410), then answer each part from its own spec.",
+    "gold_clauses": [
+      {
+        "spec_id": "24.301",
+        "clause_id": "5.5.1.2.2"
+      },
+      {
+        "spec_id": "24.501",
+        "clause_id": "5.5.1.2.2"
+      }
+    ],
+    "retrieval_scored": true,
+    "corpus_answerable": true,
+    "borderline": false,
+    "notes": "Trap: T3510 is the 5G registration timer; a 4G attach starts T3410.",
+    "answer_quotes": [
+      "24.301: \"In state EMM-DEREGISTERED, the UE initiates the attach procedure by sending an ATTACH REQUEST message to the MME, starting timer T3410 and entering state EMM-REGISTERED-INITIATED\"",
+      "24.501: \"…sending a REGISTRATION REQUEST message to the AMF, starting timer T3510.\""
+    ],
+    "generation": "mixed",
+    "category": "trap",
+    "wording": null,
+    "origin": "v2"
+  },
+  {
+    "id": 36,
+    "question": "How does Wi-Fi 6 use OFDMA to share a channel between devices?",
+    "type": "out_of_scope",
+    "expected_behavior": "Refuse / not covered.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": "IEEE 802.11ax, not 3GPP; \"Wi-Fi\" may look in-domain (corpus covers WLAN access).",
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_telecom",
+    "wording": null,
+    "origin": "v2"
+  },
+  {
+    "id": 37,
+    "question": "What is the maximum downstream speed of a DOCSIS 3.1 cable modem?",
+    "type": "out_of_scope",
+    "expected_behavior": "Refuse / not covered.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": "CableLabs spec; the corpus names DOCSIS only as a reference for cable gateways — a deliberately hard negative.",
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_telecom",
+    "wording": null,
+    "origin": "v2"
+  },
+  {
+    "id": 38,
+    "question": "How many HARQ processes does the NR MAC support in the downlink?",
+    "type": "out_of_scope",
+    "expected_behavior": "Say the indexed specs don't cover it.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": "TS 38.321 (NR MAC), not indexed.",
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_3gpp_not_indexed",
+    "wording": null,
+    "origin": "v2"
+  },
+  {
+    "id": 39,
+    "question": "What does the PDCP discard timer control in NR?",
+    "type": "out_of_scope",
+    "expected_behavior": "Say the indexed specs don't cover it.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": "TS 38.323 (NR PDCP), not indexed; 0 corpus hits.",
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_3gpp_not_indexed",
+    "wording": null,
+    "origin": "v2"
+  },
+  {
+    "id": 40,
+    "question": "Which Diameter command does the MME send to the HSS over S6a to update the UE's location?",
+    "type": "out_of_scope",
+    "expected_behavior": "Say the indexed specs don't cover it.",
+    "gold_clauses": [],
+    "retrieval_scored": false,
+    "corpus_answerable": false,
+    "borderline": false,
+    "notes": "TS 29.272; the corpus only lists it as a reference.",
+    "answer_quotes": [],
+    "generation": null,
+    "category": "off_topic_3gpp_not_indexed",
+    "wording": null,
+    "origin": "v2"
+  }
+]
