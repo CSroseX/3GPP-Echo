@@ -8,6 +8,9 @@ import streamlit as st
 # Ensure the root of the project is in the python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+from src.config import get_settings
+from src.generation.answer_cache import AnswerCache
+from src.generation.centroids import fastembed_embedder
 from src.generation.graph import build_graph
 from src.obs.tracing import trace_attributes, trace_query, update_trace_attributes
 from src.retrieval.retriever import Retriever
@@ -20,7 +23,10 @@ def get_retriever():
 
 @st.cache_resource
 def get_graph(_retriever):
-    return build_graph(retriever=_retriever)
+    # The chat UI uses the answer cache: a repeated question costs no LLM call.
+    cfg = get_settings()
+    cache = AnswerCache(cfg.project_root / cfg.answer_cache_path, embed=fastembed_embedder(_retriever.model))
+    return build_graph(retriever=_retriever, answer_cache=cache)
 
 def load_eval_results():
     results_path = os.path.join(os.path.dirname(__file__), "eval", "results.json")
@@ -52,7 +58,6 @@ def render_assistant_message(message: dict):
         st.markdown(f"{badge}\n\n{answer}")
         return
 
-    abstention = message.get("abstention") or {}
 
     if termination_reason == "verifier_unavailable":
         st.warning("⚠️ **Verifier unavailable** — the verification service could not be reached. The answer below was generated but not independently checked against the retrieved specs.")
@@ -64,14 +69,8 @@ def render_assistant_message(message: dict):
         st.warning("❓ **Insufficient context** — the retrieved spec text didn't contain enough to answer confidently.")
         st.markdown(answer)
     else:  # verification_failed, or missing/legacy rows
-        st.warning("🚩 **Could not verify** — this answer failed grounding against the retrieved specs.")
-        st.markdown(answer)
-
-    unsupported = abstention.get("unsupported_claims")
-    if unsupported:
-        with st.expander("Unsupported claims"):
-            for claim in unsupported:
-                st.markdown(f"- {claim}")
+        # Only a warning symbol; the verifier's reasoning is in the backend log.
+        st.markdown(f"⚠️ {answer}")
 
 def main():
     st.title("3GPP RAG Assistant")
@@ -115,7 +114,7 @@ def main():
                     with trace_query(query):
                         for output in app.stream(inputs):
                             for key, value in output.items():
-                                final_state.update(value)
+                                final_state.update(value or {})
                         update_trace_attributes(**trace_attributes(final_state))
 
                     chunks = final_state.get("chunks", [])

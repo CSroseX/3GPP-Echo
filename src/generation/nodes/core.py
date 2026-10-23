@@ -86,7 +86,8 @@ def _format_chunks(chunks) -> str:
     return "\n\n".join(blocks)
 
 
-def _build_generate_messages(query: str, chunks, feedback: str, leak_rephrase: bool = False):
+def _build_generate_messages(query: str, chunks, feedback: str, leak_rephrase: bool = False,
+                             generation_terms=None):
     chunk_text = _format_chunks(chunks)
 
     system_prompt = (
@@ -99,9 +100,11 @@ def _build_generate_messages(query: str, chunks, feedback: str, leak_rephrase: b
         "even if you believe them to be true.\n"
         "- Use the exact 3GPP terms the source text uses (for example, 5G uses \"registration\" where 4G "
         "uses \"attach\").\n"
-        "- If the source text doesn't cover part of the question, say so in one sentence of natural expert "
-        "language — e.g. \"This detail isn't defined in the 5G specifications for this procedure\" — never "
-        "\"the provided chunks don't mention X.\"\n"
+        "- Judge how much of the question the source text covers. If it covers all of it, just answer. "
+        "If it covers only part, answer that part, then say in one sentence which part isn't covered. "
+        "If it covers none of it, say so plainly in one sentence and stop.\n"
+        "- Say what isn't covered in natural expert language — e.g. \"This detail isn't defined in the 5G "
+        "specifications for this procedure\" — never \"the provided chunks don't mention X.\"\n"
         "- Never mention \"chunks,\" \"provided source,\" \"provided text,\" \"provided specifications,\" "
         "\"retrieved information,\" or any variation referring to how you got this information. "
         "The user should never know this is a retrieval system.\n"
@@ -109,6 +112,16 @@ def _build_generate_messages(query: str, chunks, feedback: str, leak_rephrase: b
     )
 
     user_prompt = f"<SOURCE CHUNKS>\n{chunk_text}\n</SOURCE CHUNKS>\n\n<QUERY>\n{query}\n</QUERY>"
+
+    if generation_terms:
+        user_prompt += (
+            "\n\n<NOTE>\nThis question mixes 4G (EPS) terms ("
+            + ", ".join(generation_terms.get("4g", []))
+            + ") with 5G terms ("
+            + ", ".join(generation_terms.get("5g", []))
+            + "). Point out the mismatch and explain how each part works in its own generation. Never "
+            "attribute a 4G entity's behaviour to 5G or the reverse.\n</NOTE>"
+        )
 
     if feedback:
         user_prompt += f"\n\n<FEEDBACK FROM PREVIOUS ATTEMPT>\n{feedback}\nPlease revise your answer to ensure all claims are strictly supported by the sources.\n</FEEDBACK FROM PREVIOUS ATTEMPT>"
@@ -141,7 +154,8 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
     feedback = state.get("feedback", "")
     attempt = state.get("attempt", 0) + 1
 
-    messages_payload = _build_generate_messages(query, chunks, feedback)
+    generation_terms = state.get("generation_terms")
+    messages_payload = _build_generate_messages(query, chunks, feedback, generation_terms=generation_terms)
     log.debug("generate_node.payload", messages=messages_payload, attempt=attempt)
 
     response = client.chat.completions.create(
@@ -161,7 +175,8 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
     leaked_phrase = _detect_banned_phrase(answer)
     if leaked_phrase:
         log.warning("generate_node.banned_phrase_leak", phrase=leaked_phrase, attempt=attempt)
-        rephrase_messages = _build_generate_messages(query, chunks, feedback, leak_rephrase=True)
+        rephrase_messages = _build_generate_messages(query, chunks, feedback, leak_rephrase=True,
+                                                     generation_terms=generation_terms)
         rephrase_response = client.chat.completions.create(
             model=MODEL_NAME,
             messages=rephrase_messages,
@@ -184,6 +199,7 @@ def _build_verify_prompt(answer: str, chunks) -> str:
 
 Verify if every factual claim in the ANSWER is strictly supported by the SOURCE CHUNKS.
 Do NOT use outside knowledge. Strict entailment is required. If a claim is not supported, you must fail the verification.
+A statement that something is NOT covered or NOT specified (e.g. "This detail isn't defined for this procedure") is not a factual claim about the system: do not fail the verification because of it.
 
 <SOURCE CHUNKS>
 {chunk_text}
@@ -276,6 +292,10 @@ def verify_claims_node(state: Dict[str, Any]) -> Dict[str, Any]:
 
     is_supported = verification.get("is_supported", False)
     unsupported = verification.get("unsupported_claims", [])
+    # The verifier's reasoning stays in the backend log; the UI only shows
+    # a warning symbol on an unverified answer.
+    log.info("verify_claims_node.verdict", is_supported=is_supported,
+             reasoning=verification.get("reasoning"), unsupported_claims=unsupported)
 
     feedback = ""
     if not is_supported and unsupported:

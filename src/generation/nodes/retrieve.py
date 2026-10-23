@@ -60,8 +60,8 @@ def make_retrieve_node(retriever=None, *, retriever_factory=None):
     def retrieve_node(state: Dict[str, Any]) -> Dict[str, Any]:
         cfg = get_settings()
         query = state["query"]
-        # After rewrite_query_node, retrieve on the rewritten query (or its
-        # 4G/5G split); `query` itself stays the user's question.
+        # Triage sets retrieval_queries to a 4G part and a 5G part for a
+        # question that mixes generations; `query` stays the user's question.
         queries = state.get("retrieval_queries") or [query]
         retriever = _get_retriever()
 

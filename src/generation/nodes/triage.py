@@ -18,8 +18,16 @@ the question to the next:
 3. LLM, only on the ambiguous band — one yes/no, `triage_llm_max_tokens`.
 
 Failure policy is fail-open: if the centroids or the LLM are unavailable the
-question goes to retrieve, where grade_sufficiency still guards generation.
-A wrongly refused 3GPP question is a worse failure than a few wasted tokens.
+question goes to retrieve. A wrongly refused 3GPP question is a worse
+failure than a few wasted tokens.
+
+Triage also flags in-domain questions that mix 4G (EPS) and 5G terms
+("When an MME receives an Attach Request, does it talk to the UDM?"). Those
+are the cross-generation traps this corpus exists to expose. Instead of
+refusing them, it sets `retrieval_queries` to a 4G part and a 5G part (via
+rewrite_query) so retrieval searches each generation separately, and records
+`generation_terms` so generate can tell the model to explain the mismatch.
+Zero LLM cost: generation affinity is measured from the corpus lexicon.
 """
 
 from __future__ import annotations
@@ -30,6 +38,7 @@ from typing import Any, Callable, Dict, List, Optional
 from src.config import get_settings
 from src.generation.lexicon import DomainLexicon, get_lexicon
 from src.generation.nodes.llm import TRANSPORT_ERRORS, chat_completion
+from src.generation.nodes.rewrite import rewrite_query
 from src.obs.logging import get_logger
 
 log = get_logger(__name__)
@@ -64,6 +73,19 @@ def lexical_signals(query: str, lex: DomainLexicon) -> Dict[str, List[str]]:
         "acronyms": lex.find_acronyms(query),
         "long_forms": [phrase for phrase, _ in lex.find_long_forms(query)],
         "title_bigrams": lex.find_title_bigrams(query),
+    }
+
+
+def generation_terms(signals: Dict[str, List[str]], lex: DomainLexicon) -> Dict[str, List[str]]:
+    """The question's 4G-affine and 5G-affine terms (acronyms, and long
+    forms mapped to their acronym), each in first-seen order."""
+    terms: List[str] = list(signals.get("acronyms", []))
+    for phrase, acronym in lex.find_long_forms(" ".join(signals.get("long_forms", []))):
+        if acronym not in terms:
+            terms.append(acronym)
+    return {
+        "4g": [t for t in terms if lex.generation_of(t) == "4g"],
+        "5g": [t for t in terms if lex.generation_of(t) == "5g"],
     }
 
 
@@ -148,14 +170,22 @@ def make_triage_node(
                 else:
                     decision, tier = ("in_domain" if verdict else "out_of_domain"), "llm"
 
-        log.info("triage_node.done", query=query, decision=decision, tier=tier, score=score)
-        return {
+        result = {
             "triage_decision": decision,
             "triage_tier": tier,
             "triage_score": score,
             "triage_signals": {k: v for k, v in signals.items() if v},
             "termination_reason": "out_of_domain" if decision == "out_of_domain" else None,
         }
+        if decision == "in_domain":
+            gens = generation_terms(signals, lex)
+            if gens["4g"] and gens["5g"]:
+                result["mixed_generation"] = True
+                result["generation_terms"] = gens
+                result["retrieval_queries"] = rewrite_query(query, lex)
+        log.info("triage_node.done", query=query, decision=decision, tier=tier, score=score,
+                 mixed_generation=result.get("mixed_generation", False))
+        return result
 
     return triage_node
 

@@ -1,6 +1,6 @@
 from langgraph.graph import END
 
-from src.generation.routers import after_grade, after_rewrite, after_triage, should_retry
+from src.generation.routers import after_cache, after_triage, should_retry
 
 
 class TestPhase4RoutersCrossProduct:
@@ -16,30 +16,9 @@ class TestPhase4RoutersCrossProduct:
                     expected = "refuse" if decision == "out_of_domain" else "retrieve"
                     assert after_triage(state) == expected, state
 
-    def test_after_rewrite(self):
-        for noop in (None, False, True):
-            for rewrites in (None, 0, 1, 2):
-                state = {"rewrite_noop": noop, "rewrites": rewrites}
-                assert after_rewrite(state) == ("abstain" if noop else "retrieve"), state
-
-    def test_empty_retrieval_never_reaches_generate(self):
-        # Empty retrieval grades to zero relevant chunks: rewrite, then abstain.
-        from src.config import get_settings
-        get_settings.cache_clear()
-        cap = get_settings().max_rewrites
-        assert after_grade({"chunks": [], "n_relevant_chunks": 0, "rewrites": 0}) == "rewrite_query"
-        assert after_grade({"chunks": [], "n_relevant_chunks": 0, "rewrites": cap}) == "abstain"
-
-
-class TestAfterRewrite:
-    def test_real_rewrite_routes_to_retrieve(self):
-        assert after_rewrite({"rewrite_noop": False, "rewrites": 1}) == "retrieve"
-
-    def test_noop_routes_to_abstain(self):
-        assert after_rewrite({"rewrite_noop": True, "rewrites": 1}) == "abstain"
-
-    def test_missing_flag_routes_to_retrieve(self):
-        assert after_rewrite({}) == "retrieve"
+    def test_after_cache(self):
+        for hit in (None, "exact", "semantic"):
+            assert after_cache({"cache_hit": hit}) == ("hit" if hit else "triage")
 
 
 class TestShouldRetryVerifiedPasses:

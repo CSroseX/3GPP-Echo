@@ -100,31 +100,18 @@ class Settings(BaseSettings):
     # (keeps one-off mentions like XML/HTTP out of the lexicon).
     lexicon_min_term_freq: int = 10
 
-    # rewrite_query_node: hard cap on rewrites per question; after it the
-    # flow terminates at abstain. Generation affinity: an acronym is 4G- or
-    # 5G-affine when its per-token rate in one spec group is >= this ratio
-    # times its rate in the other.
-    max_rewrites: int = 1
+    # rewrite_query (used by triage to split 4G/5G-mixed questions).
+    # Generation affinity: an acronym is 4G- or 5G-affine when its per-token
+    # rate in one spec group is >= this ratio times its rate in the other.
     rewrite_generation_affinity_ratio: float = 3.0
     rewrite_4g_spec_ids: list[str] = ["24.301"]
     rewrite_5g_spec_ids: list[str] = ["23.501", "24.501"]
 
-    # grade_sufficiency_node. Cross-encoder (ms-marco-MiniLM-L-6-v2) logits:
-    # the six answerable golden-set questions measured top-1 4.6-8.4 in
-    # eval/baseline/retrieval_metrics.json; irrelevant pairs score negative.
-    # Below the top-1 floor no LLM call is made. The fallback threshold
-    # counts a chunk relevant only when the relevance LLM call fails.
-    sufficiency_top_n: int = 5
-    sufficiency_min_relevant: int = 2
-    sufficiency_min_top1_score: float = 0.0
-    sufficiency_fallback_min_score: float = 3.0
-    # 1000 with reasoning effort "low": at 200, gpt-oss-20b spent the whole
-    # allowance thinking and returned nothing, so the fallback always decided.
-    # Effort is sent only to OpenRouter; "" disables it.
-    sufficiency_llm_max_tokens: int = 1000
-    sufficiency_reasoning_effort: str = "low"
-    sufficiency_chunk_char_cap: int = 1200
-    sufficiency_filter_chunks: bool = True
+    # Answer cache (src/generation/answer_cache.py): a question is a cache
+    # hit if its normalized text matches, or if it is at least this cosine-
+    # similar to a stored question AND mentions the same 3GPP terms.
+    answer_cache_path: str = "data/answer_cache.sqlite"
+    answer_cache_similarity: float = 0.95
 
     # triage_node. Tier 2 compares the query's max cosine against per-spec
     # clause centroids (one per clause prefix at this depth, cached to the

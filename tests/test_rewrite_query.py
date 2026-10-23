@@ -1,7 +1,7 @@
-"""rewrite_query_node: deterministic, corpus-lexicon-driven rewrites."""
+"""rewrite_query: deterministic, corpus-lexicon-driven rewrites (used by triage)."""
 
 from src.generation.lexicon import DomainLexicon
-from src.generation.nodes.rewrite import rewrite_query, rewrite_query_node, strip_framing
+from src.generation.nodes.rewrite import rewrite_query, strip_framing
 
 
 def fake_lexicon():
@@ -71,40 +71,3 @@ class TestRewriteQuery:
         # Golden-set Q7, against the corpus-derived lexicon.
         out = rewrite_query("When an MME receives an Attach Request, does it communicate with the UDM?")
         assert len(out) == 2
-
-
-class TestRewriteQueryNode:
-    def test_first_rewrite_sets_queries_and_counter(self, monkeypatch):
-        import src.generation.nodes.rewrite as rw
-        monkeypatch.setattr(rw, "get_lexicon", fake_lexicon)
-        result = rewrite_query_node({"query": "What is the AMF?"})
-        assert result["retrieval_queries"] == ["the AMF Access and Mobility Management Function"]
-        assert result["rewrites"] == 1
-        assert result["rewrite_noop"] is False
-
-    def test_cap_from_config_makes_node_a_noop(self):
-        from src.config import get_settings
-        get_settings.cache_clear()
-        cap = get_settings().max_rewrites
-        result = rewrite_query_node({"query": "What is the AMF?", "rewrites": cap})
-        assert result == {"rewrite_noop": True}
-
-    def test_cap_is_read_from_config(self, monkeypatch):
-        from src.config import get_settings
-        monkeypatch.setenv("MAX_REWRITES", "2")
-        get_settings.cache_clear()
-        try:
-            import src.generation.nodes.rewrite as rw
-            monkeypatch.setattr(rw, "get_lexicon", fake_lexicon)
-            result = rewrite_query_node({"query": "What is the AMF?", "rewrites": 1})
-            assert result["rewrites"] == 2
-        finally:
-            monkeypatch.delenv("MAX_REWRITES")
-            get_settings.cache_clear()
-
-    def test_identical_rewrite_is_a_noop(self, monkeypatch):
-        import src.generation.nodes.rewrite as rw
-        monkeypatch.setattr(rw, "get_lexicon", fake_lexicon)
-        # Nothing to strip or expand: the rewrite reproduces the original.
-        result = rewrite_query_node({"query": "paging in idle mode"})
-        assert result["rewrite_noop"] is True

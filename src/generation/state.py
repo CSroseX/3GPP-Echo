@@ -27,17 +27,14 @@ class GraphState(TypedDict, total=False):
     triage_score: Optional[float]  # max centroid cosine, when tier 2 ran
     triage_signals: Optional[Dict[str, List[str]]]
     retrieval_scores: Optional[List[float]]
-    sufficiency: Optional[str]
-    rewrites: Optional[int]
-    # rewrite_query_node: what retrieve_node searches on after a rewrite
-    # (one query, or a 4G/5G split); `query` stays the user's question.
+    # Input guardrail: cache_lookup sets cache_hit ("exact" | "semantic");
+    # triage flags questions that mix 4G and 5G terms and sets the per-
+    # generation retrieval_queries that retrieve_node searches on (`query`
+    # stays the user's question).
+    cache_hit: Optional[str]
+    mixed_generation: Optional[bool]
+    generation_terms: Optional[Dict[str, List[str]]]
     retrieval_queries: Optional[List[str]]
-    rewrite_noop: Optional[bool]
-    # grade_sufficiency_node: after_grade routes on n_relevant_chunks.
-    n_relevant_chunks: Optional[int]
-    relevance_flags: Optional[List[bool]]
-    top1_cross_score: Optional[float]
-    sufficiency_signal: Optional[str]  # llm | cross_encoder_floor | cross_encoder_fallback | no_chunks
 
     # Reserved for later phases; unpopulated today.
     citations: Optional[List[Dict[str, Any]]]
@@ -47,7 +44,7 @@ class GraphState(TypedDict, total=False):
 TERMINATION_REASONS = {
     "verified",
     "verification_failed",
-    "insufficient_context",
+    "insufficient_context",  # retrieval returned no chunks
     "out_of_domain",
     "verifier_unavailable",
 }

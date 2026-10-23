@@ -42,11 +42,10 @@ def abstain_node(state: GraphState) -> Dict[str, Any]:
 
     termination_reason must already be set by the node that routed here
     (verify_claims_node sets "verifier_unavailable" on a transport
-    failure; grade_sufficiency_node sets "insufficient_context" when the
-    retrieved context can't answer the question, even after a rewrite;
-    the router falls through to this node on exhausted grounding
+    failure; the router falls through to this node on exhausted grounding
     retries, in which case termination_reason defaults to
-    "verification_failed" here).
+    "verification_failed" here). The draft answer is kept: the UI shows it
+    with a warning symbol, and the verifier's reasoning is logged.
     """
     chunks = state.get("chunks", [])
     feedback = state.get("feedback", "")
@@ -65,8 +64,7 @@ def abstain_node(state: GraphState) -> Dict[str, Any]:
 
     answer = state.get("answer", "")
     if not answer and termination_reason == "insufficient_context":
-        # grade_sufficiency routed here before any generate call, so there is
-        # no draft answer to show; say plainly why there isn't one.
+        # No draft answer to show (retrieval returned nothing); say plainly why.
         answer = INSUFFICIENT_CONTEXT_ANSWER
 
     return {

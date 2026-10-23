@@ -1,10 +1,10 @@
 """Small LLM-call seam for the Phase 4 decision-nodes.
 
-triage and grade_sufficiency each make one cheap, structured call. They go
-through the same client/model as generate and verify (nodes/core.py) —
+triage makes one cheap, structured call (only for its ambiguous band). It
+goes through the same client/model as generate and verify (nodes/core.py) —
 looked up at call time, so tests that monkeypatch
 `gen_nodes.client.chat.completions.create` intercept these calls too — and
-each node also accepts an injected `llm` callable with this signature, so
+the node also accepts an injected `llm` callable with this signature, so
 unit tests never need a client at all.
 """
 

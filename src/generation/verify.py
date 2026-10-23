@@ -32,7 +32,7 @@ def main():
         for output in app.stream(inputs):
             for key, value in output.items():
                 print(f"Node Executed: {key}")
-                final_state.update(value)
+                final_state.update(value or {})
         update_trace_attributes(**trace_attributes(final_state))
 
     if not final_state:

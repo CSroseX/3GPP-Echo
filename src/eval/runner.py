@@ -135,12 +135,11 @@ def atomic_write_json(path: Path, payload: Dict[str, Any]) -> None:
 
 
 # How each decision node decided, e.g. triage_tier "centroid" vs "llm" vs
-# "fail_open", or sufficiency_signal "llm" vs "cross_encoder_fallback". A
-# silent fallback (an LLM call that returned nothing) is only visible here.
+# "fail_open" (a silent fallback is only visible here), or whether triage
+# flagged a 4G/5G-mixed question and split its retrieval.
 DECISION_FIELDS = (
-    "triage_decision", "triage_tier", "triage_score",
-    "sufficiency_signal", "n_relevant_chunks", "top1_cross_score",
-    "rewrites", "retrieval_queries", "attempt", "grounding_retries", "transport_attempts",
+    "cache_hit", "triage_decision", "triage_tier", "triage_score",
+    "mixed_generation", "retrieval_queries", "attempt", "grounding_retries", "transport_attempts",
 )
 
 

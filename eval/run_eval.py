@@ -62,7 +62,7 @@ def main():
         # Run graph (retrieval is now the first node)
         for output in app.stream(inputs):
             for key, value in output.items():
-                final_state.update(value)
+                final_state.update(value or {})
 
         chunks = final_state.get("chunks", [])
 

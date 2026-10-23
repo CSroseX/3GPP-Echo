@@ -173,10 +173,10 @@ class TestRunOneQuestionRecording:
         from src.obs.metrics import RunRecorder
 
         app = FakeApp([
-            ("triage", {"triage_decision": "in_domain", "triage_tier": "lexical", "triage_score": None}, None),
+            ("cache_lookup", None, None),
+            ("triage", {"triage_decision": "in_domain", "triage_tier": "lexical", "triage_score": None,
+                        "mixed_generation": True, "retrieval_queries": ["MME part TS 24.301", "UDM part"]}, None),
             ("retrieve", {"chunks": [{"spec_id": "23.501", "clause_id": "6.2.1"}]}, None),
-            ("grade_sufficiency", {"sufficiency_signal": "cross_encoder_fallback", "n_relevant_chunks": 5,
-                                   "top1_cross_score": 4.59}, (700, 200)),
             ("generate", {"answer": "The AMF ...", "attempt": 1}, (100, 20)),
             ("verify", {"verification_passed": True, "termination_reason": "verified"}, (50, 5)),
         ])
@@ -185,9 +185,8 @@ class TestRunOneQuestionRecording:
         result = run_one_question(app, {"id": 1, "question": "Q1?", "type": "normal"}, recorder=recorder)
         recorder.end_run()
 
-        expected = {"triage_decision": "in_domain", "triage_tier": "lexical",
-                    "sufficiency_signal": "cross_encoder_fallback", "n_relevant_chunks": 5,
-                    "top1_cross_score": 4.59, "attempt": 1}
+        expected = {"triage_decision": "in_domain", "triage_tier": "lexical", "mixed_generation": True,
+                    "retrieval_queries": ["MME part TS 24.301", "UDM part"], "attempt": 1}
         assert result["decisions"] == expected  # triage_score None is left out
         record = json.loads((tmp_path / "per_question.jsonl").read_text(encoding="utf-8").strip())
         assert record["decisions"] == expected
