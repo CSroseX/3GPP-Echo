@@ -26,8 +26,8 @@
       "mean_ndcg_at_10": 0.4683
     },
     "latency_ms": {
-      "p50": 8348.2,
-      "p95": 9159.1
+      "p50": 9130.9,
+      "p95": 10478.6
     },
     "chunk_level": {
       "answer_at_5": "15/29",
@@ -38,7 +38,7 @@
         "5G": "8/13",
         "trap": "1/8"
       },
-      "unjudged_in_top_5": 11
+      "unjudged_in_top_5": 0
     }
   },
   "per_question": [
@@ -52,13 +52,20 @@
           "clause_id": "6.2.1"
         }
       ],
-      "latency_ms": 9426.4,
+      "latency_ms": 9551.6,
       "top_5": [
         "23.501/6.2.1",
         "23.501/6.2.1",
         "23.501/5.6.2",
         "23.501/4.2.2",
         "23.501/4.1"
+      ],
+      "top_5_chunk_ids": [
+        "44a642f4f693fc0849f1d9fbd09536c809c3ba0e",
+        "16a05653359bcd85ba39642d5ed986a3bd19d73f",
+        "9d98b46dfb3aac28b8e6dc29b7d4102128633b51",
+        "c97e0518a317940786e088e5920c5b6860ef39eb",
+        "dc7265cc9a32e27a8feb34d00067dcb0aa9caee3"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -77,7 +84,7 @@
         "answer_at_10": 1,
         "relevant_at_5": 1,
         "first_answer_rank": 1,
-        "unjudged_in_top_5": 1
+        "unjudged_in_top_5": 0
       }
     },
     {
@@ -94,13 +101,20 @@
           "clause_id": "6.4.1.1"
         }
       ],
-      "latency_ms": 8271.0,
+      "latency_ms": 8987.8,
       "top_5": [
         "24.501/6.4.1.2",
         "24.501/6.4.1.2",
         "23.501/5.29.3",
         "24.501/6.4.1.2",
         "24.501/6.4.1.2"
+      ],
+      "top_5_chunk_ids": [
+        "6ecfa2722ff8e4ec9b6d8d10bc2c8a30d0e1a2bf",
+        "2658188fd365583b1fd23207d001f3c99444691e",
+        "07ee30f4c7cd2f75f00ae66a77219d79d2efdd44",
+        "4aebe22a96521a4771f69b7cb601b2be55c81ae7",
+        "f182345920bff8bb86a91b436c17e9744f18a8e4"
       ],
       "strict": {
         "recall_at_5": 0.5,
@@ -132,13 +146,20 @@
           "clause_id": "6.3.2"
         }
       ],
-      "latency_ms": 8288.4,
+      "latency_ms": 9284.6,
       "top_5": [
         "23.501/6.3.2",
         "23.501/6.3.2",
         "23.501/6.2.2",
         "23.501/6.3.2",
         "23.501/5.34.3"
+      ],
+      "top_5_chunk_ids": [
+        "07e3d273a2ccd2c6c4f2beb22d582dc94da348cd",
+        "caf967780228285f4d6f17669c78415b6230ae82",
+        "0b7ca2f2b95836a461a4eaf753e95fc29a2a9101",
+        "6bb962723728841b31c9c20775c057d602a558f4",
+        "dafda561694efecee955a66aa87c89614ff16c7b"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -174,13 +195,20 @@
           "clause_id": "9.11.3.4"
         }
       ],
-      "latency_ms": 8905.1,
+      "latency_ms": 9992.8,
       "top_5": [
         "24.501/8.2.7.2",
         "24.501/8.2.19.3",
         "24.501/8.2.6.12",
         "23.501/1",
         "24.501/5.3.3"
+      ],
+      "top_5_chunk_ids": [
+        "c47f2ac5836152efb517149255de684d9ebcc901",
+        "96f03f7e37cfaff2ae4c3951404fccaaaaf4c920",
+        "1669b995d73a343bd46f4d269601725083dfbc20",
+        "5554262e929cb77c87c302604a8ae64c1bf324d6",
+        "fa182e8a2b890c62ba793ec09867bacb8df2f69b"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -216,13 +244,20 @@
           "clause_id": "5.1.3.1"
         }
       ],
-      "latency_ms": 8139.5,
+      "latency_ms": 9062.6,
       "top_5": [
         "24.501/5.1.3.1",
         "24.501/10.2",
         "24.501/4.2",
         "24.501/5.3.20.2",
         "24.501/5.4.6.2"
+      ],
+      "top_5_chunk_ids": [
+        "46acaa376fefdc77eee9bf0d6d26c3c4c2c33484",
+        "56316769eaa436775d0072fdc848988d9e19eedf",
+        "7512de23cb30b6c020e7657bda7ee36367d0092c",
+        "14ceee066808558850fdba6a4d776e107add4457",
+        "55225019eb48f62c5a6b5305c43d053dc287232a"
       ],
       "strict": {
         "recall_at_5": 0.5,
@@ -241,7 +276,7 @@
         "answer_at_10": 1,
         "relevant_at_5": 1,
         "first_answer_rank": 6,
-        "unjudged_in_top_5": 2
+        "unjudged_in_top_5": 0
       }
     },
     {
@@ -258,13 +293,20 @@
           "clause_id": "5.15.2"
         }
       ],
-      "latency_ms": 8629.4,
+      "latency_ms": 9554.8,
       "top_5": [
         "23.501/5.15.14",
         "24.501/4.6.2.4",
         "23.501/5.15.5.2.2",
         "24.501/4.6.3.2",
         "24.501/9.11.3.36"
+      ],
+      "top_5_chunk_ids": [
+        "6ae514e491650d68c739b83df17a69896220dd86",
+        "60673b7cbb18e0144c914c13883a6ec27cb2ffdf",
+        "deef3dcf42adb82b3a231abda7616f690464bbad",
+        "42c9a9fb0320e2111fad0f87a390831ccf618fd9",
+        "67b1892c48f86447419c99b0a6d8ac770b96fae9"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -283,7 +325,7 @@
         "answer_at_10": 0,
         "relevant_at_5": 0,
         "first_answer_rank": 15,
-        "unjudged_in_top_5": 1
+        "unjudged_in_top_5": 0
       }
     },
     {
@@ -304,13 +346,20 @@
           "clause_id": "5.17.2.1"
         }
       ],
-      "latency_ms": 7837.9,
+      "latency_ms": 8894.9,
       "top_5": [
         "24.301/5.5.1.2.7",
         "24.301/4.4.4.3",
         "24.301/5.5.1.2.4",
         "24.301/5.5.1.2.4",
         "24.301/5.5.1.2.4"
+      ],
+      "top_5_chunk_ids": [
+        "611fd26ea297f8bb0bf748ed799e97e868fbe4d7",
+        "29689378710c86558f9cbbbd44f90b230689b513",
+        "d0642a1054807187a081cb9b095ff2a6db678401",
+        "3687d8efc0a340bb8dbfe58f08893388164839ca",
+        "e381973a4baead2829dca160a2df23d140ce067d"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -329,7 +378,7 @@
         "answer_at_10": 0,
         "relevant_at_5": 0,
         "first_answer_rank": null,
-        "unjudged_in_top_5": 1
+        "unjudged_in_top_5": 0
       }
     },
     {
@@ -346,13 +395,20 @@
           "clause_id": "5.3.7"
         }
       ],
-      "latency_ms": 8682.9,
+      "latency_ms": 9921.0,
       "top_5": [
         "24.301/5.2.3.2.2",
         "24.301/5.5.3.3.5",
         "24.301/5.5.3.3.4.3",
         "24.301/5.5.3.3.4.3",
         "24.301/5.5.1.3.4.3"
+      ],
+      "top_5_chunk_ids": [
+        "b0360444332398841e8c82946c07695c4cc6e77f",
+        "955c1049e45e0738886f7d0ccb943c702581646c",
+        "5be72fc601fab26a449280a7bf1568e7daaab84c",
+        "1d6ca7b67b478ade09bea7beccc37eb9ab28da9f",
+        "4de332d0f45c9fac08f1e25f4fd5d594f81a518c"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -371,7 +427,7 @@
         "answer_at_10": 1,
         "relevant_at_5": 0,
         "first_answer_rank": 8,
-        "unjudged_in_top_5": 1
+        "unjudged_in_top_5": 0
       }
     },
     {
@@ -392,13 +448,20 @@
           "clause_id": "6.4.1.2"
         }
       ],
-      "latency_ms": 7775.3,
+      "latency_ms": 8187.6,
       "top_5": [
         "24.301/9.3.2",
         "24.501/8.2.6.23",
         "24.501/5.5.1.2.2",
         "24.301/6.5.3.3",
         "24.501/8.2.6.36"
+      ],
+      "top_5_chunk_ids": [
+        "e6afe7f9dca003972b5a26313d252ee6bf14420d",
+        "c545e8abe416722f0e9b76b874c28bea5639e57a",
+        "d646021ecf9dde9aee1584c1c043d0ce9c788241",
+        "31026b343e5837c9db92ef37b78706c5bd33d161",
+        "fcfaed12a888ac10df86cd2e648c15f8939dd747"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -434,13 +497,20 @@
           "clause_id": "4.3.1"
         }
       ],
-      "latency_ms": 7872.7,
+      "latency_ms": 8873.4,
       "top_5": [
         "23.501/6.2.2",
         "23.501/5.29.4",
         "23.501/5.29.4",
         "23.501/5.8.2.13.3.2",
         "23.501/5.8.2.13.3.2"
+      ],
+      "top_5_chunk_ids": [
+        "92a8fe9194a509975fe1796d9508e171bc48c441",
+        "09f9535ee4dad9fc95dd30b034cb2ba4d02b94d1",
+        "90a8e17a7edb8a9ef39d104256e97c366f2818c3",
+        "1a5b6a4f58d6dec6370ff3829c023ad640d9c37e",
+        "be90260aac08f2bd4064295ed6f49bfcf133aeb5"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -480,13 +550,20 @@
           "clause_id": "4.3.1"
         }
       ],
-      "latency_ms": 8719.0,
+      "latency_ms": 10203.4,
       "top_5": [
         "23.501/5.27.3",
         "23.501/5.7.1.1",
         "23.501/5.7.1.3",
         "23.501/5.32.4",
         "23.501/5.7.1.1"
+      ],
+      "top_5_chunk_ids": [
+        "edc5efdc2aac23d7d05f6e05495adf80be7aa66a",
+        "61eed69571e6531e8e012752991403fea2485c81",
+        "4e3dc9879756a4d6d8d296fe1c970972734610d4",
+        "d7cce2887a429767bfdec13b47463c35b49986e3",
+        "a54b753c13607e93289078eb61c010eff411d865"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -522,13 +599,20 @@
           "clause_id": "8.3"
         }
       ],
-      "latency_ms": 8835.7,
+      "latency_ms": 9900.2,
       "top_5": [
         "24.301/5.5.5",
         "24.301/8.2.26.1",
         "24.301/5.2.3.2.2",
         "24.301/5.2.3.2.2",
         "24.501/10.3"
+      ],
+      "top_5_chunk_ids": [
+        "87affd3bfaac254202a46d5c437aaf67f3c3d23e",
+        "ffa7b93ef454c1a7376078f589ee164661d466b9",
+        "b0360444332398841e8c82946c07695c4cc6e77f",
+        "3eea1c0c9fcdef0e790d3aacf5897a4cd7c14686",
+        "edcf4d276c2b54a0388e238637248d1ddea3d8fb"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -547,7 +631,7 @@
         "answer_at_10": 0,
         "relevant_at_5": 1,
         "first_answer_rank": null,
-        "unjudged_in_top_5": 1
+        "unjudged_in_top_5": 0
       }
     },
     {
@@ -560,13 +644,20 @@
           "clause_id": "5.3.2.4"
         }
       ],
-      "latency_ms": 8770.3,
+      "latency_ms": 10478.6,
       "top_5": [
         "23.501/5.3.2.4",
         "23.501/5.3.2.4",
         "23.501/5.3.2.4",
         "23.501/5.3.2.4",
         "23.501/5.3.2.4"
+      ],
+      "top_5_chunk_ids": [
+        "e3fabc3f3663b1e2ad944f7a6a9f5b9a84cd7e64",
+        "1152e1eafeee4a6b8c97495b087527586f3335e4",
+        "fbf6da30abaed9650d5fcd7d980b555f3ebe9cd3",
+        "d28442d213829188e085ead24338790b26f9787b",
+        "32813a76627ad17aac624d605c2ede1c4ef16983"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -598,13 +689,20 @@
           "clause_id": "5.3.3.4"
         }
       ],
-      "latency_ms": 8766.0,
+      "latency_ms": 10475.1,
       "top_5": [
         "24.501/5.6.1.7",
         "23.501/5.3.3.2.2",
         "24.501/5.3.1.4",
         "23.501/5.2.1",
         "24.501/5.6.1.1"
+      ],
+      "top_5_chunk_ids": [
+        "4eb83c9ce6391dac02d177828adb9d4aecf2159b",
+        "fb70810361c276f6a6a2cbb07f68ddbbc6836acd",
+        "9b52a15b34fbaa9f89fbaf2cf36098e80e982f40",
+        "254150a403dc3dd91a4ebc55ba53788cad719cfe",
+        "26afefc676610ba89c2ffa7ea1368cdd35f0efa8"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -623,7 +721,7 @@
         "answer_at_10": 0,
         "relevant_at_5": 1,
         "first_answer_rank": null,
-        "unjudged_in_top_5": 2
+        "unjudged_in_top_5": 0
       }
     },
     {
@@ -636,13 +734,20 @@
           "clause_id": "5.26.2.2"
         }
       ],
-      "latency_ms": 7357.8,
+      "latency_ms": 8778.3,
       "top_5": [
         "23.501/5.26",
         "23.501/5.26.1",
         "23.501/5.17.7.1",
         "23.501/5.17.7.1",
         "23.501/5.26.2.2"
+      ],
+      "top_5_chunk_ids": [
+        "7c46e9129df99e02aa72f98f1363ec803c8f7dc2",
+        "f4523181ade30f4817cabe3f9a2fa0a81a8ec37c",
+        "502385d034a8791c8a6febf70024508844ba4adc",
+        "8e9ee0d5b25751be3503a3b04bebfc350cb507b3",
+        "34454a499f2fad87b0d17ec6ef458861b5d886f8"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -674,13 +779,20 @@
           "clause_id": "5.3.5.3"
         }
       ],
-      "latency_ms": 8348.7,
+      "latency_ms": 10239.8,
       "top_5": [
         "24.501/5.3.5.3",
         "24.501/5.3.5.3",
         "24.501/5.3.23",
         "24.501/5.6.1.5",
         "24.501/5.3.5.1"
+      ],
+      "top_5_chunk_ids": [
+        "c66eaf35b461f3158dc83c252ee6b28984a46730",
+        "379f93be374b824f02d1f7ed8b97e6971922c2b9",
+        "746c6ea6a7912bd6f78c17012bbbc79617c126b6",
+        "f2bbe1958a062deffb97baff8417537d8869631d",
+        "8b7c8102160758cf85dbb16d9c790e9bac28c81e"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -712,13 +824,20 @@
           "clause_id": "5.5.1.3.2"
         }
       ],
-      "latency_ms": 8928.0,
+      "latency_ms": 11862.4,
       "top_5": [
         "24.501/5.3.7",
         "24.501/5.3.7",
         "24.501/5.3.7",
         "24.501/5.3.7",
         "23.501/5.31.7.5"
+      ],
+      "top_5_chunk_ids": [
+        "b580d5a09e20f64a8e7912b3e4c3fd54a134c0a8",
+        "2940b60e4b0d099d162ec942e7c1cd437b0f4606",
+        "08789dbae5584a4f7fee213238269e48686ec078",
+        "91938cec6ed0d5024591fcdf7705988c12dd93e1",
+        "021c46696e364bf9cad90db4f7309885da8f3a17"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -750,13 +869,20 @@
           "clause_id": "5.5.2.3.4"
         }
       ],
-      "latency_ms": 8366.0,
+      "latency_ms": 9403.3,
       "top_5": [
         "24.501/5.5.2.2.1",
         "24.501/5.5.2.3.1",
         "24.501/5.5.2.3.2",
         "24.501/5.5.2.3.1",
         "24.501/5.5.2.2.6"
+      ],
+      "top_5_chunk_ids": [
+        "0d86f48249e82e8b07d237addb07639eec4e66cf",
+        "0d6a03c3080a7f6f4190368b354328e4e87c38f3",
+        "c9be3227f1bc19d4ae6c3e31a88aa1a233ca44e1",
+        "f0e18f2196b480a1a5f2f8734c4fd26b0381fccd",
+        "3d85faf130449417d0dc7ca545d4af09bb45b359"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -788,13 +914,20 @@
           "clause_id": "5.5.1.2.2"
         }
       ],
-      "latency_ms": 8971.4,
+      "latency_ms": 9917.2,
       "top_5": [
         "24.501/5.5.1.2.2",
         "24.501/5.5.1.2.5",
         "24.501/5.6.1.7",
         "24.501/5.3.20.3",
         "24.501/5.3.7"
+      ],
+      "top_5_chunk_ids": [
+        "89b0ee2e2e33d2946221b00c2ce4665dcdf3dac8",
+        "0fd67f98e432e4868660a331b7b4dc86662bfd84",
+        "c3af5e6829ce5f813a94a036b2926eff0bc144f6",
+        "4135725f6485077961e06fcfbc42b89a2ef9f7c6",
+        "2940b60e4b0d099d162ec942e7c1cd437b0f4606"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -826,13 +959,20 @@
           "clause_id": "5.4.5.4"
         }
       ],
-      "latency_ms": 7358.3,
+      "latency_ms": 8167.3,
       "top_5": [
         "24.301/5.4.5.4",
         "24.301/5.5.3.3.3",
         "24.301/5.1.3.4.1",
         "24.301/5.4.2.7",
         "24.301/5.4.4.6"
+      ],
+      "top_5_chunk_ids": [
+        "370ff26eff419d6926b9d2e17b3cfbb6e1876807",
+        "dd6e031d863d1e182e7c92cb8e92cb3643d84682",
+        "502f31aa525afe62bc7d321c76e10a04bbb9377a",
+        "8076fc7b588d75bf29fe1276b80b5dd3f90cedf7",
+        "443dc61b04b6da9aa625f72da556174ed34eef30"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -864,13 +1004,20 @@
           "clause_id": "6.3.8"
         }
       ],
-      "latency_ms": 8255.2,
+      "latency_ms": 9028.8,
       "top_5": [
         "23.501/5.31.15",
         "24.501/5.4.5.3.3",
         "24.501/5.4.5.3.3",
         "24.501/5.4.5.3.3",
         "23.501/5.19.7.6"
+      ],
+      "top_5_chunk_ids": [
+        "7ea0c2d2cd3236ca9ed702cade02c3895e80fb20",
+        "8a5788725b50211c14dc87efca0de36cb3d2224b",
+        "b5e2fbfd0b2b023a20460431ffbb3f005c96cccb",
+        "169a9650fea6fda6a319effdeb2b9db6a00d919b",
+        "7245800a0ba453147adff46304c83ed6200d1087"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -889,7 +1036,7 @@
         "answer_at_10": 0,
         "relevant_at_5": 0,
         "first_answer_rank": null,
-        "unjudged_in_top_5": 2
+        "unjudged_in_top_5": 0
       }
     },
     {
@@ -902,13 +1049,20 @@
           "clause_id": "5.1.3.3"
         }
       ],
-      "latency_ms": 7251.5,
+      "latency_ms": 7850.5,
       "top_5": [
         "24.301/5.1.3.3",
         "24.301/9.9.3.13",
         "24.301/9.9.3.14",
         "24.501/9.11.3.23A",
         "24.501/8.2.7.31"
+      ],
+      "top_5_chunk_ids": [
+        "b96253dddec0d576376e5cad462974c00f60a83a",
+        "522c7449d5c4fdd6966d344e3e1372d927838128",
+        "6aa7abe03c8976991c5f0d92eba6acbf07af657e",
+        "d3175e76a0f5b69b426265e84509a463dffde4a6",
+        "2bd7fd6879be5728823367b46def38d60ec87cb1"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -940,13 +1094,20 @@
           "clause_id": "6.3.3"
         }
       ],
-      "latency_ms": 8348.2,
+      "latency_ms": 9130.9,
       "top_5": [
         "24.301/5.5.3.2.2",
         "24.301/5.5.3.3.5",
         "24.301/6.3.3",
         "24.301/5.5.1.2.6",
         "24.301/5.5.3.2.6"
+      ],
+      "top_5_chunk_ids": [
+        "bb57edff8bef6e237aedfb44ed987727dbe0a410",
+        "ca97b710c18c4f9eeb8edb21468e3cb25471e849",
+        "601c6bd9ab62e6c476cb49b66d160fbdad45ce9e",
+        "1ff00559b90285867fa9e8aa57d295c2afc0ae09",
+        "64e1a64a29ac96ccaf1929ba1fd59e225b2db661"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -978,13 +1139,20 @@
           "clause_id": "5.5.5"
         }
       ],
-      "latency_ms": 7640.7,
+      "latency_ms": 8463.5,
       "top_5": [
         "24.301/5.5.5",
         "24.301/5.5.3.2.2",
         "24.301/5.5.3.2.7",
         "24.301/5.5.3.2.7",
         "24.301/5.5.3.2.2"
+      ],
+      "top_5_chunk_ids": [
+        "87affd3bfaac254202a46d5c437aaf67f3c3d23e",
+        "a1027c686cffe0b8d61b30692fc20b9a33c0184d",
+        "65372486464f292519f4c497ddb30f43b6c20438",
+        "aac75811d4102713fe1aebbea988d16f4fe16e83",
+        "bb57edff8bef6e237aedfb44ed987727dbe0a410"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -1016,13 +1184,20 @@
           "clause_id": "7.5.1"
         }
       ],
-      "latency_ms": 8483.2,
+      "latency_ms": 9082.8,
       "top_5": [
         "24.501/8.2.26.3",
         "24.501/8.2.6.16",
         "24.301/4.4.2.3",
         "24.301/7.5.3",
         "24.301/5.3.7b"
+      ],
+      "top_5_chunk_ids": [
+        "92ba1a422a166957c5e77879e57aefa98ab89240",
+        "e11ab99685bc26b70da6e27f9d3d37d1d56779f1",
+        "2f1c519a4e15f7c9f440a1c45b53dc788b9ffb45",
+        "1f2966419fee1d2c01e0b0edc31d3b34c47d19ba",
+        "cfdf3cb60c323d966f8d59617fa1f415abd728f2"
       ],
       "strict": {
         "recall_at_5": 0.0,
@@ -1054,13 +1229,20 @@
           "clause_id": "5.6.4.3"
         }
       ],
-      "latency_ms": 7381.5,
+      "latency_ms": 8230.2,
       "top_5": [
         "24.301/5.6.3.3",
         "24.301/5.6.4.3",
         "24.301/5.6.3.2",
         "24.501/5.4.5.3.2",
         "24.301/5.6.4.1"
+      ],
+      "top_5_chunk_ids": [
+        "e9098d3516f2e146822e1557db874dd799ad466e",
+        "dc0af8328ce8ee491923d447b420914baceef0e4",
+        "7d21ba0d54d0effaddd54d72e944492ef8b591cb",
+        "536bc208c2ce35fbd9a4386205c675cd92652c81",
+        "d7d254b9e2ee055f22502097474e9ed9a38f514e"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -1092,13 +1274,20 @@
           "clause_id": "6.5.4.2"
         }
       ],
-      "latency_ms": 9159.1,
+      "latency_ms": 10021.2,
       "top_5": [
         "24.301/6.5.4.2",
         "24.301/6.5.4.2",
         "24.301/6.4.3.3",
         "24.301/6.5.4.2",
         "24.301/6.5.4.3"
+      ],
+      "top_5_chunk_ids": [
+        "733570dd8f5035ec169e93937d0e3f2c86197aec",
+        "e705ca7780c8e24a18cb4f958d3ff728ad26c48b",
+        "ed54abf3d1ee0aa5cf263199cfc2aedf516b4441",
+        "827ddd70c51b50ca42ae5ff48408c188e9eb7c76",
+        "cba00efc8220d711c4ba647fb66886500d214ca7"
       ],
       "strict": {
         "recall_at_5": 1.0,
@@ -1134,13 +1323,20 @@
           "clause_id": "5.4.5.3"
         }
       ],
-      "latency_ms": 7663.0,
+      "latency_ms": 8666.4,
       "top_5": [
         "24.301/8.2.12",
         "24.301/5.6.4.2",
         "24.301/5.6.3.3",
         "24.301/5.6.4.3",
         "24.501/5.4.5.2.3"
+      ],
+      "top_5_chunk_ids": [
+        "98a79ad66e75be08e87051bfe1f0b879f1f3f73e",
+        "5afc4f080e8000654018f508dca64490e90e7133",
+        "e9098d3516f2e146822e1557db874dd799ad466e",
+        "dc0af8328ce8ee491923d447b420914baceef0e4",
+        "f28596c550e7b663b62b91ee5f2e377a307b2c1f"
       ],
       "strict": {
         "recall_at_5": 0.5,
@@ -1176,13 +1372,20 @@
           "clause_id": "5.5.1.2.2"
         }
       ],
-      "latency_ms": 8042.9,
+      "latency_ms": 8823.5,
       "top_5": [
         "24.301/5.2.2.3.3",
         "24.301/5.5.1.2.6",
         "24.501/5.6.1.7",
         "24.301/5.5.1.2.4",
         "24.301/5.5.1.3.6"
+      ],
+      "top_5_chunk_ids": [
+        "96ca48f709aee7a29639f623d61871acf3d76516",
+        "7cd44b391e1e52edf76b2302c362ac82b34182b8",
+        "c3af5e6829ce5f813a94a036b2926eff0bc144f6",
+        "4468226308a9a75a168a2693189ccd18e0751c12",
+        "da6aa50528fa51d54018088cb69d729f4579fa13"
       ],
       "strict": {
         "recall_at_5": 0.0,

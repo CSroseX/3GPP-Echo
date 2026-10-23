@@ -18,6 +18,7 @@ chunk in the top 5 / 10? Results are broken down by 5G / 4G / trap.
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import os
 import sys
@@ -36,7 +37,8 @@ OUTPUT_PATH = "eval/baselines/retrieval_baseline.json"
 def load_chunk_grades(grades_path: str) -> dict[int, dict[str, int]]:
     """{question_id: {chunk_id: grade}} for every pooled pair. grades.json is
     keyed by the sheet's grade_id and lists only non-zero grades, so every
-    other sheet row is a judged 0."""
+    other sheet row is a judged 0. Any supplement*.jsonl next to it (chunks
+    graded later, after a change surfaced them) is merged in."""
     with open(grades_path, "r", encoding="utf-8") as f:
         graded = json.load(f)
     sheet_path = os.path.join(os.path.dirname(grades_path), "grading_sheet.jsonl")
@@ -46,6 +48,11 @@ def load_chunk_grades(grades_path: str) -> dict[int, dict[str, int]]:
             row = json.loads(line)
             grade = graded["grades"].get(str(row["grade_id"]), {}).get("grade", graded["default_grade"])
             out.setdefault(row["question_id"], {})[row["chunk_id"]] = grade
+    for path in sorted(glob.glob(os.path.join(os.path.dirname(grades_path), "supplement*.jsonl"))):
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                row = json.loads(line)
+                out.setdefault(row["question_id"], {})[row["chunk_id"]] = row["grade"]
     return out
 
 
@@ -95,6 +102,7 @@ def main():
             "gold_clauses": q["gold_clauses"],
             "latency_ms": round(elapsed_ms, 1),
             "top_5": [f'{r["spec_id"]}/{r["clause_id"]}' for r in results[:5]],
+            "top_5_chunk_ids": [r.get("chunk_id") for r in results[:5]],
             **metrics,
         })
 
