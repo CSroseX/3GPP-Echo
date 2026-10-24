@@ -35,7 +35,14 @@ class Settings(BaseSettings):
 
     # ── Models ──────────────────────────────────────────────────────
     embedding_model: str = "BAAI/bge-small-en-v1.5"
-    reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    # Outputs raw logits on a range similar to MiniLM's, so lineage_boost
+    # keeps its meaning. A sigmoid-output reranker (bge-reranker-*) would
+    # need the boost re-tuned. Comparison: DECISIONS.md, 2026-10-24.
+    reranker_model: str = "cross-encoder/ettin-reranker-32m-v1"
+    # Tokens of (query + chunk) the reranker reads. Ettin accepts 8K, but
+    # unsplit table chunks run to ~10K tokens and made split-query searches
+    # take 20-35 s; 512 is MiniLM's limit, i.e. what we measured before.
+    reranker_max_length: int = 512
     local_llm_model: str = "qwen3.5:4b"
     remote_llm_model_openrouter: str = "openai/gpt-oss-20b"
     remote_llm_model_openai: str = "gpt-3.5-turbo"

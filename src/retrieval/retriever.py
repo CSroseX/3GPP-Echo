@@ -27,7 +27,7 @@ class Retriever:
         self.q_client = QdrantClient(url=qdrant_url or cfg.qdrant_url, check_compatibility=False)
         self.model = TextEmbedding(model_name=cfg.embedding_model)
         log.info("retriever.loading_cross_encoder")
-        self.cross_encoder = CrossEncoder(cfg.reranker_model)
+        self.cross_encoder = CrossEncoder(cfg.reranker_model, max_length=cfg.reranker_max_length)
         log.info("retriever.cross_encoder_loaded")
 
         # Regex patterns for query routing

@@ -10,7 +10,7 @@ class TestSettingsDefaults:
     def test_model_defaults(self):
         s = Settings()
         assert s.embedding_model == "BAAI/bge-small-en-v1.5"
-        assert s.reranker_model == "cross-encoder/ms-marco-MiniLM-L-6-v2"
+        assert s.reranker_model == "cross-encoder/ettin-reranker-32m-v1"
         assert s.local_llm_model == "qwen3.5:4b"
         assert s.remote_llm_model_openrouter == "openai/gpt-oss-20b"
         assert s.remote_llm_model_openai == "gpt-3.5-turbo"
