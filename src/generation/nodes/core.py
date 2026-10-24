@@ -164,7 +164,9 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
         temperature=cfg.generate_temperature,
         max_tokens=cfg.generate_max_tokens,
     )
-    answer = response.choices[0].message.content
+    # A reasoning model that spends its whole max_tokens thinking returns
+    # content=None; treat that as an empty answer instead of crashing.
+    answer = response.choices[0].message.content or ""
 
     # Safety net: strip out any <think> blocks that might leak through
     answer = re.sub(r'<think>.*?</think>', '', answer, flags=re.DOTALL).strip()
@@ -184,7 +186,7 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
             max_tokens=cfg.generate_max_tokens,
         )
         rephrased = re.sub(
-            r'<think>.*?</think>', '', rephrase_response.choices[0].message.content, flags=re.DOTALL
+            r"<think>.*?</think>", "", rephrase_response.choices[0].message.content or "", flags=re.DOTALL
         ).strip()
         if not _detect_banned_phrase(rephrased):
             answer = rephrased
@@ -234,7 +236,7 @@ def _call_verifier(prompt: str):
         temperature=cfg.verify_temperature,
         max_tokens=cfg.verify_max_tokens
     )
-    raw_json = response.choices[0].message.content
+    raw_json = response.choices[0].message.content or ""
     return json.loads(raw_json)
 
 
@@ -253,6 +255,19 @@ def verify_claims_node(state: Dict[str, Any]) -> Dict[str, Any]:
     chunks = state["chunks"]
     grounding_retries = state.get("grounding_retries", 0)
     transport_attempts = state.get("transport_attempts", 0)
+
+    # An empty answer (the model spent max_tokens on hidden reasoning) has no
+    # claims, so a judge could call it "supported". Fail it without a call.
+    if not answer.strip():
+        log.warning("verify_claims_node.empty_answer")
+        return {
+            "verification_passed": False,
+            "feedback": "The previous answer was empty. Answer the question in 3-5 sentences.",
+            "retries": grounding_retries + 1,  # legacy field: app.py / eval scripts
+            "grounding_retries": grounding_retries + 1,
+            "transport_attempts": transport_attempts,
+            "termination_reason": None,
+        }
 
     prompt = _build_verify_prompt(answer, chunks)
 

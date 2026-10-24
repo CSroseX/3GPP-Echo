@@ -158,3 +158,21 @@ class TestGenerateNodeAttemptCounter:
         result = gen_nodes.generate_node(state)
         assert result["attempt"] == 2
         assert result["retries"] == 1
+
+
+class TestEmptyModelReply:
+    def test_generate_treats_none_content_as_empty_answer(self, monkeypatch):
+        monkeypatch.setattr(gen_nodes.client.chat.completions, "create", lambda *a, **k: make_response(None))
+        result = gen_nodes.generate_node({"query": "What is the AMF?", "chunks": make_chunks()})
+        assert result["answer"] == ""
+
+    def test_verify_fails_empty_answer_without_calling_the_llm(self, monkeypatch):
+        def must_not_call(*a, **k):
+            raise AssertionError("verifier LLM called for an empty answer")
+
+        monkeypatch.setattr(gen_nodes.client.chat.completions, "create", must_not_call)
+        state = {"answer": "  ", "chunks": make_chunks(), "grounding_retries": 0, "transport_attempts": 0}
+        result = gen_nodes.verify_claims_node(state)
+        assert result["verification_passed"] is False
+        assert result["grounding_retries"] == 1
+        assert result["termination_reason"] is None
