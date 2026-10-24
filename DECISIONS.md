@@ -136,3 +136,20 @@ Correct sections moved up (AMF: position 11 → 6; PDU session: 2 → 1; SMF sel
 
 The guardrail now splits 7 of the 8 traps (was 5), and no normal question is split by mistake. Search time 1.5 s → 1.6 s. We also learned that the retrieval report had been searching the question as typed, skipping the guardrail, so it understated what the app does; `retrieval_report --pipeline` now searches the way the app does.
 **Limitation:** Only 8 trap questions, and the answer key has a single grader. "SGW" appears only 7 times in the corpus, all in the 5G spec, so counts alone can't mark it 4G. Four traps are split correctly but still miss their answer (Q7, Q8, Q9, Q11). Evidence: `eval/baselines/v2_pipeline_before.json` vs `v2_pipeline_phrases.json`.
+
+### 2026-10-24 · Replace the reranker with a small modern one (Ettin 32M)
+**Decision:** Rerank with `cross-encoder/ettin-reranker-32m-v1` instead of `ms-marco-MiniLM-L-6-v2`, reading at most 512 tokens per chunk.
+**Why:** Earlier measurements pointed at the reranker as the bottleneck: better candidates reached the shortlist but weren't ranked into the top 5. A published comparison on one CPU (Hugging Face, May 2026) showed the small Ettin models beating MiniLM at similar cost. We measured on our own questions, searching the way the app does, with every top-5 chunk graded:
+
+| Reranker | Answer chunk in top 5 (29 questions) | 5G | 4G | 4G/5G traps | Typical search time |
+|---|---|---|---|---|---|
+| MiniLM-L6 (previous) | 17/29 | 8/13 | 6/8 | 3/8 | 1.6 s |
+| bge-reranker-base | no gain (tested earlier, without the guardrail) | | | | ~6× slower |
+| Ettin 17M | 18/29 | 9/13 | 6/8 | 3/8 | 1.2 s |
+| **Ettin 32M** | **20/29** | **10/13** | 6/8 | **4/8** | 2.2 s |
+
+"What is the role of the AMF?", which had missed since the first baseline, now finds its answer at rank 2 (was 6).
+- **bge-reranker-base was rejected:** no gain, about 6× slower. It also outputs scores between 0 and 1, so our +2.0 heading bonus overrode it; a reranker's score scale has to be checked before comparing. Ettin outputs scores on a scale like MiniLM's, so the bonus keeps its meaning.
+- **Why the 512-token cap:** Ettin can read 8,000 tokens, and our unsplit table chunks reach about 10,000. That made some searches take 20–35 s. Capping at 512 (MiniLM's limit) kept 20/29 and brought the slowest searches from 22.9 s to 4.4 s.
+
+**Limitation:** 29 questions and a single grader. Rerankers that surfaced chunks the answer key had never seen were held until those chunks were graded (62 in total, none an answer). Evidence: `eval/baselines/v2_pipeline_phrases.json` vs `v2_ettin32m.json`, `v2_pipeline_default.json`.
