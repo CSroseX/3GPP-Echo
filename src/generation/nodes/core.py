@@ -1,12 +1,11 @@
-import json
 import os
 import re
 from typing import Any, Dict
 
 from dotenv import load_dotenv
-from openai import APIConnectionError, APIStatusError, APITimeoutError
 
 from src.config import get_settings
+from src.generation.answer_status import check_identifiers, parse_status
 from src.obs.logging import get_logger
 from src.obs.tracing import make_llm_client
 
@@ -72,10 +71,10 @@ def _detect_banned_phrase(answer: str) -> str | None:
 
 
 def _format_chunks(chunks) -> str:
-    """Chunk block shared by the generate and verify prompts. Each chunk's
-    text is capped at prompt_chunk_char_cap characters (prompt tokens are
-    66% of measured spend); both prompts see the same capped text, so the
-    verifier never judges against context the generator didn't have."""
+    """Chunk block for the generate prompt. Each chunk's text is capped at
+    prompt_chunk_char_cap characters (prompt tokens are 66% of measured
+    spend); the identifier check reads the same capped text, so it never
+    credits the answer with context the model didn't see."""
     cap = get_settings().prompt_chunk_char_cap
     blocks = []
     for c in chunks:
@@ -86,8 +85,7 @@ def _format_chunks(chunks) -> str:
     return "\n\n".join(blocks)
 
 
-def _build_generate_messages(query: str, chunks, feedback: str, leak_rephrase: bool = False,
-                             generation_terms=None):
+def _build_generate_messages(query: str, chunks, leak_rephrase: bool = False, generation_terms=None):
     chunk_text = _format_chunks(chunks)
 
     system_prompt = (
@@ -108,7 +106,10 @@ def _build_generate_messages(query: str, chunks, feedback: str, leak_rephrase: b
         "- Never mention \"chunks,\" \"provided source,\" \"provided text,\" \"provided specifications,\" "
         "\"retrieved information,\" or any variation referring to how you got this information. "
         "The user should never know this is a retrieval system.\n"
-        "- Do not use citation brackets like [1]."
+        "- Do not use citation brackets like [1].\n"
+        "- End with one final line saying how much of the question the source text covers, exactly one "
+        "of: \"STATUS: answered\" (all of it), \"STATUS: partial\" (only part), \"STATUS: not_covered\" "
+        "(none of it)."
     )
 
     user_prompt = f"<SOURCE CHUNKS>\n{chunk_text}\n</SOURCE CHUNKS>\n\n<QUERY>\n{query}\n</QUERY>"
@@ -123,9 +124,6 @@ def _build_generate_messages(query: str, chunks, feedback: str, leak_rephrase: b
             "attribute a 4G entity's behaviour to 5G or the reverse.\n</NOTE>"
         )
 
-    if feedback:
-        user_prompt += f"\n\n<FEEDBACK FROM PREVIOUS ATTEMPT>\n{feedback}\nPlease revise your answer to ensure all claims are strictly supported by the sources.\n</FEEDBACK FROM PREVIOUS ATTEMPT>"
-
     if leak_rephrase:
         user_prompt += (
             "\n\n<REPHRASE REQUIRED>\nYour previous answer referred to how this information was obtained "
@@ -139,190 +137,77 @@ def _build_generate_messages(query: str, chunks, feedback: str, leak_rephrase: b
     ]
 
 
-def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Generates a natural prose answer based on the query and retrieved chunks.
-    Does NOT format claims or citations.
+NO_CHUNKS_ANSWER = (
+    "The specifications covered here (TS 23.501, TS 24.501, TS 24.301) don't contain enough "
+    "relevant detail to answer this question."
+)
+EMPTY_ANSWER = "No answer could be produced for this question. Please try rephrasing it."
 
-    Owns the `attempt` counter: this node increments it, not the verifier,
-    so a first-pass success records attempt == 1 (previously the verifier
-    incremented `retries` on every call including the first, so a first-pass
-    success recorded retries == 1).
-    """
-    query = state["query"]
-    chunks = state["chunks"]
-    feedback = state.get("feedback", "")
-    attempt = state.get("attempt", 0) + 1
 
-    generation_terms = state.get("generation_terms")
-    messages_payload = _build_generate_messages(query, chunks, feedback, generation_terms=generation_terms)
-    log.debug("generate_node.payload", messages=messages_payload, attempt=attempt)
-
+def _complete(messages) -> str:
     response = client.chat.completions.create(
         model=MODEL_NAME,
-        messages=messages_payload,
+        messages=messages,
         temperature=cfg.generate_temperature,
         max_tokens=cfg.generate_max_tokens,
     )
     # A reasoning model that spends its whole max_tokens thinking returns
     # content=None; treat that as an empty answer instead of crashing.
-    answer = response.choices[0].message.content or ""
-
+    text = response.choices[0].message.content or ""
     # Safety net: strip out any <think> blocks that might leak through
-    answer = re.sub(r'<think>.*?</think>', '', answer, flags=re.DOTALL).strip()
+    return re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+
+
+def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
+    """The one LLM call per question: answers from the retrieved chunks and
+    labels its own answer answered / partial / not_covered (the STATUS line,
+    see src/generation/answer_status.py). Its termination_reason is that
+    label, after the identifier check:
+
+    - no chunks retrieved: not_covered, without an LLM call;
+    - empty reply (reasoning used the whole token budget): not_covered;
+    - missing STATUS line: partial;
+    - "answered" but an identifier (T3510, #22, ATTACH REQUEST) is absent
+      from the source text: partial, with the identifiers recorded.
+    """
+    query = state["query"]
+    chunks = state.get("chunks") or []
+    generation_terms = state.get("generation_terms")
+
+    if not chunks:
+        return {"answer": NO_CHUNKS_ANSWER, "termination_reason": "not_covered"}
+
+    messages_payload = _build_generate_messages(query, chunks, generation_terms=generation_terms)
+    log.debug("generate_node.payload", messages=messages_payload)
+    raw = _complete(messages_payload)
 
     # Banned-phrase gate: a real gate, not just a log line. One targeted
-    # rephrase, then let the leak stand (the caller/verifier path handles
-    # it from there — this node does not loop on itself).
-    leaked_phrase = _detect_banned_phrase(answer)
+    # rephrase, then let the leak stand (this node does not loop on itself).
+    leaked_phrase = _detect_banned_phrase(raw)
     if leaked_phrase:
-        log.warning("generate_node.banned_phrase_leak", phrase=leaked_phrase, attempt=attempt)
-        rephrase_messages = _build_generate_messages(query, chunks, feedback, leak_rephrase=True,
-                                                     generation_terms=generation_terms)
-        rephrase_response = client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=rephrase_messages,
-            temperature=cfg.generate_temperature,
-            max_tokens=cfg.generate_max_tokens,
-        )
-        rephrased = re.sub(
-            r"<think>.*?</think>", "", rephrase_response.choices[0].message.content or "", flags=re.DOTALL
-        ).strip()
-        if not _detect_banned_phrase(rephrased):
-            answer = rephrased
+        log.warning("generate_node.banned_phrase_leak", phrase=leaked_phrase)
+        rephrased = _complete(_build_generate_messages(query, chunks, leak_rephrase=True,
+                                                       generation_terms=generation_terms))
+        if rephrased and not _detect_banned_phrase(rephrased):
+            raw = rephrased
         else:
-            log.warning("generate_node.banned_phrase_leak_persisted", attempt=attempt)
+            log.warning("generate_node.banned_phrase_leak_persisted")
 
-    return {"answer": answer, "attempt": attempt, "retries": max(attempt - 1, 0)}
+    answer, status = parse_status(raw)
+    if not answer:
+        log.warning("generate_node.empty_answer")
+        return {"answer": EMPTY_ANSWER, "termination_reason": "not_covered"}
+    if status is None:
+        log.warning("generate_node.missing_status")
+        status = "partial"
 
-def _build_verify_prompt(answer: str, chunks) -> str:
-    chunk_text = _format_chunks(chunks)
-    return f"""You are a strict, impartial fact-checker. You will be provided with an ANSWER generated by an AI assistant, and a set of SOURCE CHUNKS retrieved from 3GPP telecom specifications.
-
-Verify if every factual claim in the ANSWER is strictly supported by the SOURCE CHUNKS.
-Do NOT use outside knowledge. Strict entailment is required. If a claim is not supported, you must fail the verification.
-A statement that something is NOT covered or NOT specified (e.g. "This detail isn't defined for this procedure") is not a factual claim about the system: do not fail the verification because of it.
-
-<SOURCE CHUNKS>
-{chunk_text}
-</SOURCE CHUNKS>
-
-<ANSWER>
-{answer}
-</ANSWER>
-
-Evaluate the answer step-by-step:
-1. Extract the core claims made in the ANSWER.
-2. For each claim, check if it is explicitly stated or strictly entailed by the SOURCE CHUNKS.
-3. If ANY claim is unsupported or contradicts the chunks, fail the verification.
-
-Provide your output in the following JSON format ONLY:
-{{
-  "is_supported": boolean,
-  "reasoning": "brief explanation of your judgement",
-  "unsupported_claims": [
-    "list any claims that were not supported by the sources, or leave empty if all are supported"
-  ]
-}}"""
-
-
-def _call_verifier(prompt: str):
-    """One raw call to the verifier LLM. Raises on transport/API failure;
-    raises json.JSONDecodeError on malformed JSON. Caller interprets both."""
-    response = client.chat.completions.create(
-        model=MODEL_NAME,
-        messages=[{"role": "user", "content": prompt}],
-        response_format={"type": "json_object"},
-        temperature=cfg.verify_temperature,
-        max_tokens=cfg.verify_max_tokens
-    )
-    raw_json = response.choices[0].message.content or ""
-    return json.loads(raw_json)
-
-
-def verify_claims_node(state: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Acts as a strict judge to ensure every claim in the answer is supported by the chunks.
-
-    Typed exception boundary, pure with respect to the grounding-retry
-    counter: only a valid JSON response with is_supported: false represents
-    a genuine grounding failure and increments grounding_retries. A
-    transport failure (rate limit, connection, timeout) or malformed JSON
-    is an operational hiccup, not evidence the answer is wrong — it must
-    not be indistinguishable from one in the returned state.
-    """
-    answer = state["answer"]
-    chunks = state["chunks"]
-    grounding_retries = state.get("grounding_retries", 0)
-    transport_attempts = state.get("transport_attempts", 0)
-
-    # An empty answer (the model spent max_tokens on hidden reasoning) has no
-    # claims, so a judge could call it "supported". Fail it without a call.
-    if not answer.strip():
-        log.warning("verify_claims_node.empty_answer")
-        return {
-            "verification_passed": False,
-            "feedback": "The previous answer was empty. Answer the question in 3-5 sentences.",
-            "retries": grounding_retries + 1,  # legacy field: app.py / eval scripts
-            "grounding_retries": grounding_retries + 1,
-            "transport_attempts": transport_attempts,
-            "termination_reason": None,
-        }
-
-    prompt = _build_verify_prompt(answer, chunks)
-
-    verification = None
-    transport_failure = False
-
-    try:
-        verification = _call_verifier(prompt)
-    except json.JSONDecodeError as e:
-        # Malformed JSON: one reask, then treat as transport.
-        log.warning("verify_claims_node.malformed_json_reask", error=str(e))
-        transport_attempts += 1
-        try:
-            verification = _call_verifier(prompt)
-        except json.JSONDecodeError as e2:
-            log.error("verify_claims_node.malformed_json_after_reask", error=str(e2))
-            transport_failure = True
-            transport_attempts += 1
-        except (APIStatusError, APIConnectionError, APITimeoutError) as e2:
-            log.error("verify_claims_node.transport_error_after_reask", error=str(e2))
-            transport_failure = True
-            transport_attempts += 1
-    except (APIStatusError, APIConnectionError, APITimeoutError) as e:
-        log.error("verify_claims_node.transport_error", error=str(e))
-        transport_failure = True
-        transport_attempts += 1
-
-    if transport_failure:
-        return {
-            "verification_passed": False,
-            "feedback": "",
-            "retries": grounding_retries,  # legacy field: app.py / eval scripts
-            "grounding_retries": grounding_retries,
-            "transport_attempts": transport_attempts,
-            "termination_reason": "verifier_unavailable",
-        }
-
-    is_supported = verification.get("is_supported", False)
-    unsupported = verification.get("unsupported_claims", [])
-    # The verifier's reasoning stays in the backend log; the UI only shows
-    # a warning symbol on an unverified answer.
-    log.info("verify_claims_node.verdict", is_supported=is_supported,
-             reasoning=verification.get("reasoning"), unsupported_claims=unsupported)
-
-    feedback = ""
-    if not is_supported and unsupported:
-        feedback = "The following claims were NOT supported by the source text and must be removed or corrected:\n- " + "\n- ".join(unsupported)
-
-    new_grounding_retries = grounding_retries + (0 if is_supported else 1)
-
-    return {
-        "verification_passed": is_supported,
-        "feedback": feedback,
-        "retries": new_grounding_retries,  # legacy field: app.py / eval scripts
-        "grounding_retries": new_grounding_retries,
-        "transport_attempts": transport_attempts,
-        "termination_reason": "verified" if is_supported else None,
-    }
+    result: Dict[str, Any] = {"answer": answer}
+    missing = check_identifiers(answer, _format_chunks(chunks))
+    if missing:
+        result["unsupported_identifiers"] = missing
+        if status == "answered":
+            log.warning("generate_node.status_downgraded", unsupported_identifiers=missing)
+            status = "partial"
+    result["termination_reason"] = status
+    log.info("generate_node.done", status=status, unsupported_identifiers=missing)
+    return result

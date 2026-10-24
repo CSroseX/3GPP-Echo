@@ -1,7 +1,7 @@
 """Small LLM-call seam for the Phase 4 decision-nodes.
 
 triage makes one cheap, structured call (only for its ambiguous band). It
-goes through the same client/model as generate and verify (nodes/core.py) —
+goes through the same client/model as generate (nodes/core.py) —
 looked up at call time, so tests that monkeypatch
 `gen_nodes.client.chat.completions.create` intercept these calls too — and
 the node also accepts an injected `llm` callable with this signature, so

@@ -6,29 +6,27 @@ from src.config import get_settings
 
 
 class TestPromptChunkCap:
-    def test_generate_and_verify_prompts_cap_chunk_text(self):
-        from src.generation.nodes.core import _build_generate_messages, _build_verify_prompt
+    def test_generate_prompt_caps_chunk_text(self):
+        from src.generation.nodes.core import _build_generate_messages
 
         get_settings.cache_clear()
         cap = get_settings().prompt_chunk_char_cap
         chunks = [{"spec_id": "23.501", "clause_id": "1", "content": "y" * (cap * 2)}]
-        gen = _build_generate_messages("q", chunks, "")[1]["content"]
-        ver = _build_verify_prompt("a", chunks)
+        gen = _build_generate_messages("q", chunks)[1]["content"]
         assert "y" * cap in gen and "y" * (cap + 1) not in gen
-        assert "y" * cap in ver and "y" * (cap + 1) not in ver
 
 
 class TestMixedGenerationNote:
     def test_note_lists_both_generations_terms(self):
         from src.generation.nodes.core import _build_generate_messages
 
-        user = _build_generate_messages("q", [], "", generation_terms={"4g": ["MME"], "5g": ["UDM"]})[1]["content"]
+        user = _build_generate_messages("q", [], generation_terms={"4g": ["MME"], "5g": ["UDM"]})[1]["content"]
         assert "<NOTE>" in user and "MME" in user and "UDM" in user
 
     def test_no_note_for_single_generation(self):
         from src.generation.nodes.core import _build_generate_messages
 
-        assert "<NOTE>" not in _build_generate_messages("q", [], "")[1]["content"]
+        assert "<NOTE>" not in _build_generate_messages("q", [])[1]["content"]
 
 
 class TestReasoningEffort:

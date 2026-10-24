@@ -1,7 +1,8 @@
 """Input guardrail nodes around the answer cache.
 
-cache_lookup runs first: a cache hit ends the graph with the stored verified
-answer and no LLM call. cache_store runs after a verified answer and saves it.
+cache_lookup runs first: a cache hit ends the graph with the stored answer
+and no LLM call. cache_store runs after generate and saves only answers whose
+status is "answered" (never partial or not_covered ones).
 Both are no-ops when the graph is built without a cache (the eval runner
 builds it without one, so benchmark runs always exercise the full pipeline).
 
@@ -32,8 +33,7 @@ def make_cache_lookup_node(cache=None):
             "answer": hit["answer"],
             "chunks": hit["sources"],
             "cache_hit": hit["match"],
-            "verification_passed": True,
-            "termination_reason": "verified",
+            "termination_reason": "answered",
         }
 
     return cache_lookup_node
@@ -41,7 +41,7 @@ def make_cache_lookup_node(cache=None):
 
 def make_cache_store_node(cache=None):
     def cache_store_node(state: Dict[str, Any]) -> Dict[str, Any]:
-        if cache is not None and state.get("verification_passed") and state.get("answer"):
+        if cache is not None and state.get("termination_reason") == "answered" and state.get("answer"):
             sources = [{"spec_id": c.get("spec_id"), "clause_id": c.get("clause_id")}
                        for c in state.get("chunks") or []]
             cache.store(state["query"], state["answer"], sources)

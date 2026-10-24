@@ -2,7 +2,7 @@
 prefix-credit, over every golden-set question with retrieval_scored=true.
 
 Zero LLM tokens — this only exercises Retriever.search() against Qdrant,
-never the generate/verify graph. Safe to re-run anytime Qdrant is live.
+never the generation graph. Safe to re-run anytime Qdrant is live.
 
     python -m src.eval.retrieval_report
     python -m src.eval.retrieval_report --output eval/baselines/ablation_x.json

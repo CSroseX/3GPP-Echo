@@ -1,9 +1,8 @@
 """End-to-end runs of the compiled graph with every external dependency
 faked: retriever, embedder/centroids, the triage LLM seam, the answer cache,
-and the shared client generate/verify call. Asserts the node path each
-question takes and how many LLM calls (hence tokens) it spent."""
+and the shared client's generate call. Asserts the node path each question
+takes and how many LLM calls (hence tokens) it spent."""
 
-import json
 import types
 from unittest.mock import MagicMock
 
@@ -33,26 +32,16 @@ def far_embed(texts):
 
 
 class FakeClient:
-    """Stands in for gen_nodes.client.chat.completions.create: generate
-    calls return prose, verify calls (json_object) return a verdict."""
+    """Stands in for gen_nodes.client.chat.completions.create: every call is
+    a generate call answering with the given STATUS line."""
 
-    def __init__(self, verdicts):
-        self.verdicts = list(verdicts)
+    def __init__(self, status="answered"):
+        self.status = status
         self.generate_calls = 0
-        self.verify_calls = 0
 
     def create(self, **kwargs):
-        if kwargs.get("response_format") == {"type": "json_object"}:
-            self.verify_calls += 1
-            supported = self.verdicts.pop(0) if self.verdicts else False
-            content = json.dumps({
-                "is_supported": supported,
-                "reasoning": "fake",
-                "unsupported_claims": [] if supported else ["The AMF uses a 10-second timer."],
-            })
-        else:
-            self.generate_calls += 1
-            content = "The AMF handles registration and connection management."
+        self.generate_calls += 1
+        content = f"The AMF handles registration and connection management.\nSTATUS: {self.status}"
         return types.SimpleNamespace(choices=[types.SimpleNamespace(message=types.SimpleNamespace(content=content))])
 
 
@@ -85,7 +74,7 @@ def run(graph, query):
 @pytest.fixture
 def client(monkeypatch):
     get_settings.cache_clear()
-    fake = FakeClient(verdicts=[True])
+    fake = FakeClient()
     monkeypatch.setattr(gen_nodes.client.chat.completions, "create", fake.create)
     return fake
 
@@ -123,7 +112,7 @@ class TestOutOfDomain:
         assert path == ["cache_lookup", "triage", "refuse"]
         assert state["termination_reason"] == "out_of_domain"
         assert state["triage_tier"] == "centroid"  # cosine 0 < refuse_below: no LLM needed
-        assert client.generate_calls == 0 and client.verify_calls == 0
+        assert client.generate_calls == 0
         assert triage_llm.calls == 0  # zero tokens spent
         retriever.search.assert_not_called()
         assert state["chunks"] == []
@@ -131,22 +120,22 @@ class TestOutOfDomain:
 
 
 class TestAnswerPath:
-    def test_happy_path_is_two_llm_calls(self, client):
+    def test_happy_path_is_one_llm_call(self, client):
         retriever = MagicMock()
         retriever.search.return_value = chunks(8.0)
         graph, _ = make_graph(retriever)
 
         path, state = run(graph, "What is the role of the AMF?")
 
-        assert path == ["cache_lookup", "triage", "retrieve", "generate", "verify", "cache_store"]
-        assert state["termination_reason"] == "verified"
-        assert state["attempt"] == 1
+        assert path == ["cache_lookup", "triage", "retrieve", "generate", "cache_store"]
+        assert state["termination_reason"] == "answered"
+        assert "STATUS" not in state["answer"]
         assert len(state["chunks"]) == 5  # every retrieved chunk reaches generate
-        assert client.generate_calls == 1 and client.verify_calls == 1
+        assert client.generate_calls == 1
 
-    def test_verification_failure_keeps_the_answer_flagged(self, monkeypatch):
+    def test_partial_answer_ends_without_retry(self, monkeypatch):
         get_settings.cache_clear()
-        fake = FakeClient(verdicts=[False] * 10)
+        fake = FakeClient(status="partial")
         monkeypatch.setattr(gen_nodes.client.chat.completions, "create", fake.create)
         retriever = MagicMock()
         retriever.search.return_value = chunks(8.0)
@@ -154,22 +143,20 @@ class TestAnswerPath:
 
         path, state = run(graph, "What is the role of the AMF?")
 
-        max_retries = get_settings().max_retries
-        assert path[:3] == ["cache_lookup", "triage", "retrieve"]
-        assert path[3:-1] == ["generate", "verify"] * max_retries
-        assert path[-1] == "abstain"
-        assert state["termination_reason"] == "verification_failed"
-        assert state["answer"]  # still answered; the UI flags it with a warning
+        assert path == ["cache_lookup", "triage", "retrieve", "generate", "cache_store"]
+        assert state["termination_reason"] == "partial"
+        assert fake.generate_calls == 1
 
-    def test_empty_retrieval_still_answers(self, client):
+    def test_empty_retrieval_is_not_covered_with_zero_llm_calls(self, client):
         retriever = MagicMock()
         retriever.search.return_value = []
         graph, _ = make_graph(retriever)
 
         path, state = run(graph, "What is the role of the AMF?")
 
-        assert path[:4] == ["cache_lookup", "triage", "retrieve", "generate"]
-        assert client.generate_calls == 1
+        assert path == ["cache_lookup", "triage", "retrieve", "generate", "cache_store"]
+        assert state["termination_reason"] == "not_covered"
+        assert client.generate_calls == 0
 
 
 class TestCache:
@@ -185,16 +172,16 @@ class TestCache:
         assert path == ["cache_lookup"]
         assert state["answer"] == "Cached answer."
         assert state["cache_hit"] == "semantic"
-        assert client.generate_calls == 0 and client.verify_calls == 0 and triage_llm.calls == 0
+        assert client.generate_calls == 0 and triage_llm.calls == 0
         retriever.search.assert_not_called()
 
-    def test_only_verified_answers_are_stored(self, monkeypatch):
+    def test_only_answered_answers_are_stored(self, monkeypatch):
         get_settings.cache_clear()
         retriever = MagicMock()
         retriever.search.return_value = chunks(8.0)
 
-        for verdicts, expected_stores in (([True], 1), ([False] * 10, 0)):
-            fake = FakeClient(verdicts=verdicts)
+        for status, expected_stores in (("answered", 1), ("partial", 0), ("not_covered", 0)):
+            fake = FakeClient(status=status)
             monkeypatch.setattr(gen_nodes.client.chat.completions, "create", fake.create)
             cache = FakeCache()
             graph, _ = make_graph(retriever, answer_cache=cache)
@@ -211,8 +198,7 @@ class TestMixedGeneration:
         create = client.create
 
         def spy(**kwargs):
-            if kwargs.get("response_format") != {"type": "json_object"}:
-                prompts.append(kwargs["messages"][1]["content"])
+            prompts.append(kwargs["messages"][1]["content"])
             return create(**kwargs)
 
         monkeypatch.setattr(gen_nodes.client.chat.completions, "create", spy)

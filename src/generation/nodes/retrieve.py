@@ -75,12 +75,6 @@ def make_retrieve_node(retriever=None, *, retriever_factory=None):
 
         log.info("retrieve_node.done", query=query, retrieval_queries=queries, num_chunks=len(chunks))
 
-        result: Dict[str, Any] = {
-            "chunks": chunks,
-            "retrieval_scores": retrieval_scores,
-        }
-        if not chunks:
-            result["termination_reason"] = "insufficient_context"
-        return result
+        return {"chunks": chunks, "retrieval_scores": retrieval_scores}
 
     return retrieve_node

@@ -25,14 +25,11 @@ class TestSettingsDefaults:
         assert s.rerank_multiplier == 4
         assert s.hybrid_bm25 is False
         assert s.lineage_boost == 2.0
-        assert s.verify_top_k == 3
 
     def test_generation_defaults(self):
         s = Settings()
         assert s.generate_temperature == 0.3
-        assert s.verify_temperature == 0.0
-        assert s.verify_max_tokens == 2000
-        assert s.max_retries == 3
+        assert s.generate_max_tokens == 1000
 
     def test_chunking_defaults(self):
         s = Settings()
@@ -73,10 +70,10 @@ class TestSettingsEnvOverride:
         s = Settings()
         assert s.default_top_k == 10
 
-    def test_max_retries_override(self, monkeypatch):
-        monkeypatch.setenv("MAX_RETRIES", "5")
+    def test_generate_max_tokens_override(self, monkeypatch):
+        monkeypatch.setenv("GENERATE_MAX_TOKENS", "2000")
         s = Settings()
-        assert s.max_retries == 5
+        assert s.generate_max_tokens == 2000
 
     def test_embedding_model_override(self, monkeypatch):
         monkeypatch.setenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")

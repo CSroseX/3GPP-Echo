@@ -44,33 +44,24 @@ def show_answer_dialog(question, answer, status):
     st.markdown(f"**Status:** {status}")
 
 def render_assistant_message(message: dict):
-    """Render one assistant turn, switching on termination_reason so every
-    terminal state (not just the verified ones) gets a visible badge."""
+    """Render one assistant turn with a badge for its termination_reason:
+    the model's own status label (answered / partial / not_covered, after
+    the identifier check) or out_of_domain from triage."""
     termination_reason = message.get("termination_reason")
-    attempt = message.get("attempt", message.get("retries", 0))
     answer = message.get("content", "")
 
-    if termination_reason == "verified":
-        if attempt and attempt > 1:
-            badge = f"🔁 **Grounded (self-corrected)** (Attempt: {attempt})"
-        else:
-            badge = "✅ **Grounded**"
-        st.markdown(f"{badge}\n\n{answer}")
-        return
-
-
-    if termination_reason == "verifier_unavailable":
-        st.warning("⚠️ **Verifier unavailable** — the verification service could not be reached. The answer below was generated but not independently checked against the retrieved specs.")
+    if termination_reason == "answered":
+        st.markdown(f"✅ **Answered from the specs**\n\n{answer}")
+    elif termination_reason == "partial":
+        st.markdown(f"◐ **Partly covered by the specs**\n\n{answer}")
+    elif termination_reason == "not_covered":
+        st.warning("❓ **Not covered** — the specs indexed here don't answer this question.")
         st.markdown(answer)
     elif termination_reason == "out_of_domain":
         st.info("🚫 **Outside 3GPP scope** — this question isn't covered by TS 23.501 / 24.501 / 24.301.")
         st.markdown(answer)
-    elif termination_reason == "insufficient_context":
-        st.warning("❓ **Insufficient context** — the retrieved spec text didn't contain enough to answer confidently.")
+    else:  # legacy chat rows
         st.markdown(answer)
-    else:  # verification_failed, or missing/legacy rows
-        # Only a warning symbol; the verifier's reasoning is in the backend log.
-        st.markdown(f"⚠️ {answer}")
 
 def main():
     st.title("3GPP RAG Assistant")
@@ -119,7 +110,7 @@ def main():
 
                     chunks = final_state.get("chunks", [])
 
-                    # Refused (out_of_domain) and some abstained questions
+                    # Refused (out_of_domain) and not_covered questions can
                     # legitimately end with no chunks; render their badge.
                     if not chunks and not final_state.get("termination_reason"):
                         st.warning("No relevant chunks found in the database.")
@@ -129,10 +120,6 @@ def main():
                             "role": "assistant",
                             "content": final_state.get("answer", ""),
                             "termination_reason": final_state.get("termination_reason"),
-                            "attempt": final_state.get("attempt", final_state.get("retries", 0)),
-                            "retries": final_state.get("retries", 0),
-                            "feedback": final_state.get("feedback"),
-                            "abstention": final_state.get("abstention"),
                             "sources": chunks
                         }
                         render_assistant_message(assistant_message)

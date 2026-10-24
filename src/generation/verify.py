@@ -26,7 +26,7 @@ def main():
 
     inputs = {"query": query}
 
-    print("\n--- RETRIEVING, GENERATING & VERIFYING ANSWER ---")
+    print("\n--- RETRIEVING & GENERATING ANSWER ---")
     final_state = inputs.copy()
     with trace_query(query):
         for output in app.stream(inputs):
@@ -48,12 +48,10 @@ def main():
     print(final_state["answer"])
 
     print("\n" + "="*60)
-    print("VERIFICATION RESULT:")
+    print("ANSWER STATUS:")
     print("="*60)
-    print(f"Pass/Fail Verdict: {'PASS' if final_state.get('verification_passed') else 'FAIL'}")
     print(f"Termination Reason: {final_state.get('termination_reason')}")
-    print(f"Retry Count: {final_state.get('retries', 0)}")
-    print(f"Reasoning/Feedback:\n{final_state.get('feedback', 'None')}")
+    print(f"Identifiers not in the sources: {final_state.get('unsupported_identifiers') or 'none'}")
 
     print("\n" + "="*60)
     print("SOURCES USED (Retrieved Chunks):")

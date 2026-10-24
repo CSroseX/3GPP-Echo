@@ -1,4 +1,4 @@
-"""GraphState: the shape of data threaded through the generate/verify graph."""
+"""GraphState: the shape of data threaded through the generation graph."""
 
 from __future__ import annotations
 
@@ -10,16 +10,13 @@ class GraphState(TypedDict, total=False):
     query: str
     chunks: List[Dict[str, Any]]
     answer: str
-    verification_passed: bool
-    feedback: str
-    retries: int  # legacy counter kept for app.py / eval scripts; see `attempt`
 
-    # Phase 2: truthful counters and typed termination state.
-    attempt: int
-    grounding_retries: int
-    transport_attempts: int
+    # How the question ended (TERMINATION_REASONS): generate's own status
+    # label after the identifier check, or out_of_domain from refuse.
     termination_reason: Optional[str]
-    abstention: Optional[Dict[str, Any]]  # set by abstain_node on any non-verified exit
+    # Identifiers (T3510, #22, ATTACH REQUEST) in the answer that the source
+    # text never mentions; any of them downgrades "answered" to "partial".
+    unsupported_identifiers: Optional[List[str]]
 
     # Phase 4 decision-nodes.
     triage_decision: Optional[str]  # in_domain | out_of_domain
@@ -42,9 +39,8 @@ class GraphState(TypedDict, total=False):
 
 # Valid values for termination_reason once a terminal node is reached.
 TERMINATION_REASONS = {
-    "verified",
-    "verification_failed",
-    "insufficient_context",  # retrieval returned no chunks
+    "answered",  # the source text covers the whole question
+    "partial",  # covers part of it, no STATUS line, or an identifier isn't in the sources
+    "not_covered",  # covers none of it, retrieval found nothing, or the reply was empty
     "out_of_domain",
-    "verifier_unavailable",
 }

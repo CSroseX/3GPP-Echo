@@ -1,6 +1,6 @@
 """Answer cache for the input guardrail: a repeated question costs no LLM call.
 
-Only verified answers are stored. A question hits the cache when either
+Only answers labelled "answered" are stored. A question hits the cache when either
 1. its normalized text (lowercase, punctuation and spacing removed) equals a
    stored question's, or
 2. its embedding is at least `answer_cache_similarity` cosine-similar to a
@@ -12,7 +12,7 @@ almost identically but have different answers (5G vs 4G). Terms come from the
 corpus lexicon (acronyms and spec numbers), so no hand-written list is needed.
 
 Stored in SQLite so it survives restarts; the table is small (one row per
-distinct verified question), so lookups scan it in memory.
+distinct answered question), so lookups scan it in memory.
 """
 
 from __future__ import annotations

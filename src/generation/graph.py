@@ -6,16 +6,16 @@
               triage --out_of_domain--> refuse -> END
                  | in_domain (4G/5G-mixed questions get split retrieval queries)
                  v
-              retrieve -> generate -> verify --passed--> cache_store -> END
-                                         | failed, retries left -> generate
-                                         | failed, exhausted / verifier down -> abstain -> END
+              retrieve -> generate -> cache_store -> END
 
 cache_lookup + triage form the input guardrail: repeated questions cost no
 LLM call, off-topic ones are refused, and cross-generation traps are searched
-per generation. There is no separate "is the context sufficient?" step: the
-generate prompt itself answers what the sources cover and says plainly what
-they don't, and verify checks every claim. A failed verification still shows
-the answer, flagged unverified (abstain_node).
+per generation. generate is the only LLM call for an in-domain question: it
+answers from the retrieved chunks and labels its own answer answered /
+partial / not_covered, backed by a zero-LLM identifier check
+(src/generation/answer_status.py). There is no separate verifier call: it saw
+the same chunks as generate, and retrying against the same chunks rarely
+changed anything. cache_store keeps only "answered" answers.
 
 Every conditional edge is a pure function in src/generation/routers.py.
 """
@@ -23,16 +23,14 @@ Every conditional edge is a pure function in src/generation/routers.py.
 from langgraph.graph import END, START, StateGraph
 
 from src.generation.nodes import (
-    abstain_node,
     generate_node,
     make_cache_lookup_node,
     make_cache_store_node,
     make_retrieve_node,
     make_triage_node,
     refuse_node,
-    verify_claims_node,
 )
-from src.generation.routers import after_cache, after_triage, should_retry
+from src.generation.routers import after_cache, after_triage
 from src.generation.state import GraphState
 from src.obs.tracing import traced_node
 
@@ -73,9 +71,7 @@ def build_graph(retriever=None, *, embed=None, centroids_loader=None, triage_llm
         "refuse": refuse_node,
         "retrieve": make_retrieve_node(retriever_factory=get_retriever),
         "generate": generate_node,
-        "verify": verify_claims_node,
         "cache_store": make_cache_store_node(answer_cache),
-        "abstain": abstain_node,
     }
     for name, node in nodes.items():
         workflow.add_node(name, traced_node(name, node))
@@ -86,17 +82,7 @@ def build_graph(retriever=None, *, embed=None, centroids_loader=None, triage_llm
     workflow.add_conditional_edges("triage", after_triage, {"retrieve": "retrieve", "refuse": "refuse"})
     workflow.add_edge("refuse", END)
     workflow.add_edge("retrieve", "generate")
-    workflow.add_edge("generate", "verify")
-    workflow.add_conditional_edges(
-        "verify",
-        should_retry,
-        {
-            END: "cache_store",
-            "generate": "generate",
-            "flag_unverified": "abstain",
-        }
-    )
+    workflow.add_edge("generate", "cache_store")
     workflow.add_edge("cache_store", END)
-    workflow.add_edge("abstain", END)
 
     return workflow.compile()

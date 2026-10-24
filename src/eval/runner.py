@@ -1,4 +1,4 @@
-"""Eval runner: executes the golden set through the generate/verify graph.
+"""Eval runner: executes the golden set through the generation graph.
 
 Rewrite of eval/run_eval.py (kept as-is; this module supersedes it going
 forward). Three defects fixed:
@@ -42,6 +42,7 @@ import os
 import subprocess
 import sys
 import time
+from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -57,13 +58,6 @@ from src.retrieval.retriever import Retriever
 GOLDEN_SET_PATH = Path(__file__).resolve().parent.parent.parent / "eval" / "golden" / "golden_set.v1.json"
 DEFAULT_RESULTS_PATH = Path(__file__).resolve().parent.parent.parent / "eval" / "runner_results.json"
 
-REFUSAL_KEYWORDS = [
-    "cannot answer", "out of scope", "only answer 3gpp",
-    "sorry", "cannot provide", "not provided in the",
-    "do not have information", "not supported by",
-]
-
-
 class ResultsFileCorruptError(Exception):
     """Raised when an existing results file exists but is not valid JSON."""
 
@@ -71,11 +65,6 @@ class ResultsFileCorruptError(Exception):
 class GoldenSetDriftError(Exception):
     """Raised when resuming against a results file whose recorded golden-set
     hash no longer matches the current golden set on disk."""
-
-
-def is_refusal(answer: str) -> bool:
-    lower_ans = answer.lower()
-    return any(kw in lower_ans for kw in REFUSAL_KEYWORDS)
 
 
 def load_golden_set(path: Path = GOLDEN_SET_PATH) -> List[Dict[str, Any]]:
@@ -139,13 +128,13 @@ def atomic_write_json(path: Path, payload: Dict[str, Any]) -> None:
 # flagged a 4G/5G-mixed question and split its retrieval.
 DECISION_FIELDS = (
     "cache_hit", "triage_decision", "triage_tier", "triage_score",
-    "mixed_generation", "retrieval_queries", "attempt", "grounding_retries", "transport_attempts",
+    "mixed_generation", "retrieval_queries", "unsupported_identifiers",
 )
 
 
 def run_metadata(cfg) -> Dict[str, Any]:
     """What a run needs to be reproducible: the code version and every
-    setting it ran with (env overrides such as MAX_RETRIES included).
+    setting it ran with (env overrides such as RERANKER_MODEL included).
     Secrets are left out."""
     root = cfg.project_root
     try:
@@ -196,11 +185,6 @@ def run_one_question(app, item: Dict[str, Any], recorder: Optional[RunRecorder] 
 
     chunks = final_state.get("chunks", [])
 
-    if final_state.get("verification_passed"):
-        status = "verified_after_retry" if final_state.get("retries", 0) > 0 else "verified"
-    else:
-        status = "flagged_unverified"
-
     result = {
         "id": item["id"],
         "question": question,
@@ -208,20 +192,12 @@ def run_one_question(app, item: Dict[str, Any], recorder: Optional[RunRecorder] 
         "expected_behavior": item.get("expected_behavior", ""),
         "generated_answer": final_state.get("answer", ""),
         "sources": [{"spec_id": c.get("spec_id"), "clause_id": c.get("clause_id")} for c in chunks],
-        "verification_passed": final_state.get("verification_passed", False),
-        "retries": final_state.get("retries", 0),
         "termination_reason": final_state.get("termination_reason"),
-        "status": status,
-        "feedback": final_state.get("feedback", ""),
         "decisions": decision_signals(final_state),
     }
     if recorder is not None:
         recorder.end_question(
             termination_reason=result["termination_reason"],
-            status=status,
-            verification_passed=result["verification_passed"],
-            attempt=final_state.get("attempt"),
-            retries=result["retries"],
             sources=result["sources"],
             decisions=result["decisions"],
         )
@@ -273,9 +249,9 @@ def run(
             types=types,
             **run_metadata(cfg),
         )
-        # Worst case per question: each of 1 + max_retries generate/verify
-        # rounds can take a banned-phrase rephrase and a JSON reask (4 calls).
-        worst_case_calls = 4 * (1 + cfg.max_retries)
+        # Worst case per question: one generate call plus one banned-phrase
+        # rephrase (triage's LLM tier only runs for off-topic-looking ones).
+        worst_case_calls = 3
         calls_before_run = len(usage_since(0))
         try:
             for idx, item in enumerate(pending, start=1):
@@ -298,12 +274,6 @@ def run(
                     "results": [results_by_id[k] for k in sorted(results_by_id)],
                 })
 
-                # Under a call cap, a provider error (402, 429, timeout) stops
-                # the run: the SDK's own retries already spent extra requests.
-                if max_llm_calls is not None and result["termination_reason"] == "verifier_unavailable":
-                    print("\nStopping: the LLM provider returned an error; not spending more calls.")
-                    break
-
                 if idx < len(pending):
                     time.sleep(sleep_time)
         finally:
@@ -316,39 +286,29 @@ def run(
 
 
 def print_summary(results: List[Dict[str, Any]]) -> None:
+    """Counts of each termination_reason, overall and per question type.
+    These are the model's own labels; correctness is judged separately
+    against each question's expected answer."""
     total = len(results)
     if total == 0:
         print("No results to summarize.")
         return
 
-    passed = sum(1 for r in results if r["verification_passed"])
-    retried = sum(1 for r in results if r["retries"] > 0)
-    flagged = sum(1 for r in results if r["status"] == "flagged_unverified")
-
-    out_of_scope = [r for r in results if r["type"] == "out_of_scope"]
-    oos_refusals = sum(
-        1 for r in out_of_scope
-        if is_refusal(r["generated_answer"]) or len(r["sources"]) == 0 or "flagged" in r["status"]
-    )
-
-    adversarial = [r for r in results if r["type"] == "adversarial"]
-    adv_caught = sum(1 for r in adversarial if r["retries"] > 0)
-
     print("\n" + "=" * 60)
-    print("EVALUATION AGGREGATE METRICS")
+    print("EVALUATION SUMMARY (model's own status labels)")
     print("=" * 60)
     print(f"Total Questions: {total}")
-    print(f"Verification Pass Rate: {passed / total * 100:.1f}% ({passed}/{total})")
-    print(f"Retry Rate: {retried / total * 100:.1f}% ({retried}/{total})")
-    print(f"Flagged Rate: {flagged / total * 100:.1f}% ({flagged}/{total})")
-    if out_of_scope:
-        print(f"Refusal Accuracy (Out-of-Scope): {oos_refusals / len(out_of_scope) * 100:.1f}% ({oos_refusals}/{len(out_of_scope)})")
-    if adversarial:
-        print(f"Conflation Catch Rate (Adversarial): {adv_caught / len(adversarial) * 100:.1f}% ({adv_caught}/{len(adversarial)})")
+    for qtype in sorted({r["type"] for r in results}):
+        rows = [r for r in results if r["type"] == qtype]
+        counts = Counter(r["termination_reason"] for r in rows)
+        print(f"{qtype} ({len(rows)}): " + ", ".join(f"{k} {v}" for k, v in sorted(counts.items(), key=str)))
+    downgraded = [r["id"] for r in results if r.get("decisions", {}).get("unsupported_identifiers")]
+    if downgraded:
+        print(f"Answers with identifiers missing from the sources: {downgraded}")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run the golden set through the generate/verify graph.")
+    parser = argparse.ArgumentParser(description="Run the golden set through the generation graph.")
     parser.add_argument("--limit", type=int, default=None, help="Run only the first N selected questions.")
     parser.add_argument("--types", type=str, default=None,
                          help="Comma-separated question types to include (normal,adversarial,out_of_scope).")

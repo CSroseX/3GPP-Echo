@@ -198,7 +198,6 @@ class TestRefuseAndRouter:
         assert "out of scope" in result["answer"]
         assert result["chunks"] == []
         assert result["termination_reason"] == "out_of_domain"
-        assert result["abstention"]["termination_reason"] == "out_of_domain"
 
     def test_after_triage(self):
         assert after_triage({"triage_decision": "out_of_domain"}) == "refuse"

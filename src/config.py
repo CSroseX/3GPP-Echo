@@ -66,18 +66,14 @@ class Settings(BaseSettings):
     # 2.0 measured best (prefix recall@5 0.67 -> 0.75); it can also match
     # decoys (24.301 "GUTI" for a 5G-GUTI question), which the sweep didn't hit.
     lineage_boost: float = 2.0
-    verify_top_k: int = 3
 
     # ── Generation ──────────────────────────────────────────────────
     generate_temperature: float = 0.3
-    verify_temperature: float = 0.0
-    verify_max_tokens: int = 2000
     # Safety net on answer length; the prompt asks for brevity. For a
     # reasoning model (gpt-oss-20b) the cap also covers its hidden thinking
     # (a generate call measured 745 output tokens), so too low a cap returns
     # an empty answer.
     generate_max_tokens: int = 1000
-    max_retries: int = 3
 
     # ── Chunking ────────────────────────────────────────────────────
     chunk_soft_limit: int = 400
@@ -140,8 +136,8 @@ class Settings(BaseSettings):
     triage_llm_max_tokens: int = 10
     triage_sweep_margin: float = 0.02
 
-    # Per-chunk character cap on chunk text injected into the generate and
-    # verify prompts (prompt tokens are 66% of measured spend).
+    # Per-chunk character cap on chunk text injected into the generate
+    # prompt (prompt tokens are 66% of measured spend).
     prompt_chunk_char_cap: int = 2400
 
     @property

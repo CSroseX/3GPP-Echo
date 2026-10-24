@@ -198,11 +198,5 @@ def refuse_node(state: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "answer": REFUSAL_ANSWER,
         "chunks": [],
-        "verification_passed": False,
         "termination_reason": "out_of_domain",
-        "abstention": {
-            "found_clauses": [],
-            "unsupported_claims": [],
-            "termination_reason": "out_of_domain",
-        },
     }

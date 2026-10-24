@@ -18,7 +18,7 @@ class TestMakeRetrieveNode:
         assert len(result["chunks"]) == 2
         assert result["retrieval_scores"] == [0.95, 0.80]
 
-    def test_returns_empty_with_termination_reason_when_nothing_found(self):
+    def test_returns_empty_when_nothing_found(self):
         mock_retriever = MagicMock()
         mock_retriever.search.return_value = []
 
@@ -27,7 +27,7 @@ class TestMakeRetrieveNode:
 
         assert result["chunks"] == []
         assert result["retrieval_scores"] == []
-        assert result["termination_reason"] == "insufficient_context"
+        assert "termination_reason" not in result  # generate decides not_covered
 
     def test_no_termination_reason_when_chunks_found(self):
         mock_retriever = MagicMock()
