@@ -13,6 +13,11 @@ chunk in the top 5 / 10? Results are broken down by 5G / 4G / trap.
 
     python -m src.eval.retrieval_report --golden eval/golden/golden_set.v2.json \\
         --grades eval/pooling/v2/grades.json --output eval/baselines/v2_x.json
+
+With --pipeline, each question first goes through the triage guardrail, as
+in the app: a mixed 4G/5G question is searched as its 4G and 5G parts,
+merged round-robin. Triage's LLM tier is disabled (fails open), so this
+still spends zero tokens.
 """
 
 from __future__ import annotations
@@ -28,6 +33,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from src.config import get_settings
 from src.eval.metrics import score_chunk_grades, score_question
+from src.generation.nodes.retrieve import merge_ranked
+from src.generation.nodes.triage import make_triage_node
 from src.retrieval.retriever import Retriever
 
 GOLDEN_SET_PATH = "eval/golden/golden_set.v1.json"
@@ -67,6 +74,8 @@ def main():
     parser.add_argument("--golden", default=GOLDEN_SET_PATH, help="Golden set to score against.")
     parser.add_argument("--grades", default=None,
                         help="Pooling grades.json for chunk-level scoring (optional).")
+    parser.add_argument("--pipeline", action="store_true",
+                        help="Search the way the app does: triage guardrail first (no LLM tier).")
     args = parser.parse_args()
     output_path, golden_path = args.output, args.golden
 
@@ -80,15 +89,21 @@ def main():
 
     retriever = Retriever()
     candidate_k = cfg.rerank_multiplier * cfg.default_top_k
+    triage = make_triage_node(llm=lambda *a, **k: "") if args.pipeline else None
 
     per_question = []
     latencies_ms = []
 
     for q in scored_questions:
         start = time.perf_counter()
+        queries = [q["question"]]
+        if triage is not None:
+            routed = triage({"query": q["question"]})
+            queries = routed.get("retrieval_queries") or queries
         # Rerank the same candidate pool the app uses at default_top_k, so
         # this list's top-5 is exactly what the app would return.
-        results = retriever.search(q["question"], top_k=cfg.eval_top_k, candidate_k=candidate_k)
+        ranked = [retriever.search(text, top_k=cfg.eval_top_k, candidate_k=candidate_k) for text in queries]
+        results = ranked[0] if len(ranked) == 1 else merge_ranked(ranked, cfg.eval_top_k)
         elapsed_ms = (time.perf_counter() - start) * 1000
         latencies_ms.append(elapsed_ms)
 
@@ -99,6 +114,7 @@ def main():
             "id": q["id"],
             "group": question_group(q),
             "question": q["question"],
+            "retrieval_queries": queries,
             "gold_clauses": q["gold_clauses"],
             "latency_ms": round(elapsed_ms, 1),
             "top_5": [f'{r["spec_id"]}/{r["clause_id"]}' for r in results[:5]],
@@ -171,6 +187,7 @@ def main():
             "reranker_model": cfg.reranker_model,
             "hybrid_bm25": cfg.hybrid_bm25,
             "lineage_boost": cfg.lineage_boost,
+            "pipeline": args.pipeline,
         },
         "summary": summary,
         "per_question": per_question,
