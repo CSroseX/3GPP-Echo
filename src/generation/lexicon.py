@@ -17,7 +17,9 @@ hand-written list of domain keywords. Three sources feed it:
 
 Per-generation affinity (4G vs 5G) is also measured, not asserted: an
 acronym is 4G-affine when its rate in the EPS spec(s) dwarfs its rate in
-the 5G specs (MME, EMM, ESM), and vice versa (AMF, UDM, SMF).
+the 5G specs (MME, EMM, ESM), and vice versa (AMF, UDM, SMF). Two-word
+phrases get the same treatment, so procedure and message names written in
+plain words ("attach request", "tracking area") carry a generation too.
 """
 
 from __future__ import annotations
@@ -36,6 +38,8 @@ from src.config import get_settings
 TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9-]*")
 _PAREN_DEF_RE = re.compile(r"\(([A-Za-z0-9][A-Za-z0-9-]{1,14})\)")
 _TITLE_WORD_RE = re.compile(r"[a-z]{3,}")
+# Lowercased words for phrase affinity; "5gmm" stays one word.
+_PHRASE_WORD_RE = re.compile(r"(?<![a-z0-9-])[a-z0-9][a-z0-9-]*[a-z][a-z0-9-]*")
 
 # English function words. These are grammar, not domain vocabulary — they
 # only stop a clause-title bigram like "of the" from becoming a domain term.
@@ -130,6 +134,7 @@ class DomainLexicon:
     acronym_freq: Dict[str, int] = field(default_factory=dict)
     title_bigrams: Set[Tuple[str, str]] = field(default_factory=set)
     generation: Dict[str, str] = field(default_factory=dict)  # acronym -> "4g" | "5g"
+    phrase_generation: Dict[str, str] = field(default_factory=dict)  # "attach request" -> "4g"
     spec_ids: Set[str] = field(default_factory=set)
     clause_ids: Set[str] = field(default_factory=set)
 
@@ -187,6 +192,24 @@ class DomainLexicon:
             return "4g"
         return self.generation.get(acronym)
 
+    def find_generation_phrases(self, text: str) -> List[Tuple[str, str]]:
+        """(phrase, "4g" | "5g") for every generation-affine two-word phrase
+        in text, lowercased, first-seen order."""
+        out: List[Tuple[str, str]] = []
+        for bigram in _phrase_bigrams(_PHRASE_WORD_RE.findall(text.lower())):
+            gen = self.phrase_generation.get(bigram)
+            if gen and (bigram, gen) not in out:
+                out.append((bigram, gen))
+        return out
+
+
+def _phrase_bigrams(words: List[str]) -> List[str]:
+    """Adjacent content-word pairs. Words carrying a generation prefix
+    ("5gmm", "4g-guti") are left to generation_of's naming rule."""
+    def ok(w: str) -> bool:
+        return len(w) >= 3 and w not in FUNCTION_WORDS and not w.startswith(("5g", "4g"))
+    return [f"{a} {b}" for a, b in zip(words, words[1:]) if ok(a) and ok(b)]
+
 
 def _iter_chunk_files(chunk_dir: Path) -> List[str]:
     return sorted(glob.glob(str(chunk_dir / "*_chunks.json")))
@@ -202,6 +225,9 @@ def build_lexicon(chunks: Iterable[Dict[str, Any]]) -> DomainLexicon:
     lower_word_counts: Counter = Counter()
     per_spec_counts: Dict[str, Counter] = defaultdict(Counter)
     per_spec_tokens: Counter = Counter()
+    eps_specs = set(cfg.rewrite_4g_spec_ids)
+    fivegs_specs = set(cfg.rewrite_5g_spec_ids)
+    phrase_counts = {"4g": Counter(), "5g": Counter()}
     title_bigrams: Set[Tuple[str, str]] = set()
     spec_ids: Set[str] = set()
     clause_ids: Set[str] = set()
@@ -227,6 +253,9 @@ def build_lexicon(chunks: Iterable[Dict[str, Any]]) -> DomainLexicon:
         per_spec_counts[spec_id].update(tokens)
         per_spec_tokens[spec_id] += len(tokens)
         lower_word_counts.update(t.lower() for t in tokens if t.islower() or re.fullmatch(r"[A-Z][a-z]+", t))
+        group = "4g" if spec_id in eps_specs else "5g" if spec_id in fivegs_specs else None
+        if group:
+            phrase_counts[group].update(_phrase_bigrams(_PHRASE_WORD_RE.findall(text.lower())))
 
         title_words = _TITLE_WORD_RE.findall(title.lower())
         for a, b in zip(title_words, title_words[1:]):
@@ -280,6 +309,18 @@ def build_lexicon(chunks: Iterable[Dict[str, Any]]) -> DomainLexicon:
     long_forms = {k: v for k, v in long_forms.items() if k in acronyms}
 
     generation = _generation_affinity(acronyms, per_spec_counts, per_spec_tokens)
+    n4 = sum(per_spec_tokens[s] for s in eps_specs) or 1
+    n5 = sum(per_spec_tokens[s] for s in fivegs_specs) or 1
+    phrase_generation = {}
+    for phrase in phrase_counts["4g"].keys() | phrase_counts["5g"].keys():
+        c4, c5 = phrase_counts["4g"][phrase], phrase_counts["5g"][phrase]
+        if c4 + c5 < cfg.rewrite_phrase_min_freq:
+            continue
+        ratio = ((c4 + 1) / n4) / ((c5 + 1) / n5)
+        if ratio >= cfg.rewrite_phrase_affinity_ratio:
+            phrase_generation[phrase] = "4g"
+        elif 1 / ratio >= cfg.rewrite_phrase_affinity_ratio:
+            phrase_generation[phrase] = "5g"
 
     return DomainLexicon(
         long_forms=long_forms,
@@ -287,6 +328,7 @@ def build_lexicon(chunks: Iterable[Dict[str, Any]]) -> DomainLexicon:
         acronym_freq=acronym_freq,
         title_bigrams=title_bigrams,
         generation=generation,
+        phrase_generation=phrase_generation,
         spec_ids=spec_ids,
         clause_ids=clause_ids,
     )

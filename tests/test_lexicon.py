@@ -132,3 +132,35 @@ class TestRealCorpusLexicon:
         lex = get_lexicon()
         hits = lex.find_long_forms("What does the access and mobility management function do?")
         assert ("access and mobility management function", "AMF") in hits
+
+
+class TestPhraseGeneration:
+    def make(self, monkeypatch):
+        monkeypatch.setenv("REWRITE_PHRASE_MIN_FREQ", "2")
+        monkeypatch.setenv("REWRITE_PHRASE_AFFINITY_RATIO", "2")
+        get_settings_cache_clear()
+        chunks = [
+            _chunk("24.301", "5.5", "The UE sends an attach request. Attach request again. Attach request."),
+            _chunk("24.501", "5.5", "The UE sends a registration request. Registration request. 5GMM state."),
+            _chunk("24.301", "5.6", "5GMM state 5GMM state 5GMM state handling in interworking."),
+        ]
+        lex = build_lexicon(chunks)
+        monkeypatch.delenv("REWRITE_PHRASE_MIN_FREQ")
+        monkeypatch.delenv("REWRITE_PHRASE_AFFINITY_RATIO")
+        get_settings_cache_clear()
+        return lex
+
+    def test_phrase_affinity_is_measured(self, monkeypatch):
+        lex = self.make(monkeypatch)
+        assert lex.find_generation_phrases("Does an Attach Request reach the AMF?") == [("attach request", "4g")]
+        assert ("registration request", "5g") in lex.find_generation_phrases("a registration request")
+
+    def test_generation_prefixed_words_are_left_to_naming_rule(self, monkeypatch):
+        lex = self.make(monkeypatch)
+        assert lex.find_generation_phrases("which 5GMM state") == []
+
+
+def get_settings_cache_clear():
+    from src.config import get_settings
+
+    get_settings.cache_clear()

@@ -13,7 +13,8 @@ all driven by the corpus lexicon (src/generation/lexicon.py):
    acronym appended, so dense retrieval sees both surface forms.
 3. Split a cross-generation question (an EPS/4G term and a 5G term in the
    same query, e.g. "does the MME talk to the UDM?") into a 4G part and a
-   5G part, retrieved separately. The 4G part is pinned to the EPS spec,
+   5G part, retrieved separately. Terms are acronyms or two-word phrases
+   ("attach request"); each part drops the other generation's terms. The 4G part is pinned to the EPS spec,
    so the 4G side of the comparison is actually in context — the
    cross-spec conflation this corpus was chosen to expose.
 """
@@ -92,6 +93,25 @@ def _remove_terms(text: str, terms: List[str]) -> str:
     return _tidy(text)
 
 
+def _remove_phrases(text: str, phrases: List[str]) -> str:
+    """Cut every occurrence of the (lowercase, two-word) phrases, case-
+    insensitively; overlapping hits ("tracking area" + "area update") are
+    merged so the whole run goes."""
+    spans = []
+    for phrase in phrases:
+        pattern = r"(?<![A-Za-z0-9-])" + r"\s+".join(map(re.escape, phrase.split())) + r"(?![A-Za-z0-9-])"
+        spans += [m.span() for m in re.finditer(pattern, text, re.IGNORECASE)]
+    merged: List[List[int]] = []
+    for start, end in sorted(spans):
+        if merged and start <= merged[-1][1] + 1:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    for start, end in reversed(merged):
+        text = text[:start] + " " + text[end:]
+    return _tidy(text)
+
+
 def rewrite_query(query: str, lex: Optional[DomainLexicon] = None) -> List[str]:
     """Deterministic rewrite: returns one query, or two (4G part, 5G part)
     for a cross-generation question."""
@@ -108,9 +128,12 @@ def rewrite_query(query: str, lex: Optional[DomainLexicon] = None) -> List[str]:
 
     terms_4g = [t for t in terms if lex.generation_of(t) == "4g"]
     terms_5g = [t for t in terms if lex.generation_of(t) == "5g"]
+    phrases = lex.find_generation_phrases(core)
+    phrases_4g = [p for p, gen in phrases if gen == "4g"]
+    phrases_5g = [p for p, gen in phrases if gen == "5g"]
 
-    if terms_4g and terms_5g:
-        part_4g = _remove_terms(core, terms_5g)
+    if (terms_4g or phrases_4g) and (terms_5g or phrases_5g):
+        part_4g = _remove_phrases(_remove_terms(core, terms_5g), phrases_5g)
         part_4g = _tidy(" ".join([part_4g] + _expansions(part_4g, terms_4g, lex)))
         # Pin the 4G part to the EPS spec when there is exactly one and the
         # user didn't already name a spec: "TS 24.301" puts the retriever
@@ -118,7 +141,7 @@ def rewrite_query(query: str, lex: Optional[DomainLexicon] = None) -> List[str]:
         if len(cfg.rewrite_4g_spec_ids) == 1 and not _SPEC_RE.search(query):
             part_4g = f"{part_4g} TS {cfg.rewrite_4g_spec_ids[0]}"
 
-        part_5g = _remove_terms(core, terms_4g)
+        part_5g = _remove_phrases(_remove_terms(core, terms_4g), phrases_4g)
         part_5g = _tidy(" ".join([part_5g] + _expansions(part_5g, terms_5g, lex)))
         return [part_4g, part_5g]
 

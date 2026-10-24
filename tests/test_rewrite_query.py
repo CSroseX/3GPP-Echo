@@ -71,3 +71,23 @@ class TestRewriteQuery:
         # Golden-set Q7, against the corpus-derived lexicon.
         out = rewrite_query("When an MME receives an Attach Request, does it communicate with the UDM?")
         assert len(out) == 2
+
+
+class TestPhraseSplit:
+    def lex(self):
+        lex = fake_lexicon()
+        lex.phrase_generation = {"attach request": "4g", "tracking area": "4g", "area update": "4g"}
+        return lex
+
+    def test_phrase_makes_a_question_mixed(self):
+        parts = rewrite_query("What timer does the AMF use for a Tracking Area Update?", self.lex())
+        assert len(parts) == 2
+
+    def test_5g_part_drops_the_whole_4g_phrase_run(self):
+        part_4g, part_5g = rewrite_query("What timer does the AMF use for a Tracking Area Update?", self.lex())
+        assert "Tracking" not in part_5g and "Update" not in part_5g
+        assert "Tracking Area Update" in part_4g and "AMF" not in part_4g
+
+    def test_5g_part_drops_4g_phrase_next_to_4g_acronym(self):
+        _, part_5g = rewrite_query("When an MME receives an Attach Request, does it talk to the UDM?", self.lex())
+        assert "Attach" not in part_5g and "MME" not in part_5g and "UDM" in part_5g

@@ -76,16 +76,18 @@ def lexical_signals(query: str, lex: DomainLexicon) -> Dict[str, List[str]]:
     }
 
 
-def generation_terms(signals: Dict[str, List[str]], lex: DomainLexicon) -> Dict[str, List[str]]:
-    """The question's 4G-affine and 5G-affine terms (acronyms, and long
-    forms mapped to their acronym), each in first-seen order."""
+def generation_terms(signals: Dict[str, List[str]], lex: DomainLexicon, query: str = "") -> Dict[str, List[str]]:
+    """The question's 4G-affine and 5G-affine terms (acronyms, long forms
+    mapped to their acronym, then two-word phrases such as "attach
+    request"), each in first-seen order."""
     terms: List[str] = list(signals.get("acronyms", []))
     for phrase, acronym in lex.find_long_forms(" ".join(signals.get("long_forms", []))):
         if acronym not in terms:
             terms.append(acronym)
+    phrases = lex.find_generation_phrases(query)
     return {
-        "4g": [t for t in terms if lex.generation_of(t) == "4g"],
-        "5g": [t for t in terms if lex.generation_of(t) == "5g"],
+        gen: [t for t in terms if lex.generation_of(t) == gen] + [p for p, g in phrases if g == gen]
+        for gen in ("4g", "5g")
     }
 
 
@@ -178,7 +180,7 @@ def make_triage_node(
             "termination_reason": "out_of_domain" if decision == "out_of_domain" else None,
         }
         if decision == "in_domain":
-            gens = generation_terms(signals, lex)
+            gens = generation_terms(signals, lex, query)
             if gens["4g"] and gens["5g"]:
                 result["mixed_generation"] = True
                 result["generation_terms"] = gens

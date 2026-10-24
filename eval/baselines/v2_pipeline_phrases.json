@@ -1,0 +1,1506 @@
+{
+  "golden_set_path": "eval/golden/golden_set.v2.json",
+  "grades_path": "eval/pooling/v2/grades.json",
+  "config": {
+    "default_top_k": 5,
+    "rerank_multiplier": 4,
+    "candidate_k": 20,
+    "eval_top_k": 20,
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "hybrid_bm25": false,
+    "lineage_boost": 2.0,
+    "pipeline": true
+  },
+  "summary": {
+    "n_questions": 29,
+    "strict": {
+      "mean_recall_at_5": 0.5115,
+      "mean_recall_at_20": 0.6494,
+      "mean_mrr": 0.4367,
+      "mean_ndcg_at_10": 0.4368
+    },
+    "prefix_credit": {
+      "mean_recall_at_5": 0.5747,
+      "mean_recall_at_20": 0.7126,
+      "mean_mrr": 0.4999,
+      "mean_ndcg_at_10": 0.4869
+    },
+    "latency_ms": {
+      "p50": 1551.6,
+      "p95": 3461.2
+    },
+    "chunk_level": {
+      "answer_at_5": "17/29",
+      "answer_at_10": "20/29",
+      "relevant_at_5": "26/29",
+      "answer_at_5_by_group": {
+        "4G": "6/8",
+        "5G": "8/13",
+        "trap": "3/8"
+      },
+      "unjudged_in_top_5": 0
+    }
+  },
+  "per_question": [
+    {
+      "id": 1,
+      "group": "5G",
+      "question": "What is the role of the AMF in the 5G system architecture?",
+      "retrieval_queries": [
+        "What is the role of the AMF in the 5G system architecture?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        }
+      ],
+      "latency_ms": 4040.5,
+      "top_5": [
+        "23.501/4.2.2",
+        "23.501/5.19.2",
+        "23.501/4.2.7",
+        "23.501/5.21.2.1",
+        "23.501/4.1"
+      ],
+      "top_5_chunk_ids": [
+        "c97e0518a317940786e088e5920c5b6860ef39eb",
+        "aeee3da688c9545a913a6058648e93336c1f9500",
+        "87e9d175f336924ae2348de50e3aebff53688bd5",
+        "c9456757468b40ffe64c563392e391a05b7b7ce2",
+        "dc7265cc9a32e27a8feb34d00067dcb0aa9caee3"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.16666666666666666,
+        "ndcg_at_10": 0.3562071871080222
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.16666666666666666,
+        "ndcg_at_10": 0.3562071871080222
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 6,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 2,
+      "group": "5G",
+      "question": "How does the UE initiate a PDU session establishment in 5GS?",
+      "retrieval_queries": [
+        "How does the UE initiate a PDU session establishment in 5GS?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.1"
+        }
+      ],
+      "latency_ms": 1493.0,
+      "top_5": [
+        "24.501/6.4.1.2",
+        "24.501/6.4.3.2",
+        "24.501/6.4.1.1",
+        "24.501/6.4.1.2",
+        "24.501/6.4.1.2"
+      ],
+      "top_5_chunk_ids": [
+        "6ecfa2722ff8e4ec9b6d8d10bc2c8a30d0e1a2bf",
+        "ccd5a9804a2f5a868f86c06462f931ea31925c3a",
+        "03beed12ddffd09500960121b239e23eb14cd17b",
+        "2658188fd365583b1fd23207d001f3c99444691e",
+        "4bbcf82f70cd48b483ba03910a569ddd8939c3c1"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.9197207891481876
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.9197207891481876
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 3,
+      "group": "5G",
+      "question": "Which network function is responsible for selecting the SMF?",
+      "retrieval_queries": [
+        "Which network function is responsible for selecting the SMF?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.2"
+        }
+      ],
+      "latency_ms": 1477.8,
+      "top_5": [
+        "23.501/5.16.3.11",
+        "23.501/6.3.2",
+        "23.501/5.16.4.5",
+        "23.501/6.3.2",
+        "23.501/5.15.5.3"
+      ],
+      "top_5_chunk_ids": [
+        "b9b2192940b2f7581ef99b01b19224c1a771d126",
+        "caf967780228285f4d6f17669c78415b6230ae82",
+        "90c6dbc63291e6f118c71cacd73cbde20538ba4a",
+        "af409185a0dec0d4bf9d8a9bafc5338755bafc95",
+        "7f318ef48f205aed64011980098d53a9265c0940"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.5,
+        "ndcg_at_10": 0.6309297535714575
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.5,
+        "ndcg_at_10": 0.6309297535714575
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 2,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 4,
+      "group": "5G",
+      "question": "What is the structure of the 5G-GUTI?",
+      "retrieval_queries": [
+        "What is the structure of the 5G-GUTI?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.9.4"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "9.11.3.4"
+        }
+      ],
+      "latency_ms": 1719.9,
+      "top_5": [
+        "24.501/5.3.3",
+        "23.501/5.9.4",
+        "24.501/9.11.3.4",
+        "24.501/8.2.7.2",
+        "24.501/5.3.3"
+      ],
+      "top_5_chunk_ids": [
+        "fa182e8a2b890c62ba793ec09867bacb8df2f69b",
+        "db5d3d44ffce847e8c60218997d724990947463f",
+        "1f449976d22e30dd34f2c837020e123c89ce9ea0",
+        "c47f2ac5836152efb517149255de684d9ebcc901",
+        "2b20936ed81a51a119367a908b46e607e6066b70"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.5,
+        "ndcg_at_10": 0.6934264036172708
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.5,
+        "ndcg_at_10": 0.6934264036172708
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 5,
+      "group": "5G",
+      "question": "Describe the states of 5GMM (5GS Mobility Management) in the UE.",
+      "retrieval_queries": [
+        "Describe the states of 5GMM (5GS Mobility Management) in the UE."
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.1.3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.1.3.1"
+        }
+      ],
+      "latency_ms": 1514.7,
+      "top_5": [
+        "24.501/5.1.3.1",
+        "24.501/5.2.1",
+        "24.501/4.2",
+        "24.501/5.1.1",
+        "24.501/5.1.3.2.1.2.1"
+      ],
+      "top_5_chunk_ids": [
+        "46acaa376fefdc77eee9bf0d6d26c3c4c2c33484",
+        "e39874a683a8e943099d4576f026772b5031c217",
+        "7512de23cb30b6c020e7657bda7ee36367d0092c",
+        "e7f98694f6d838eb8c4008caa28a683ab5c9c114",
+        "2e0018cee659c9240a2e0239903f8f5105ae4a07"
+      ],
+      "strict": {
+        "recall_at_5": 0.5,
+        "recall_at_20": 0.5,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.6131471927654584
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.8503449055347546
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 5,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 6,
+      "group": "5G",
+      "question": "What is the purpose of the Network Slice Selection Assistance Information (NSSAI)?",
+      "retrieval_queries": [
+        "What is the purpose of the Network Slice Selection Assistance Information (NSSAI)?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.2"
+        }
+      ],
+      "latency_ms": 1503.8,
+      "top_5": [
+        "24.501/9.11.3.36",
+        "23.501/6.2.14",
+        "23.501/5.15.2.1",
+        "23.501/5.15.5.3",
+        "23.501/5.15.4.1.1"
+      ],
+      "top_5_chunk_ids": [
+        "67b1892c48f86447419c99b0a6d8ac770b96fae9",
+        "4251d9be448fb1be3e4f6146530d5ca1f47df821",
+        "6de759c6e7ec6fe10ed73fe480b63d509aa91f61",
+        "5b2255279911a1717dfbca639ab97232162ef152",
+        "e28bdd9f7422845171af4ffb471d22952b083f77"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.5,
+        "recall_at_20": 0.5,
+        "mrr": 0.3333333333333333,
+        "ndcg_at_10": 0.3065735963827292
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 10,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 7,
+      "group": "trap",
+      "question": "When an MME receives an Attach Request, does it communicate with the UDM?",
+      "retrieval_queries": [
+        "an MME receives an Attach Request, does it communicate with the Mobility Management Entity TS 24.301",
+        "an receives an, does it communicate with the UDM Unified Data Management"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.7"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.17.2.1"
+        }
+      ],
+      "latency_ms": 3057.5,
+      "top_5": [
+        "24.301/5.5.1.2.4",
+        "23.501/6.2.7",
+        "24.301/5.5.1.2.5",
+        "23.501/6.2.11",
+        "24.301/5.5.1.2.7"
+      ],
+      "top_5_chunk_ids": [
+        "d0642a1054807187a081cb9b095ff2a6db678401",
+        "9544a547fe91e920e3da81f92e2a7a59382ebba3",
+        "3d2aa4b0b9d0a0287ca4e8ecd48ef7390b2bf174",
+        "fa2636fea0a97be971c133524985739875e48aea",
+        "611fd26ea297f8bb0bf748ed799e97e868fbe4d7"
+      ],
+      "strict": {
+        "recall_at_5": 0.3333333333333333,
+        "recall_at_20": 0.3333333333333333,
+        "mrr": 0.5,
+        "ndcg_at_10": 0.2960819109658652
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.3333333333333333,
+        "recall_at_20": 0.3333333333333333,
+        "mrr": 0.5,
+        "ndcg_at_10": 0.2960819109658652
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 0,
+        "relevant_at_5": 1,
+        "first_answer_rank": null,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 8,
+      "group": "trap",
+      "question": "What timer does the AMF use for a Tracking Area Update in EPS?",
+      "retrieval_queries": [
+        "timer does the use for a Tracking Area Update in EPS Evolved Packet System TS 24.301",
+        "timer does the AMF use for a in Access and Mobility Management Function"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.3.5"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.7"
+        }
+      ],
+      "latency_ms": 3176.5,
+      "top_5": [
+        "24.301/5.2.3.2.2",
+        "23.501/6.2.1",
+        "24.301/5.5.3.2.6",
+        "23.501/5.19.7.2",
+        "24.301/5.5.3.3.5"
+      ],
+      "top_5_chunk_ids": [
+        "b0360444332398841e8c82946c07695c4cc6e77f",
+        "44a642f4f693fc0849f1d9fbd09536c809c3ba0e",
+        "b28654c74f1405aa4084eae66f40206393d67ac3",
+        "b1bd3c974160ef7d9bb86caf62638cc9f9b8d5d6",
+        "955c1049e45e0738886f7d0ccb943c702581646c"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.07142857142857142,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.07142857142857142,
+        "ndcg_at_10": 0.0
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 0,
+        "relevant_at_5": 0,
+        "first_answer_rank": 17,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 9,
+      "group": "trap",
+      "question": "During a 5G registration, how is the EPS bearer identity allocated?",
+      "retrieval_queries": [
+        "During a registration, how is the EPS bearer identity allocated Evolved Packet System EBI TS 24.301",
+        "During a 5G registration, how is the bearer identity allocated"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.17.2.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.4.1.2"
+        }
+      ],
+      "latency_ms": 3274.2,
+      "top_5": [
+        "24.301/9.3.2",
+        "24.501/5.3.3",
+        "24.301/6.5.3.2",
+        "24.501/5.5.1.2.8",
+        "24.301/6.4.2.3"
+      ],
+      "top_5_chunk_ids": [
+        "e6afe7f9dca003972b5a26313d252ee6bf14420d",
+        "fa182e8a2b890c62ba793ec09867bacb8df2f69b",
+        "708ad6a5e0bf508d17ec0693d76256ea3362f350",
+        "dede18dd60da07c398ad41bee36c59690905b33e",
+        "10b72f261d0561c7d657ad2107b95d9160300365"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 0,
+        "relevant_at_5": 1,
+        "first_answer_rank": null,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 10,
+      "group": "trap",
+      "question": "Does the SGW connect to the SMF for user plane traffic?",
+      "retrieval_queries": [
+        "Does the SGW connect to the SMF for user plane traffic?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.17.1.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "4.3.1"
+        }
+      ],
+      "latency_ms": 1458.6,
+      "top_5": [
+        "23.501/5.8.2.13.3.2",
+        "23.501/5.8.2.6.1",
+        "23.501/5.8.2.5.1",
+        "23.501/6.3.3.3",
+        "23.501/5.29.4"
+      ],
+      "top_5_chunk_ids": [
+        "be90260aac08f2bd4064295ed6f49bfcf133aeb5",
+        "07b5aa6cbcb8d18bf6d47064b058e93c9fd089b3",
+        "f9c3753164d10d3e9a0c6b014f0b252abc22dcbc",
+        "c0071979cc33cba575e0cbc3306fa7f761ef71e2",
+        "09f9535ee4dad9fc95dd30b034cb2ba4d02b94d1"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.1,
+        "ndcg_at_10": 0.17723928678404774
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.1,
+        "ndcg_at_10": 0.17723928678404774
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 1,
+        "relevant_at_5": 0,
+        "first_answer_rank": 10,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 11,
+      "group": "trap",
+      "question": "Explain how the PDN Gateway handles 5G QoS flows.",
+      "retrieval_queries": [
+        "the PDN Gateway handles flows Packet Data Networks TS 24.301",
+        "the Gateway handles 5G QoS flows Quality of Service"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.7"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.17.1.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "4.3.1"
+        }
+      ],
+      "latency_ms": 3390.3,
+      "top_5": [
+        "24.301/1",
+        "23.501/5.7.1.1",
+        "24.301/6.3.11",
+        "23.501/5.22.1",
+        "24.301/3.2"
+      ],
+      "top_5_chunk_ids": [
+        "cef3331da6464166756a5266247ef9d0f97f605a",
+        "61eed69571e6531e8e012752991403fea2485c81",
+        "59e8f203a70d1cfa5ddad880056f76d4de36fa37",
+        "98fba2ab55de6a4e06447f9c425aaecd75d80b0c",
+        "263ba7c656ccf46c42f52c16e2ed34c6162daee7"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.3333333333333333,
+        "recall_at_20": 0.3333333333333333,
+        "mrr": 0.5,
+        "ndcg_at_10": 0.2960819109658652
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 0,
+        "relevant_at_5": 1,
+        "first_answer_rank": null,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 12,
+      "group": "trap",
+      "question": "What is the message format for a 5G Session Management Tracking Area Update?",
+      "retrieval_queries": [
+        "the message format for a Session Management Tracking Area Update TS 24.301",
+        "the message format for a 5G Session Management"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.29"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "8.3"
+        }
+      ],
+      "latency_ms": 3461.2,
+      "top_5": [
+        "24.301/8.2.29.1",
+        "24.501/4.2",
+        "24.301/5.5.5",
+        "24.501/9.7",
+        "24.301/5.5.3.2.4"
+      ],
+      "top_5_chunk_ids": [
+        "5a9a73fe4d00b0201f9b4b4b2ad05d201c78b4c2",
+        "7512de23cb30b6c020e7657bda7ee36367d0092c",
+        "87affd3bfaac254202a46d5c437aaf67f3c3d23e",
+        "bd1aa293f6681d2fd073722fb341f91dcb6c1345",
+        "b91a088803f20bcf6d3333c5c87c402bb017dd3b"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.5,
+        "recall_at_20": 0.5,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.6131471927654584
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 19,
+      "group": "5G",
+      "question": "When a UE is registered over both 3GPP and non-3GPP access in the same PLMN, does the AMF give it one 5G-GUTI or one per access?",
+      "retrieval_queries": [
+        "When a UE is registered over both 3GPP and non-3GPP access in the same PLMN, does the AMF give it one 5G-GUTI or one per access?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.3.2.4"
+        }
+      ],
+      "latency_ms": 1705.8,
+      "top_5": [
+        "23.501/5.3.2.4",
+        "23.501/5.3.2.4",
+        "23.501/5.3.2.4",
+        "23.501/5.3.2.4",
+        "23.501/5.3.2.4"
+      ],
+      "top_5_chunk_ids": [
+        "e3fabc3f3663b1e2ad944f7a6a9f5b9a84cd7e64",
+        "1152e1eafeee4a6b8c97495b087527586f3335e4",
+        "32813a76627ad17aac624d605c2ede1c4ef16983",
+        "fbf6da30abaed9650d5fcd7d980b555f3ebe9cd3",
+        "d28442d213829188e085ead24338790b26f9787b"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 20,
+      "group": "5G",
+      "question": "If a phone is idle on the cellular side but still connected to the 5G core over Wi-Fi, how does the network reach it when downlink data arrives for the cellular side?",
+      "retrieval_queries": [
+        "If a phone is idle on the cellular side but still connected to the 5G core over Wi-Fi, how does the network reach it when downlink data arrives for the cellular side?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.3.3.4"
+        }
+      ],
+      "latency_ms": 1673.6,
+      "top_5": [
+        "23.501/4.2.8.1A",
+        "24.501/5.3.1.2",
+        "24.501/5.6.1.7",
+        "24.501/5.3.1.5",
+        "24.501/5.6.1.1"
+      ],
+      "top_5_chunk_ids": [
+        "fc2ffd7184faa082646d2bb64aa046b783b0a8fc",
+        "22d45256ac6e5a843c897d872b4ff8c37dd6604a",
+        "4eb83c9ce6391dac02d177828adb9d4aecf2159b",
+        "a5823f41be80d06849acb83a69beeba1059a0c64",
+        "2eb2f5bf47c33be4d7da123a3dcddfdb609ada47"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 0,
+        "relevant_at_5": 1,
+        "first_answer_rank": null,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 21,
+      "group": "5G",
+      "question": "How are Configuration Transfer messages routed between RAN nodes in 5GS?",
+      "retrieval_queries": [
+        "How are Configuration Transfer messages routed between RAN nodes in 5GS?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.26.2.2"
+        }
+      ],
+      "latency_ms": 1199.9,
+      "top_5": [
+        "23.501/5.26.1",
+        "23.501/5.17.7.1",
+        "23.501/5.26",
+        "23.501/5.26.2.2",
+        "23.501/5.17.7.1"
+      ],
+      "top_5_chunk_ids": [
+        "f4523181ade30f4817cabe3f9a2fa0a81a8ec37c",
+        "8e9ee0d5b25751be3503a3b04bebfc350cb507b3",
+        "7c46e9129df99e02aa72f98f1363ec803c8f7dc2",
+        "34454a499f2fad87b0d17ec6ef458861b5d886f8",
+        "502385d034a8791c8a6febf70024508844ba4adc"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.25,
+        "ndcg_at_10": 0.43067655807339306
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.25,
+        "ndcg_at_10": 0.43067655807339306
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 4,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 22,
+      "group": "5G",
+      "question": "After a 5G residential gateway receives cause #28 \"Restricted service area\" over wireline access, which 5GMM state does it enter?",
+      "retrieval_queries": [
+        "After a 5G residential gateway receives cause #28 \"Restricted service area\" over wireline access, which 5GMM state does it enter?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.5.3"
+        }
+      ],
+      "latency_ms": 1630.6,
+      "top_5": [
+        "24.501/5.3.5.3",
+        "24.501/5.4.5.3.3",
+        "24.501/5.3.23",
+        "24.501/5.6.1.5",
+        "24.501/5.5.2.3.2"
+      ],
+      "top_5_chunk_ids": [
+        "c66eaf35b461f3158dc83c252ee6b28984a46730",
+        "169a9650fea6fda6a319effdeb2b9db6a00d919b",
+        "746c6ea6a7912bd6f78c17012bbbc79617c126b6",
+        "3c552e57c5a55133f73f7ba5acd676bb3e786098",
+        "3f3cc912bab406017af89d207be73aeb89de178b"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 23,
+      "group": "5G",
+      "question": "When a UE performs a registration update only because its periodic timer T3512 expired, what registration type does it indicate?",
+      "retrieval_queries": [
+        "When a UE performs a registration update only because its periodic timer T3512 expired, what registration type does it indicate?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2"
+        }
+      ],
+      "latency_ms": 1670.4,
+      "top_5": [
+        "24.501/5.3.7",
+        "24.501/5.5.1.3.1",
+        "24.501/5.3.7",
+        "24.501/5.3.7",
+        "23.501/5.31.7.5"
+      ],
+      "top_5_chunk_ids": [
+        "b580d5a09e20f64a8e7912b3e4c3fd54a134c0a8",
+        "22916b372ee06fcb1747189d92bb7885d7d6399a",
+        "2940b60e4b0d099d162ec942e7c1cd437b0f4606",
+        "91938cec6ed0d5024591fcdf7705988c12dd93e1",
+        "021c46696e364bf9cad90db4f7309885da8f3a17"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.07692307692307693,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.07692307692307693,
+        "ndcg_at_10": 0.0
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 0,
+        "relevant_at_5": 1,
+        "first_answer_rank": null,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 24,
+      "group": "5G",
+      "question": "In the network-initiated de-registration procedure, what does the UE do if the lower layers report that the DEREGISTRATION ACCEPT message failed to transmit?",
+      "retrieval_queries": [
+        "In the network-initiated de-registration procedure, what does the UE do if the lower layers report that the DEREGISTRATION ACCEPT message failed to transmit?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.2.3.4"
+        }
+      ],
+      "latency_ms": 1551.6,
+      "top_5": [
+        "24.501/5.5.2.3.1",
+        "24.501/5.5.2.2.6",
+        "24.501/5.5.2.2.6",
+        "24.501/5.5.2.2.1",
+        "24.501/5.5.1.2.7"
+      ],
+      "top_5_chunk_ids": [
+        "0d6a03c3080a7f6f4190368b354328e4e87c38f3",
+        "3d85faf130449417d0dc7ca545d4af09bb45b359",
+        "27f09364197cb54a86cbc1d36e34bb352a7caff7",
+        "0d86f48249e82e8b07d237addb07639eec4e66cf",
+        "f20e096c5621aab6394e2a9471b085df19e183c8"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 0,
+        "relevant_at_5": 0,
+        "first_answer_rank": null,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 25,
+      "group": "5G",
+      "question": "Which timer does a UE start when it sends its first REGISTRATION REQUEST to join the 5G network?",
+      "retrieval_queries": [
+        "Which timer does a UE start when it sends its first REGISTRATION REQUEST to join the 5G network?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.2"
+        }
+      ],
+      "latency_ms": 1633.9,
+      "top_5": [
+        "24.501/5.5.1.2.2",
+        "24.501/5.5.1.3.1",
+        "24.501/5.3.7",
+        "24.501/5.5.1.2.2",
+        "24.501/5.6.1.7"
+      ],
+      "top_5_chunk_ids": [
+        "89b0ee2e2e33d2946221b00c2ce4665dcdf3dac8",
+        "22916b372ee06fcb1747189d92bb7885d7d6399a",
+        "2940b60e4b0d099d162ec942e7c1cd437b0f4606",
+        "65c89e08896254b1874f6a5f28facb32cc700945",
+        "c3af5e6829ce5f813a94a036b2926eff0bc144f6"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 26,
+      "group": "4G",
+      "question": "What does the MME do if an EMM INFORMATION message is not delivered because of a handover?",
+      "retrieval_queries": [
+        "What does the MME do if an EMM INFORMATION message is not delivered because of a handover?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.4.5.4"
+        }
+      ],
+      "latency_ms": 1149.8,
+      "top_5": [
+        "24.301/5.4.5.4",
+        "24.301/5.4.4.6",
+        "24.301/5.4.3.7",
+        "24.301/6.6.2.4",
+        "24.301/6.3.4"
+      ],
+      "top_5_chunk_ids": [
+        "370ff26eff419d6926b9d2e17b3cfbb6e1876807",
+        "443dc61b04b6da9aa625f72da556174ed34eef30",
+        "a0212cad8b11bcd484247bc9c716038fe5ada9d0",
+        "e609387ca9d143481c8090e03ae4bc702af842af",
+        "691908e7325ea4be8a6bef67374a4e79ceb788ae"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 27,
+      "group": "4G",
+      "question": "In LTE, can the network limit how often an IoT device sends user data inside control-plane NAS messages, and how long does that limit last?",
+      "retrieval_queries": [
+        "In LTE, can the network limit how often an IoT device sends user data inside control-plane NAS messages, and how long does that limit last?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.3.8"
+        }
+      ],
+      "latency_ms": 1371.7,
+      "top_5": [
+        "24.301/5.3.9A",
+        "24.501/5.3.19",
+        "24.301/6.3.9",
+        "24.501/5.3.1.3",
+        "24.301/5.6.1.4.2"
+      ],
+      "top_5_chunk_ids": [
+        "8a3f5e82cbbf6ef62660882aec614f927116daa1",
+        "518780959370ae8fdf34be6ce8eb582e15d1ae66",
+        "df85ac82b9681b9c9fc2cb474ce2e9c2a29eb704",
+        "a1ab25e73edd9957a16c0b18b536ecb040a0b19d",
+        "498b6adc422a5b60aeccec22d8529c60dacdd257"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 0,
+        "relevant_at_5": 1,
+        "first_answer_rank": null,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 28,
+      "group": "4G",
+      "question": "What are the possible values of the EPS update status?",
+      "retrieval_queries": [
+        "What are the possible values of the EPS update status?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.1.3.3"
+        }
+      ],
+      "latency_ms": 1238.7,
+      "top_5": [
+        "24.301/5.1.3.3",
+        "24.301/9.9.3.14",
+        "24.301/9.9.3.13",
+        "24.301/5.5.3.3.4.1",
+        "24.301/5.5.3.2.4"
+      ],
+      "top_5_chunk_ids": [
+        "b96253dddec0d576376e5cad462974c00f60a83a",
+        "6aa7abe03c8976991c5f0d92eba6acbf07af657e",
+        "522c7449d5c4fdd6966d344e3e1372d927838128",
+        "1b3be2271a958ced685b06d28b80350a7343e717",
+        "a0c779d56a3fb14b222432aa098cf3bbaa2e7246"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 29,
+      "group": "4G",
+      "question": "In EPS, if an ESM uplink message fails to send and the UE has moved to a tracking area outside its TAI list, what happens to the ESM procedure?",
+      "retrieval_queries": [
+        "In EPS, if an ESM uplink message fails to send and the UE has moved to a tracking area outside its TAI list, what happens to the ESM procedure?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.3.3"
+        }
+      ],
+      "latency_ms": 1405.7,
+      "top_5": [
+        "24.301/5.5.1.2.6",
+        "24.301/5.5.3.2.6",
+        "24.301/6.3.3",
+        "24.301/5.5.3.2.2",
+        "24.301/6.6.4.4"
+      ],
+      "top_5_chunk_ids": [
+        "1ff00559b90285867fa9e8aa57d295c2afc0ae09",
+        "64e1a64a29ac96ccaf1929ba1fd59e225b2db661",
+        "601c6bd9ab62e6c476cb49b66d160fbdad45ce9e",
+        "bb57edff8bef6e237aedfb44ed987727dbe0a410",
+        "20406c89e2b3d10701326bdd5e4b31581ee4c909"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.3333333333333333,
+        "ndcg_at_10": 0.5
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.3333333333333333,
+        "ndcg_at_10": 0.5
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 3,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 30,
+      "group": "4G",
+      "question": "What is the TRACKING AREA UPDATE REQUEST message used for in N1 mode?",
+      "retrieval_queries": [
+        "What is the TRACKING AREA UPDATE REQUEST message used for in N1 mode?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.5"
+        }
+      ],
+      "latency_ms": 1360.3,
+      "top_5": [
+        "24.301/5.5.5",
+        "24.301/5.5.3.2.4",
+        "24.301/5.5.3.2.2",
+        "24.301/5.5.3.2.6",
+        "24.301/5.5.3.2.7"
+      ],
+      "top_5_chunk_ids": [
+        "87affd3bfaac254202a46d5c437aaf67f3c3d23e",
+        "70cf5fc3cf362a1e6e79ce59b662be29dc581398",
+        "a1027c686cffe0b8d61b30692fc20b9a33c0184d",
+        "1ff1da60072a19fedd0dde4bc9405009949f8b62",
+        "65372486464f292519f4c497ddb30f43b6c20438"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 31,
+      "group": "4G",
+      "question": "How should an LTE UE respond when it receives an EPS NAS message that is missing a mandatory information element?",
+      "retrieval_queries": [
+        "How should an LTE UE respond when it receives an EPS NAS message that is missing a mandatory information element?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "7.5.1"
+        }
+      ],
+      "latency_ms": 1358.9,
+      "top_5": [
+        "24.301/7.5.3",
+        "24.501/8.2.6.16",
+        "24.501/5.4.2.3",
+        "24.301/4.4.2.3",
+        "24.501/8.2.26.3"
+      ],
+      "top_5_chunk_ids": [
+        "1f2966419fee1d2c01e0b0edc31d3b34c47d19ba",
+        "e11ab99685bc26b70da6e27f9d3d37d1d56779f1",
+        "909bae7180155ffd8dd2f4c3b91695a6f8097c0c",
+        "50a45dab90a3b5a8d324d7dd8533b3ae0445083d",
+        "92ba1a422a166957c5e77879e57aefa98ab89240"
+      ],
+      "strict": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.0,
+        "recall_at_20": 0.0,
+        "mrr": 0.0,
+        "ndcg_at_10": 0.0
+      },
+      "chunk": {
+        "answer_at_5": 0,
+        "answer_at_10": 0,
+        "relevant_at_5": 1,
+        "first_answer_rank": null,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 32,
+      "group": "4G",
+      "question": "How does the MME start a network-initiated transport of NAS messages?",
+      "retrieval_queries": [
+        "How does the MME start a network-initiated transport of NAS messages?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.4.3"
+        }
+      ],
+      "latency_ms": 1338.9,
+      "top_5": [
+        "24.301/5.6.3.3",
+        "24.301/5.6.3.1",
+        "24.301/5.6.4.3",
+        "24.301/5.6.3.2",
+        "24.501/5.4.5.3.2"
+      ],
+      "top_5_chunk_ids": [
+        "e9098d3516f2e146822e1557db874dd799ad466e",
+        "bdfb9d3663ea02883fca21db99ac53ba4b316541",
+        "dc0af8328ce8ee491923d447b420914baceef0e4",
+        "7d21ba0d54d0effaddd54d72e944492ef8b591cb",
+        "536bc208c2ce35fbd9a4386205c675cd92652c81"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.3333333333333333,
+        "ndcg_at_10": 0.5
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.3333333333333333,
+        "ndcg_at_10": 0.5
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 3,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 33,
+      "group": "4G",
+      "question": "When an LTE UE wants to change the guaranteed bit rate of a bearer without touching its packet filters, what does it put in the request?",
+      "retrieval_queries": [
+        "When an LTE UE wants to change the guaranteed bit rate of a bearer without touching its packet filters, what does it put in the request?"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.5.4.2"
+        }
+      ],
+      "latency_ms": 1485.7,
+      "top_5": [
+        "24.301/6.4.3.3",
+        "24.301/6.5.4.2",
+        "24.301/6.5.4.2",
+        "24.301/6.5.4.2",
+        "24.301/9.9.4.3"
+      ],
+      "top_5_chunk_ids": [
+        "ed54abf3d1ee0aa5cf263199cfc2aedf516b4441",
+        "733570dd8f5035ec169e93937d0e3f2c86197aec",
+        "827ddd70c51b50ca42ae5ff48408c188e9eb7c76",
+        "e705ca7780c8e24a18cb4f958d3ff728ad26c48b",
+        "39120c9342a24b8c4325ee80dc05db7f0a02324b"
+      ],
+      "strict": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.5,
+        "ndcg_at_10": 0.6309297535714575
+      },
+      "prefix_credit": {
+        "recall_at_5": 1.0,
+        "recall_at_20": 1.0,
+        "mrr": 0.5,
+        "ndcg_at_10": 0.6309297535714575
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 2,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 34,
+      "group": "trap",
+      "question": "When the AMF sends a DOWNLINK GENERIC NAS TRANSPORT message to the UE, which IE carries the application's message?",
+      "retrieval_queries": [
+        "the sends a DOWNLINK GENERIC NAS TRANSPORT message to the UE, which IE carries the application's message TS 24.301",
+        "the AMF sends a DOWNLINK TRANSPORT message to the UE, which IE carries the application's message Access and Mobility Management Function"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.4.3"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.4.5.3"
+        }
+      ],
+      "latency_ms": 3113.7,
+      "top_5": [
+        "24.301/5.6.4.2",
+        "24.301/5.6.3.3",
+        "24.301/5.6.4.3",
+        "23.501/6.2.1",
+        "24.301/8.2.31.1"
+      ],
+      "top_5_chunk_ids": [
+        "5afc4f080e8000654018f508dca64490e90e7133",
+        "e9098d3516f2e146822e1557db874dd799ad466e",
+        "dc0af8328ce8ee491923d447b420914baceef0e4",
+        "44a642f4f693fc0849f1d9fbd09536c809c3ba0e",
+        "cdcff217215967dca9dfe5838211d4c767919839"
+      ],
+      "strict": {
+        "recall_at_5": 0.5,
+        "recall_at_20": 0.5,
+        "mrr": 0.3333333333333333,
+        "ndcg_at_10": 0.3065735963827292
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.5,
+        "recall_at_20": 0.5,
+        "mrr": 0.3333333333333333,
+        "ndcg_at_10": 0.3065735963827292
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 3,
+        "unjudged_in_top_5": 0
+      }
+    },
+    {
+      "id": 35,
+      "group": "trap",
+      "question": "Does the UE start timer T3510 when it sends an ATTACH REQUEST to the MME?",
+      "retrieval_queries": [
+        "Does the UE start timer when it sends an ATTACH REQUEST to the MME Mobility Management Entity TS 24.301",
+        "Does the UE start timer T3510 when it sends an to the"
+      ],
+      "gold_clauses": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.2"
+        }
+      ],
+      "latency_ms": 2998.8,
+      "top_5": [
+        "24.301/5.5.1.2.2",
+        "24.301/5.6.1.6",
+        "24.301/5.2.2.3.3",
+        "24.501/5.4.1.2.4.5",
+        "24.301/5.5.1.2.6"
+      ],
+      "top_5_chunk_ids": [
+        "e454bcd6c74f6146e7e895a3a51c35c8a5baae8f",
+        "42f504564adf75443a1470bf4750764ab54e6920",
+        "96ca48f709aee7a29639f623d61871acf3d76516",
+        "23e24b953a7dc0cf62638d6a7344a629a826ae19",
+        "15ee9a8875e41c4e3316dfb3606f71e9e0d6d2af"
+      ],
+      "strict": {
+        "recall_at_5": 0.5,
+        "recall_at_20": 0.5,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.6131471927654584
+      },
+      "prefix_credit": {
+        "recall_at_5": 0.5,
+        "recall_at_20": 0.5,
+        "mrr": 1.0,
+        "ndcg_at_10": 0.6131471927654584
+      },
+      "chunk": {
+        "answer_at_5": 1,
+        "answer_at_10": 1,
+        "relevant_at_5": 1,
+        "first_answer_rank": 1,
+        "unjudged_in_top_5": 0
+      }
+    }
+  ]
+}

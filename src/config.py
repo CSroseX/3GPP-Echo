@@ -104,6 +104,11 @@ class Settings(BaseSettings):
     # Generation affinity: an acronym is 4G- or 5G-affine when its per-token
     # rate in one spec group is >= this ratio times its rate in the other.
     rewrite_generation_affinity_ratio: float = 3.0
+    # Two-word phrases ("attach request", "tracking area") get an affinity
+    # too, with a stricter ratio and a minimum count, since ordinary prose
+    # bigrams outnumber acronyms by far.
+    rewrite_phrase_affinity_ratio: float = 10.0
+    rewrite_phrase_min_freq: int = 20
     rewrite_4g_spec_ids: list[str] = ["24.301"]
     rewrite_5g_spec_ids: list[str] = ["23.501", "24.501"]
 
