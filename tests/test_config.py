@@ -28,7 +28,7 @@ class TestSettingsDefaults:
 
     def test_generation_defaults(self):
         s = Settings()
-        assert s.generate_temperature == 0.3
+        assert s.generate_temperature == 0.0
         assert s.generate_max_tokens == 1000
 
     def test_chunking_defaults(self):

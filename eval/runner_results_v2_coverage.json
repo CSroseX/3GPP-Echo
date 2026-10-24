@@ -1,0 +1,519 @@
+{
+  "golden_set_hash": "69caa7c8bec9a19e3285817a9fd9e2611af43e7ff420939e548be3247bca7c6c",
+  "results": [
+    {
+      "id": 1,
+      "question": "What is the role of the AMF in the 5G system architecture?",
+      "type": "normal",
+      "expected_behavior": "Should describe AMF functions like registration management, connection management, mobility management based on TS 23.501.",
+      "generated_answer": "No answer could be produced for this question. Please try rephrasing it.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "4.2.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.6.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "4.1"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 2,
+      "question": "How does the UE initiate a PDU session establishment in 5GS?",
+      "type": "normal",
+      "expected_behavior": "Should describe the UE sending a PDU Session Establishment Request via NAS as per TS 24.501.",
+      "generated_answer": "The UE starts the UE-requested PDU session establishment by creating a **PDU SESSION ESTABLISHMENT REQUEST** message.  \nIt allocates a PDU session ID that is not in use and a PTI value that is not used, and sets the PTI IE in the request.  \nIf the session is always-on, the UE includes the **Always-on PDU session requested IE**.  \nThe request is then transported over NAS (subclause 5.4.5) to the network.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 3,
+      "question": "Which network function is responsible for selecting the SMF?",
+      "type": "normal",
+      "expected_behavior": "Should state that the AMF is responsible for SMF selection.",
+      "generated_answer": "The SMF selection functionality is performed by the AMF and the SCP, which allocate the SMF that will manage the PDU session.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.16.4.5"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.16.3.11"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 4,
+      "question": "What is the structure of the 5G-GUTI?",
+      "type": "normal",
+      "expected_behavior": "Should explain the components of 5G-GUTI (GUAMI + 5G-TMSI, etc.).",
+      "generated_answer": "The 5G-GUTI is defined as the concatenation of two elements:  \n\n- **GUAMI** - the Globally Unique AMF Identifier, which itself is composed of  \n  `<MCC> <MNC> <AMF Region ID> <AMF Set ID> <AMF Pointer>`.  \n- **5G-TMSI** - the temporary mobile subscriber identity that uniquely identifies the UE within the AMF(s) identified by the GUAMI.  \n\nThus, `<5G-GUTI> := <GUAMI> <5G-TMSI>`.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.9.4"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "3.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 5,
+      "question": "Describe the states of 5GMM (5GS Mobility Management) in the UE.",
+      "type": "normal",
+      "expected_behavior": "Should list states like 5GMM-DEREGISTERED, 5GMM-REGISTERED, etc., from TS 24.501.",
+      "generated_answer": "The 5GS mobility management (5GMM) sublayer of the UE is described by a state machine that is managed per access type independently.  \nThe UE can be in the following 5GMM states:  \n* **5GMM-DEREGISTERED** - the UE is not registered with the network.  \n* **5GMM-REGISTERED** - the UE has completed registration.  \n* **5GMM-CONNECTED** - the UE is connected and can re-establish user-plane resources for PDU sessions.  \n* A state where **5GS services are disabled** - no 5GMM function is performed.  \n\nThese states are introduced in subclause 5.1.3.2 and are referenced in the detailed behaviour of the UE in subclause 5.2.1.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.1.3.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "10.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.2.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.1.3.2.1.2.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "4.2"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 6,
+      "question": "What is the purpose of the Network Slice Selection Assistance Information (NSSAI)?",
+      "type": "normal",
+      "expected_behavior": "Should explain NSSAI is used for network slice selection.",
+      "generated_answer": "The NSSAI is a collection of S-NSSAIs that the UE uses to indicate which network slices it can use, requests, or is allowed.  \nIt is sent in the registration and configuration procedures and is used by the 5GC to select the appropriate AMF, network-slice instance(s) and corresponding control-plane and user-plane functions for the UE.  \nThe NSSAI may appear as a Configured, Requested or Allowed NSSAI, each serving the same purpose of guiding slice selection.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "9.11.3.36"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.4.1.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.2.1"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 7,
+      "question": "When an MME receives an Attach Request, does it communicate with the UDM?",
+      "type": "adversarial",
+      "expected_behavior": "Should point out that MME is an EPS (4G) entity and communicates with HSS, whereas UDM is a 5GS entity.",
+      "generated_answer": "The MME is a 4G (EPS) entity and the UDM is a 5G (NG) entity, so the MME does not communicate with a UDM when it receives an Attach Request.  \nIn 4G the MME processes the Attach Request using the EMM/ESM messages listed in 4.4.4.3 and does not involve the UDM.  \nIn 5G the equivalent procedure is performed by the AMF, which may query the UDM for subscriber data.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "7.5.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.7"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.11"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "4.4.4.3"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "an MME receives an Attach Request, does it communicate with the Mobility Management Entity TS 24.301",
+          "an receives an, does it communicate with the UDM Unified Data Management"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "question": "What timer does the AMF use for a Tracking Area Update in EPS?",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that AMF and 5G use Registration Update, whereas EPS and MME use Tracking Area Update.",
+      "generated_answer": "The AMF itself does not run a timer for an EPS Tracking-Area-Update; that is a UE-side function.  \nIn the 5G NAS specification the UE uses timer **T3402** to trigger the normal TAU procedure for EPS services (or the combined TAU for EPS + \u201cSMS only\u201d).  \nThus, the timer involved in an EPS TAU is T3402, but it is started and stopped by the UE, not by the AMF.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4A"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4A"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "10.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.3.5"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "timer does the use for a Tracking Area Update in EPS Evolved Packet System TS 24.301",
+          "timer does the AMF use for a in Access and Mobility Management Function"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "question": "During a 5G registration, how is the EPS bearer identity allocated?",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that 5GS uses PDU sessions and QoS flows, not EPS bearers.",
+      "generated_answer": "In 4G, the MME allocates an EPS bearer identity (EBI) by selecting a value from 5 to 15 (or 0 if no identity is assigned) when signalling for a maximum of 15 EPS bearer contexts is not supported.  \nIn 5G, registration does not involve EPS bearer identities; instead the UE presents a 5G-GUTI, SUPI, or PEI as part of the 5GS mobile identity IE.  \nThus, the EPS bearer identity allocation described in the source applies only to 4G, not to 5G registration.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.9.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "7.3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "7.3.2"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "During a registration, how is the EPS bearer identity allocated Evolved Packet System EBI TS 24.301",
+          "During a 5G registration, how is the bearer identity allocated"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "question": "Does the SGW connect to the SMF for user plane traffic?",
+      "type": "adversarial",
+      "expected_behavior": "Should note that SGW is a 4G user plane node (connecting to PGW), whereas SMF is a 5G control plane node connecting to UPF.",
+      "generated_answer": "This detail isn\u2019t defined in the 5G specifications for this procedure.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.29.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.3.3"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.29.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.8.2.13.3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.8.2.5.1"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 11,
+      "question": "Explain how the PDN Gateway handles 5G QoS flows.",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that PDN Gateway (PGW) is a 4G entity, and 5G QoS flows are handled by the UPF.",
+      "generated_answer": "No answer could be produced for this question. Please try rephrasing it.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.7.1.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.7.3.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.20"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "the PDN Gateway handles flows Packet Data Networks TS 24.301",
+          "the Gateway handles 5G QoS flows Quality of Service"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "question": "What is the message format for a 5G Session Management Tracking Area Update?",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that Tracking Area Update is an EPS concept, and 5G Session Management handles PDU Session Modification/Establishment.",
+      "generated_answer": "No answer could be produced for this question. Please try rephrasing it.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.27"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "9.7"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.29.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "4.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.26.1"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "the message format for a Session Management Tracking Area Update TS 24.301",
+          "the message format for a 5G Session Management"
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "question": "When the AMF sends a DOWNLINK GENERIC NAS TRANSPORT message to the UE, which IE carries the application's message?",
+      "type": "adversarial",
+      "expected_behavior": "Name the generation mismatch (DOWNLINK GENERIC NAS TRANSPORT is the 4G (MME) message; the AMF uses DL NAS TRANSPORT with a Payload container), then answer each part from its own spec.",
+      "generated_answer": "The application\u2019s message is carried in the **generic message container IE** (and its corresponding type IE).  \nThis procedure is defined for the 4G MME; the 5G AMF does not use a DOWNLINK GENERIC NAS TRANSPORT message.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.12"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.31.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.4.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.3.3"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "the sends a DOWNLINK GENERIC NAS TRANSPORT message to the UE, which IE carries the application's message TS 24.301",
+          "the AMF sends a DOWNLINK TRANSPORT message to the UE, which IE carries the application's message Access and Mobility Management Function"
+        ]
+      }
+    },
+    {
+      "id": 35,
+      "question": "Does the UE start timer T3510 when it sends an ATTACH REQUEST to the MME?",
+      "type": "adversarial",
+      "expected_behavior": "Name the generation mismatch (T3510 is the 5G registration timer; a 4G attach starts T3410), then answer each part from its own spec.",
+      "generated_answer": "The source does not mention timer T3510 in the context of an ATTACH REQUEST to an MME. In 4G EPS, the UE starts timers such as T3410, T3402, and T3411 when sending an ATTACH REQUEST, but T3510 is a 5G timer used during registration to an AMF, not during an EPS attach to an MME.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.7"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.6"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.4.1.2.4.5"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.3.5"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "Does the UE start timer when it sends an ATTACH REQUEST to the MME Mobility Management Entity TS 24.301",
+          "Does the UE start timer T3510 when it sends an to the"
+        ],
+        "unsupported_identifiers": [
+          "T3510"
+        ]
+      }
+    }
+  ]
+}

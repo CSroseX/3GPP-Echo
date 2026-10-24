@@ -68,7 +68,9 @@ class Settings(BaseSettings):
     lineage_boost: float = 2.0
 
     # ── Generation ──────────────────────────────────────────────────
-    generate_temperature: float = 0.3
+    # 0: the same chunks should give the same answer (at 0.3 Q6 flipped between
+    # answered and not_covered across runs on identical context).
+    generate_temperature: float = 0.0
     # Safety net on answer length; the prompt asks for brevity. For a
     # reasoning model (gpt-oss-20b) the cap also covers its hidden thinking
     # (a generate call measured 745 output tokens), so too low a cap returns
