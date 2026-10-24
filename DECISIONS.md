@@ -123,3 +123,16 @@ Times are medians on a laptop CPU. One run overlapped with other work, hence the
 
 Correct sections moved up (AMF: position 11 → 6; PDU session: 2 → 1; SMF selection: 4 → 2), although none newly entered the top 5. The bigger expected gain is in answers, since the model now sees the list text; that needs an LLM run to measure.
 **Limitation:** Only 6 questions. Search time rose about 25%, probably because longer chunks give the reranker more text to read. Evidence: `eval/baselines/ablation_list_items.json` vs `ablation_G_sl20_nobm25_boost2.json`.
+
+### 2026-10-24 · Split mixed 4G/5G questions on phrases, not only acronyms
+**Decision:** The input guardrail splits a question that mixes 4G and 5G into a 4G search and a 5G search. It now recognises two-word phrases ("attach request", "tracking area") as well as acronyms, and each half of the split drops the other generation's terms.
+**Why:** The guardrail only recognised acronyms (MME, AMF), so "What is the message format for a 5G Session Management Tracking Area Update?" was never split: "Tracking Area Update" is a 4G procedure written in plain words. Which generation a phrase belongs to is counted from the spec text, not hand-written: "tracking area updat…" appears 1,227 times in the 4G spec and 57 times in the two 5G specs.
+
+| Answer chunk in top 5 (golden set v2, 29 questions) | All | 5G | 4G | 4G/5G traps |
+|---|---|---|---|---|
+| Question searched as typed (previous scoring) | 15/29 | 8/13 | 6/8 | 1/8 |
+| Through the guardrail, acronyms only | 16/29 | 8/13 | 6/8 | 2/8 |
+| **Through the guardrail, acronyms + phrases** | **17/29** | 8/13 | 6/8 | **3/8** |
+
+The guardrail now splits 7 of the 8 traps (was 5), and no normal question is split by mistake. Search time 1.5 s → 1.6 s. We also learned that the retrieval report had been searching the question as typed, skipping the guardrail, so it understated what the app does; `retrieval_report --pipeline` now searches the way the app does.
+**Limitation:** Only 8 trap questions, and the answer key has a single grader. "SGW" appears only 7 times in the corpus, all in the 5G spec, so counts alone can't mark it 4G. Four traps are split correctly but still miss their answer (Q7, Q8, Q9, Q11). Evidence: `eval/baselines/v2_pipeline_before.json` vs `v2_pipeline_phrases.json`.
