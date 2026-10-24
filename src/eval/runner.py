@@ -234,12 +234,16 @@ def run(
     limit: Optional[int] = None,
     types: Optional[List[str]] = None,
     sleep_seconds: Optional[float] = None,
+    ids: Optional[List[int]] = None,
+    max_llm_calls: Optional[int] = None,
 ) -> List[Dict[str, Any]]:
     cfg = get_settings()
     golden_set = load_golden_set(golden_set_path)
     expected_hash = golden_set_hash(golden_set)
 
     questions = golden_set
+    if ids:
+        questions = [q for q in questions if q["id"] in ids]
     if types:
         questions = [q for q in questions if q["type"] in types]
     if limit is not None:
@@ -269,8 +273,17 @@ def run(
             types=types,
             **run_metadata(cfg),
         )
+        # Worst case per question: each of 1 + max_retries generate/verify
+        # rounds can take a banned-phrase rephrase and a JSON reask (4 calls).
+        worst_case_calls = 4 * (1 + cfg.max_retries)
+        calls_before_run = len(usage_since(0))
         try:
             for idx, item in enumerate(pending, start=1):
+                calls_used = len(usage_since(0)) - calls_before_run
+                if max_llm_calls is not None and calls_used + worst_case_calls > max_llm_calls:
+                    print(f"\nStopping: {calls_used} LLM calls used; the next question could take "
+                          f"{worst_case_calls} more, past the cap of {max_llm_calls}.")
+                    break
                 print(f"\n[{idx}/{len(pending)}] (id={item['id']}, {item['type']}) {item['question']}")
                 started = time.perf_counter()
                 tokens_before = sum(c["total_tokens"] for c in usage_since(0))
@@ -284,6 +297,12 @@ def run(
                     "golden_set_hash": expected_hash,
                     "results": [results_by_id[k] for k in sorted(results_by_id)],
                 })
+
+                # Under a call cap, a provider error (402, 429, timeout) stops
+                # the run: the SDK's own retries already spent extra requests.
+                if max_llm_calls is not None and result["termination_reason"] == "verifier_unavailable":
+                    print("\nStopping: the LLM provider returned an error; not spending more calls.")
+                    break
 
                 if idx < len(pending):
                     time.sleep(sleep_time)
@@ -334,10 +353,17 @@ def main():
     parser.add_argument("--types", type=str, default=None,
                          help="Comma-separated question types to include (normal,adversarial,out_of_scope).")
     parser.add_argument("--results-path", type=str, default=str(DEFAULT_RESULTS_PATH))
+    parser.add_argument("--golden", type=str, default=str(GOLDEN_SET_PATH), help="Golden set to run.")
+    parser.add_argument("--ids", type=str, default=None, help="Comma-separated golden-set ids to include.")
+    parser.add_argument("--max-llm-calls", type=int, default=None,
+                        help="Hard cap on LLM calls: stop before a question that could exceed it, "
+                             "and on the first provider error.")
     args = parser.parse_args()
 
     types = args.types.split(",") if args.types else None
-    run(results_path=Path(args.results_path), limit=args.limit, types=types)
+    ids = [int(i) for i in args.ids.split(",")] if args.ids else None
+    run(golden_set_path=Path(args.golden), results_path=Path(args.results_path), limit=args.limit,
+        types=types, ids=ids, max_llm_calls=args.max_llm_calls)
 
 
 if __name__ == "__main__":

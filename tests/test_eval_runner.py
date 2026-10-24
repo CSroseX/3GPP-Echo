@@ -214,3 +214,40 @@ class TestRunMetadata:
         assert not any("key" in k for k in meta["settings"])
         # Inside the repo, git resolves a 40-character commit id.
         assert meta["git_commit"] is None or len(meta["git_commit"]) == 40
+
+
+class TestRunCallCap:
+    def _setup(self, monkeypatch, tmp_path, steps):
+        from src.eval import runner
+        from src.obs.metrics import RunRecorder
+
+        monkeypatch.setenv("MAX_RETRIES", "1")
+        from src.config import get_settings
+        get_settings.cache_clear()
+        monkeypatch.setattr(runner, "Retriever", lambda: None)
+        monkeypatch.setattr(runner, "build_graph", lambda retriever: FakeApp(steps))
+        monkeypatch.setattr(runner, "RunRecorder", lambda: RunRecorder(run_id="cap", output_dir=tmp_path / "run"))
+        golden = tmp_path / "golden.json"
+        golden.write_text(json.dumps([{"id": i, "question": f"Q{i}?", "type": "normal"} for i in range(1, 5)]),
+                          encoding="utf-8")
+        return runner, golden
+
+    def teardown_method(self):
+        from src.config import get_settings
+        get_settings.cache_clear()
+
+    def test_stops_before_a_question_that_could_pass_the_cap(self, monkeypatch, tmp_path):
+        steps = [("generate", {"answer": "a", "attempt": 1}, (10, 1)),
+                 ("verify", {"verification_passed": True, "termination_reason": "verified"}, (10, 1))]
+        runner, golden = self._setup(monkeypatch, tmp_path, steps)
+        # 2 calls per question, worst case 8: questions start at 0, 2, 4 used calls; 6 + 8 > 12 stops.
+        results = runner.run(golden_set_path=golden, results_path=tmp_path / "r.json",
+                             sleep_seconds=0, max_llm_calls=12)
+        assert [r["id"] for r in results] == [1, 2, 3]
+
+    def test_stops_on_first_provider_error(self, monkeypatch, tmp_path):
+        steps = [("verify", {"verification_passed": False, "termination_reason": "verifier_unavailable"}, None)]
+        runner, golden = self._setup(monkeypatch, tmp_path, steps)
+        results = runner.run(golden_set_path=golden, results_path=tmp_path / "r.json",
+                             sleep_seconds=0, max_llm_calls=40)
+        assert [r["id"] for r in results] == [1]
