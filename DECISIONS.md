@@ -153,3 +153,19 @@ The guardrail now splits 7 of the 8 traps (was 5), and no normal question is spl
 - **Why the 512-token cap:** Ettin can read 8,000 tokens, and our unsplit table chunks reach about 10,000. That made some searches take 20–35 s. Capping at 512 (MiniLM's limit) kept 20/29 and brought the slowest searches from 22.9 s to 4.4 s.
 
 **Limitation:** 29 questions and a single grader. Rerankers that surfaced chunks the answer key had never seen were held until those chunks were graded (56 in total, none an answer). Evidence: `eval/baselines/v2_pipeline_phrases.json` vs `v2_ettin32m.json`, `v2_pipeline_default.json`.
+
+### 2026-10-25 · Removed the verifier: one LLM call per question, self-labelled
+**Decision:** Each answer now comes from a single LLM call. The model ends its answer with `STATUS: answered | partial | not_covered`, and the app shows that label. The separate verifier call and its retry loop are gone. A code check with no LLM backs up the label: every timer (T3510), cause number (#22) and message name (ATTACH REQUEST) in the answer must appear in the spec text the model was given, otherwise "answered" becomes "partial". Only "answered" answers are cached.
+**Why:** The verifier was a second LLM call reading the same chunks the first call had already seen, so it added cost without new information. Its retry regenerated the answer from those same chunks, and at our benchmark setting it never actually ran. On the 4G/5G trap questions it did harm: it rejected correct answers like "the MME is a 4G entity; the UDM is 5G", because no chunk states that literally.
+
+| Same 14 questions (6 normal, 8 traps) | With verifier (2026-10-24) | Self-labelled (2026-10-25) |
+|---|---|---|
+| LLM calls | 31 | **14** |
+| Tokens | ~76,000 | **33,688** |
+| Time per answer | ~20 s | **~11 s** |
+| Normal answers correct (release bar: at least 4/6) | 5/6 verified | 4/6 correct |
+| Trap answers reaching the user as correct | 0/8 passed | **3/8 correct**, 2 partly |
+
+The difference between 5/6 and 4/6 is within run-to-run variation; the answers change slightly each time.
+
+**Limitation:** A label the model gives itself is not an independent check. Q5 was labelled "answered" while containing an error (it lists 5GMM-CONNECTED as a state, but it's a mode). Q6 and Q7 were labelled "not covered" even though search had found the answer. The identifier check only catches wrong identifiers, not wrong explanations. Correctness was judged by reading each answer against the golden set's expected answer, by a single grader, on 14 questions. Evidence: `eval/runs/20261024T122927Z` and `20261024T123722Z` (verifier) vs `20261024T203715Z` (self-labelled).
