@@ -1,0 +1,51 @@
+{
+  "run_id": "20261024T203715Z",
+  "question_count": 14,
+  "total_tokens_in": 27918,
+  "total_tokens_out": 5770,
+  "total_tokens": 33688,
+  "total_cost_estimate_usd (ESTIMATE)": 0.053417,
+  "per_node": {
+    "cache_lookup": {
+      "calls": 14,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 36.88
+    },
+    "triage": {
+      "calls": 14,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 2355.19
+    },
+    "retrieve": {
+      "calls": 14,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 49773.91
+    },
+    "generate": {
+      "calls": 14,
+      "tokens_in": 27918,
+      "tokens_out": 5770,
+      "cost_estimate_usd": 0.053417,
+      "total_latency_ms": 108704.33
+    },
+    "cache_store": {
+      "calls": 14,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 7.06
+    }
+  },
+  "termination_reasons": {
+    "answered": 5,
+    "not_covered": 5,
+    "partial": 4
+  },
+  "_note": "All cost figures are ESTIMATES based on a static price table, not actual billing."
+}
