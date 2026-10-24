@@ -167,7 +167,7 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
     label, after the identifier check:
 
     - no chunks retrieved: not_covered, without an LLM call;
-    - empty reply (reasoning used the whole token budget): not_covered;
+    - empty reply (reasoning used the whole token budget): no_answer;
     - missing STATUS line: partial;
     - "answered" but an identifier (T3510, #22, ATTACH REQUEST) is absent
       from the source text: partial, with the identifiers recorded.
@@ -198,7 +198,7 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
     answer, status = parse_status(normalize_text(raw))
     if not answer:
         log.warning("generate_node.empty_answer")
-        return {"answer": EMPTY_ANSWER, "termination_reason": "not_covered"}
+        return {"answer": EMPTY_ANSWER, "termination_reason": "no_answer"}
     if status is None:
         log.warning("generate_node.missing_status")
         status = "partial"

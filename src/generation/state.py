@@ -41,6 +41,7 @@ class GraphState(TypedDict, total=False):
 TERMINATION_REASONS = {
     "answered",  # the source text covers the whole question
     "partial",  # covers part of it, no STATUS line, or an identifier isn't in the sources
-    "not_covered",  # covers none of it, retrieval found nothing, or the reply was empty
+    "not_covered",  # covers none of it, or retrieval found nothing
+    "no_answer",  # the model replied with no text (spent its token budget reasoning)
     "out_of_domain",
 }

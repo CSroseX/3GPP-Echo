@@ -72,10 +72,10 @@ class TestNoAnswer:
         assert result["termination_reason"] == "not_covered"
         assert calls == []
 
-    def test_empty_reply_is_not_covered(self, reply):
+    def test_empty_reply_is_no_answer(self, reply):
         reply(None)
         result = run()
-        assert result["termination_reason"] == "not_covered"
+        assert result["termination_reason"] == "no_answer"
         assert result["answer"] == gen_nodes.core.EMPTY_ANSWER
 
     def test_one_call_per_question(self, reply):

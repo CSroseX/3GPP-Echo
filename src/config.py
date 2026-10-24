@@ -72,10 +72,10 @@ class Settings(BaseSettings):
     # answered and not_covered across runs on identical context).
     generate_temperature: float = 0.0
     # Safety net on answer length; the prompt asks for brevity. For a
-    # reasoning model (gpt-oss-20b) the cap also covers its hidden thinking
-    # (a generate call measured 745 output tokens), so too low a cap returns
-    # an empty answer.
-    generate_max_tokens: int = 1000
+    # reasoning model (gpt-oss-20b) the cap also covers its hidden thinking,
+    # so too low a cap returns an empty answer: at 1000, 3 of 14 benchmark
+    # questions came back empty once the prompt asked it to read every chunk.
+    generate_max_tokens: int = 2000
 
     # ── Chunking ────────────────────────────────────────────────────
     chunk_soft_limit: int = 400

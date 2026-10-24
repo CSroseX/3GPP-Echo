@@ -46,7 +46,7 @@ def show_answer_dialog(question, answer, status):
 def render_assistant_message(message: dict):
     """Render one assistant turn with a badge for its termination_reason:
     the model's own status label (answered / partial / not_covered, after
-    the identifier check) or out_of_domain from triage."""
+    the identifier check), no_answer for an empty reply, or out_of_domain."""
     termination_reason = message.get("termination_reason")
     answer = message.get("content", "")
 
@@ -57,6 +57,8 @@ def render_assistant_message(message: dict):
     elif termination_reason == "not_covered":
         st.warning("❓ **Not covered** — the specs indexed here don't answer this question.")
         st.markdown(answer)
+    elif termination_reason == "no_answer":
+        st.warning("⚠️ **No answer** — the model didn't produce an answer this time. Please try again.")
     elif termination_reason == "out_of_domain":
         st.info("🚫 **Outside 3GPP scope** — this question isn't covered by TS 23.501 / 24.501 / 24.301.")
         st.markdown(answer)
