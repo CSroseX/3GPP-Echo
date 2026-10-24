@@ -5,7 +5,7 @@ from typing import Any, Dict
 from dotenv import load_dotenv
 
 from src.config import get_settings
-from src.generation.answer_status import check_identifiers, parse_status
+from src.generation.answer_status import check_identifiers, normalize_text, parse_status
 from src.obs.logging import get_logger
 from src.obs.tracing import make_llm_client
 
@@ -193,7 +193,7 @@ def generate_node(state: Dict[str, Any]) -> Dict[str, Any]:
         else:
             log.warning("generate_node.banned_phrase_leak_persisted")
 
-    answer, status = parse_status(raw)
+    answer, status = parse_status(normalize_text(raw))
     if not answer:
         log.warning("generate_node.empty_answer")
         return {"answer": EMPTY_ANSWER, "termination_reason": "not_covered"}

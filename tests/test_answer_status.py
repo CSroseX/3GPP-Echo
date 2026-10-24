@@ -1,6 +1,6 @@
 """parse_status and the identifier check (src/generation/answer_status.py)."""
 
-from src.generation.answer_status import check_identifiers, find_identifiers, parse_status
+from src.generation.answer_status import check_identifiers, find_identifiers, normalize_text, parse_status
 
 
 class TestParseStatus:
@@ -29,6 +29,10 @@ class TestIdentifierCheck:
         ids = find_identifiers("The UE starts T3510, sends a REGISTRATION REQUEST and gets cause #22.")
         assert ids == ["T3510", "#22", "REGISTRATION REQUEST"]
 
+    def test_acronym_pairs_are_not_message_names(self):
+        assert find_identifiers("the AMF does not perform EPS TAU, unlike the DL NAS TRANSPORT") == [
+            "DL NAS TRANSPORT"]
+
     def test_identifiers_present_in_sources_pass(self):
         source = "the UE sends a registration request message, starting timer T3510"
         assert check_identifiers("It starts T3510 with the REGISTRATION REQUEST.", source) == []
@@ -39,3 +43,10 @@ class TestIdentifierCheck:
     def test_timer_must_match_whole_token(self):
         assert check_identifiers("T351", "timer T3510") == []  # not an identifier (3 digits)
         assert check_identifiers("T3510", "timer T35100") == ["T3510"]
+
+
+class TestNormalizeText:
+    def test_typographic_spaces_and_hyphens_become_ascii(self):
+        text = normalize_text("DOWNLINK GENERIC NAS TRANSPORT and 5G‑GUTI")
+        assert text == "DOWNLINK GENERIC NAS TRANSPORT and 5G-GUTI"
+        assert find_identifiers(text) == ["DOWNLINK GENERIC NAS TRANSPORT"]

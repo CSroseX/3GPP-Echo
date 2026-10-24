@@ -27,7 +27,18 @@ _STATUS_LINE_RE = re.compile(r"^[\s*_`]*STATUS\s*:\s*(answered|partial|not[ _-]?
 # message names ("REGISTRATION REQUEST", "DL NAS TRANSPORT").
 TIMER_RE = re.compile(r"\bT\d{4}\b")
 CAUSE_RE = re.compile(r"#\d+\b")
-MESSAGE_NAME_RE = re.compile(r"\b[A-Z][A-Z0-9-]{2,}(?: [A-Z][A-Z0-9-]{1,})+\b")
+MESSAGE_NAME_RE = re.compile(r"\b[A-Z][A-Z0-9-]{1,}(?: [A-Z][A-Z0-9-]{1,})+\b")
+
+
+# The model writes "DOWNLINK GENERIC" and "5G‑GUTI": typographic
+# spaces and hyphens that hide identifiers from the regexes (and that the
+# Windows console can't print). Map them to plain ASCII.
+_TYPOGRAPHIC = str.maketrans({" ": " ", " ": " ", " ": " ", " ": " ",
+                              "‐": "-", "‑": "-", "‒": "-", "–": "-"})
+
+
+def normalize_text(text: str) -> str:
+    return text.translate(_TYPOGRAPHIC)
 
 
 def parse_status(text: str) -> Tuple[str, Optional[str]]:
@@ -41,12 +52,21 @@ def parse_status(text: str) -> Tuple[str, Optional[str]]:
     return _STATUS_LINE_RE.sub("", text).strip(), status
 
 
+def _is_message_name(candidate: str) -> bool:
+    """Message names have at least one real word (REQUEST, TRANSPORT,
+    INFORMATION); two acronyms side by side ("EPS TAU") are not one."""
+    return any(len(word) >= 4 and word.isalpha() for word in candidate.split())
+
+
 def find_identifiers(text: str) -> List[str]:
     found: List[str] = []
     for pattern in (TIMER_RE, CAUSE_RE, MESSAGE_NAME_RE):
         for m in pattern.finditer(text):
-            if m.group(0) not in found:
-                found.append(m.group(0))
+            ident = m.group(0)
+            if pattern is MESSAGE_NAME_RE and not _is_message_name(ident):
+                continue
+            if ident not in found:
+                found.append(ident)
     return found
 
 
