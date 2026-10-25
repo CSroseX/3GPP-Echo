@@ -76,6 +76,10 @@ class Settings(BaseSettings):
     # so too low a cap returns an empty answer: at 1000, 3 of 14 benchmark
     # questions came back empty once the prompt asked it to read every chunk.
     generate_max_tokens: int = 2000
+    # "low" | "medium" | "high": how long a reasoning model thinks before
+    # answering (OpenRouter's `reasoning.effort`; other providers don't get
+    # it). Empty = the model's own default (medium for gpt-oss-20b).
+    generate_reasoning_effort: str = ""
 
     # ── Chunking ────────────────────────────────────────────────────
     chunk_soft_limit: int = 400

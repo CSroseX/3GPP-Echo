@@ -147,12 +147,15 @@ EMPTY_ANSWER = "No answer could be produced for this question. Please try rephra
 
 
 def _complete(messages) -> str:
-    response = client.chat.completions.create(
-        model=MODEL_NAME,
-        messages=messages,
-        temperature=cfg.generate_temperature,
-        max_tokens=cfg.generate_max_tokens,
-    )
+    kwargs = {
+        "model": MODEL_NAME,
+        "messages": messages,
+        "temperature": cfg.generate_temperature,
+        "max_tokens": cfg.generate_max_tokens,
+    }
+    if cfg.generate_reasoning_effort and LLM_PROVIDER == "openrouter":
+        kwargs["extra_body"] = {"reasoning": {"effort": cfg.generate_reasoning_effort}}
+    response = client.chat.completions.create(**kwargs)
     # A reasoning model that spends its whole max_tokens thinking returns
     # content=None; treat that as an empty answer instead of crashing.
     text = response.choices[0].message.content or ""

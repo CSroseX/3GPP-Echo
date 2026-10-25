@@ -97,3 +97,24 @@ class TestPrompt:
         result = run()
         assert len(calls) == 2
         assert result["answer"] == "The UE starts timer T3510."
+
+
+class TestReasoningEffort:
+    def test_not_sent_by_default(self, reply):
+        calls = reply("x\nSTATUS: answered")
+        run()
+        assert "extra_body" not in calls[0]
+
+    def test_sent_to_openrouter_when_set(self, reply, monkeypatch):
+        monkeypatch.setattr(gen_nodes.core.cfg, "generate_reasoning_effort", "low")
+        monkeypatch.setattr(gen_nodes.core, "LLM_PROVIDER", "openrouter")
+        calls = reply("x\nSTATUS: answered")
+        run()
+        assert calls[0]["extra_body"] == {"reasoning": {"effort": "low"}}
+
+    def test_not_sent_to_other_providers(self, reply, monkeypatch):
+        monkeypatch.setattr(gen_nodes.core.cfg, "generate_reasoning_effort", "low")
+        monkeypatch.setattr(gen_nodes.core, "LLM_PROVIDER", "ollama")
+        calls = reply("x\nSTATUS: answered")
+        run()
+        assert "extra_body" not in calls[0]
