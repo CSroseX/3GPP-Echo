@@ -169,3 +169,21 @@ The guardrail now splits 7 of the 8 traps (was 5), and no normal question is spl
 The difference between 5/6 and 4/6 is within run-to-run variation; the answers change slightly each time.
 
 **Limitation:** A label the model gives itself is not an independent check. Q5 was labelled "answered" while containing an error (it lists 5GMM-CONNECTED as a state, but it's a mode). Q6 and Q7 were labelled "not covered" even though search had found the answer. The identifier check only catches wrong identifiers, not wrong explanations. Correctness was judged by reading each answer against the golden set's expected answer, by a single grader, on 14 questions. Evidence: `eval/runs/20261024T122927Z` and `20261024T123722Z` (verifier) vs `20261024T203715Z` (self-labelled).
+
+### 2026-10-25 · Full benchmark on golden set v2; release criteria set from it
+**Decision:** The full 40-question run below is the measured state the demo is released against. The release criteria in [docs/release-criteria.md](docs/release-criteria.md) are set slightly below these numbers, so the bar is honest and reachable. Every criterion must hold in two consecutive runs, because answers vary between runs.
+**Why:** The earlier bar ("at least 4/6 verified") covered only 6 questions and depended on the verifier, which no longer exists. This run covers all 40 questions, including the 22 added in v2.
+
+| Measure | Frozen baseline (2026-10-01, 18 questions) | Full v2 run (2026-10-25) |
+|---|---|---|
+| Original 6 normal questions answered correctly | 1/6 | **5/6** |
+| Off-topic questions refused (original set) | 0/6 | **5/5, zero LLM cost** |
+| Tokens for the original 18 questions | 124,701 | **35,894** |
+| All 21 normal v2 questions correct | — | **16/21** |
+| 4G/5G traps correct | — | **4/8**, 1 partly |
+| Out-of-scope v2 questions with a made-up answer | — | **0/11** |
+| Empty answers | — | 2/29 |
+| Answer time, median / 95th percentile | — | 9.8 s / 34 s |
+
+What drove the gains, each measured in the entries above: the bulleted-list fix (37% of the text had been missing), the Ettin reranker and the phrase-based 4G/5G split (answer chunk in top 5: 15/29 → 20/29), one self-labelled LLM call instead of a verifier loop, and the prompt that accepts answers in different words.
+**Limitation:** One run, one grader. Known weak spots: 2 empty answers (the model spends its 2,000-token allowance thinking), trap answers that vary between runs (OpenRouter routes the model to different hosts), off-topic questions that sound like telecom cost one LLM call each, and the off-topic reference vectors (`data/domain_centroids.npz`) had gone stale after the re-index, so the first off-topic question rebuilt them (about 21 minutes). Evidence: `eval/runs/20261025T090844Z`, `eval/runner_results_v2_full.json`.
