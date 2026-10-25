@@ -43,7 +43,24 @@ All on golden set v2 (40 questions: 13 5G, 8 4G, 8 mixed 4G/5G traps, 11 off-top
 | Trap questions answered correctly | 0 (none passed) | **5/8** |
 | LLM calls per in-domain question | 2-6 | **1** |
 
+| Questions needing 2+ specs with every needed spec in the top 5 (cross-spec coverage) | 3/7 | **6/7** |
+
 Answer correctness is judged by reading each answer against the golden set's expected answer (single grader, 14 questions). Details and limitations: [DECISIONS.md](DECISIONS.md).
+
+### What we tried (ablations)
+
+Every retrieval change was measured on its own before being kept. Rejected changes are listed too.
+
+| Change | Measured on | Result | Kept? | Evidence (`eval/baselines/`) |
+|---|---|---|---|---|
+| Rerank 40 candidates instead of 20 | v1, 6 questions | no gain, search time doubled | no | `ablation_*.json` |
+| Keyword search (BM25) fused with dense, unstemmed | v1, 6 questions | section recall@5 0.67 → 0.50 | no | `ablation_*.json` |
+| Bonus when the question names a clause heading | v1, 6 questions | section recall@5 0.67 → 0.75 | yes | `ablation_G_sl20_nobm25_boost2.json` |
+| Index the bulleted lists the parser had dropped (+37% text) | v1, 6 questions | MRR 0.45 → 0.58 | yes | `ablation_list_items.json` |
+| Keyword search with stemming, fused with dense | v2, 29 questions | answer in top 5: 15 → 15 (old reranker), 20 → 21 (new) | no, gain too small | `v2_hybrid_stemmed.json`, `v2_ettin32m_bm25.json` |
+| Reranker `bge-reranker-base` | v2, 29 questions | 15 → 15, about 6× slower | no | `v2_bge_reranker.json` |
+| Guardrail splits mixed 4G/5G questions on phrases too | v2, 29 questions | 16 → 17, traps 2 → 3 | yes | `v2_pipeline_phrases.json` |
+| Reranker `ettin-reranker-32m-v1` (512-token cap) | v2, 29 questions | 17 → 20, traps 3 → 4 | yes | `v2_ettin32m.json`, `v2_pipeline_default.json` |
 
 ---
 
@@ -84,7 +101,7 @@ ruff check . && pytest tests/ -q                         # what CI runs (no netw
 - **Public portfolio demo** ([#59](https://github.com/CSroseX/3GPP-Echo/issues/59)): a FastAPI backend and a SvelteKit frontend replacing Streamlit, deployed without a login.
 - **Budget protection** ([#64](https://github.com/CSroseX/3GPP-Echo/issues/64), [#67](https://github.com/CSroseX/3GPP-Echo/issues/67)): 5 questions per visitor, a global budget released in hourly slices, cached example answers, visible quotas and a provider spend cap.
 - **Observability**: bring up the self-hosted Langfuse tracing ([#23](https://github.com/CSroseX/3GPP-Echo/issues/23)) and carry it into the FastAPI backend.
-- **Quality**: the remaining misses are first-stage retrieval (8 of 9 missed answers never reach the top 20) and answers the model labels "not covered" too readily.
+- **Quality**: the remaining misses are first-stage retrieval (8 of 9 missed answers never reach the top 20) and answers the model labels "not covered" too readily. Candidates: a bigger embedding model, and Qdrant's native sparse vectors as a keyword index inside the database (the in-process BM25 above needs no re-index, which is why it was tried first).
 
 ## Limitations
 

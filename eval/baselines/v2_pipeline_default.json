@@ -27,8 +27,12 @@
       "mean_ndcg_at_10": 0.5492
     },
     "latency_ms": {
-      "p50": 2167.5,
-      "p95": 4368.2
+      "p50": 2354.2,
+      "p95": 4819.8
+    },
+    "cross_spec_coverage": {
+      "questions_needing_2_plus_specs": 7,
+      "all_needed_specs_in_top_5": "6/7"
     },
     "chunk_level": {
       "answer_at_5": "20/29",
@@ -56,7 +60,7 @@
           "clause_id": "6.2.1"
         }
       ],
-      "latency_ms": 4955.2,
+      "latency_ms": 6057.2,
       "top_5": [
         "23.501/4.2.2",
         "23.501/6.2.1",
@@ -83,6 +87,11 @@
         "mrr": 0.5,
         "ndcg_at_10": 0.6309297535714575
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -108,7 +117,7 @@
           "clause_id": "6.4.1.1"
         }
       ],
-      "latency_ms": 1977.7,
+      "latency_ms": 2230.3,
       "top_5": [
         "24.501/6.4.1.2",
         "24.501/6.4.3.2",
@@ -135,6 +144,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 0.8175295903539445
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -156,7 +170,7 @@
           "clause_id": "6.3.2"
         }
       ],
-      "latency_ms": 1935.0,
+      "latency_ms": 2191.0,
       "top_5": [
         "23.501/6.2.2",
         "23.501/6.3.2",
@@ -183,6 +197,11 @@
         "mrr": 0.5,
         "ndcg_at_10": 0.6309297535714575
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -208,7 +227,7 @@
           "clause_id": "9.11.3.4"
         }
       ],
-      "latency_ms": 2167.5,
+      "latency_ms": 2373.0,
       "top_5": [
         "23.501/5.9.4",
         "24.501/5.3.3",
@@ -235,6 +254,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 0.8065735963827293
       },
+      "cross_spec": {
+        "specs_covered_at_5": 2,
+        "specs_needed": 2,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -260,7 +284,7 @@
           "clause_id": "5.1.3.1"
         }
       ],
-      "latency_ms": 2009.5,
+      "latency_ms": 2151.4,
       "top_5": [
         "24.501/5.1.3.1",
         "24.501/10.2",
@@ -287,6 +311,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 0.8772153153380493
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -312,7 +341,7 @@
           "clause_id": "5.15.2"
         }
       ],
-      "latency_ms": 2208.0,
+      "latency_ms": 2389.3,
       "top_5": [
         "24.501/9.11.3.36",
         "23.501/5.15.2.1",
@@ -338,6 +367,11 @@
         "recall_at_20": 0.5,
         "mrr": 0.5,
         "ndcg_at_10": 0.38685280723454163
+      },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
       },
       "chunk": {
         "answer_at_5": 1,
@@ -369,7 +403,7 @@
           "clause_id": "5.17.2.1"
         }
       ],
-      "latency_ms": 4041.7,
+      "latency_ms": 4582.9,
       "top_5": [
         "24.301/7.5.2",
         "23.501/6.2.7",
@@ -395,6 +429,11 @@
         "recall_at_20": 0.3333333333333333,
         "mrr": 0.5,
         "ndcg_at_10": 0.2960819109658652
+      },
+      "cross_spec": {
+        "specs_covered_at_5": 2,
+        "specs_needed": 2,
+        "all_specs_at_5": 1
       },
       "chunk": {
         "answer_at_5": 0,
@@ -422,7 +461,7 @@
           "clause_id": "5.3.7"
         }
       ],
-      "latency_ms": 4349.0,
+      "latency_ms": 4408.7,
       "top_5": [
         "24.301/5.5.3.2.4A",
         "23.501/6.2.1",
@@ -448,6 +487,11 @@
         "recall_at_20": 1.0,
         "mrr": 0.2,
         "ndcg_at_10": 0.23719771276929622
+      },
+      "cross_spec": {
+        "specs_covered_at_5": 2,
+        "specs_needed": 2,
+        "all_specs_at_5": 1
       },
       "chunk": {
         "answer_at_5": 1,
@@ -479,7 +523,7 @@
           "clause_id": "6.4.1.2"
         }
       ],
-      "latency_ms": 4315.3,
+      "latency_ms": 4631.0,
       "top_5": [
         "24.301/9.3.2",
         "23.501/5.9.1",
@@ -506,6 +550,11 @@
         "mrr": 0.0,
         "ndcg_at_10": 0.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 2,
+        "specs_needed": 2,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 0,
         "answer_at_10": 0,
@@ -531,7 +580,7 @@
           "clause_id": "4.3.1"
         }
       ],
-      "latency_ms": 1906.3,
+      "latency_ms": 2165.5,
       "top_5": [
         "23.501/5.29.4",
         "23.501/6.3.3.3",
@@ -557,6 +606,11 @@
         "recall_at_20": 1.0,
         "mrr": 0.08333333333333333,
         "ndcg_at_10": 0.0
+      },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
       },
       "chunk": {
         "answer_at_5": 0,
@@ -588,7 +642,7 @@
           "clause_id": "4.3.1"
         }
       ],
-      "latency_ms": 4368.2,
+      "latency_ms": 4693.2,
       "top_5": [
         "24.301/1",
         "23.501/5.7.1.1",
@@ -614,6 +668,11 @@
         "recall_at_20": 0.3333333333333333,
         "mrr": 0.5,
         "ndcg_at_10": 0.2960819109658652
+      },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
       },
       "chunk": {
         "answer_at_5": 0,
@@ -641,7 +700,7 @@
           "clause_id": "8.3"
         }
       ],
-      "latency_ms": 4345.9,
+      "latency_ms": 4728.1,
       "top_5": [
         "24.301/8.2.27",
         "24.501/9.7",
@@ -668,6 +727,11 @@
         "mrr": 0.3333333333333333,
         "ndcg_at_10": 0.3065735963827292
       },
+      "cross_spec": {
+        "specs_covered_at_5": 2,
+        "specs_needed": 2,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -689,7 +753,7 @@
           "clause_id": "5.3.2.4"
         }
       ],
-      "latency_ms": 2142.5,
+      "latency_ms": 2354.2,
       "top_5": [
         "23.501/5.3.2.4",
         "23.501/5.3.2.4",
@@ -716,6 +780,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 1.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -737,7 +806,7 @@
           "clause_id": "5.3.3.4"
         }
       ],
-      "latency_ms": 2206.0,
+      "latency_ms": 2327.7,
       "top_5": [
         "24.501/5.3.1.5",
         "23.501/5.3.3.2.2",
@@ -764,6 +833,11 @@
         "mrr": 0.0,
         "ndcg_at_10": 0.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 0,
         "answer_at_10": 0,
@@ -785,7 +859,7 @@
           "clause_id": "5.26.2.2"
         }
       ],
-      "latency_ms": 1807.3,
+      "latency_ms": 1970.7,
       "top_5": [
         "23.501/5.26.1",
         "23.501/5.26",
@@ -812,6 +886,11 @@
         "mrr": 0.25,
         "ndcg_at_10": 0.43067655807339306
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -833,7 +912,7 @@
           "clause_id": "5.3.5.3"
         }
       ],
-      "latency_ms": 2090.7,
+      "latency_ms": 2478.5,
       "top_5": [
         "24.501/5.3.5.3",
         "24.501/5.3.5.3",
@@ -860,6 +939,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 1.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -881,7 +965,7 @@
           "clause_id": "5.5.1.3.2"
         }
       ],
-      "latency_ms": 2136.3,
+      "latency_ms": 2365.2,
       "top_5": [
         "24.501/5.3.7",
         "24.501/5.3.7",
@@ -908,6 +992,11 @@
         "mrr": 0.14285714285714285,
         "ndcg_at_10": 0.3333333333333333
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 0,
         "answer_at_10": 0,
@@ -929,7 +1018,7 @@
           "clause_id": "5.5.2.3.4"
         }
       ],
-      "latency_ms": 2122.3,
+      "latency_ms": 2334.5,
       "top_5": [
         "24.501/5.5.2.2.6",
         "24.501/5.5.2.3.1",
@@ -956,6 +1045,11 @@
         "mrr": 0.0,
         "ndcg_at_10": 0.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 0,
         "answer_at_10": 0,
@@ -977,7 +1071,7 @@
           "clause_id": "5.5.1.2.2"
         }
       ],
-      "latency_ms": 2297.4,
+      "latency_ms": 2361.7,
       "top_5": [
         "24.501/5.5.1.2.2",
         "24.501/5.3.20.3",
@@ -1004,6 +1098,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 1.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -1025,7 +1124,7 @@
           "clause_id": "5.4.5.4"
         }
       ],
-      "latency_ms": 1756.5,
+      "latency_ms": 1851.9,
       "top_5": [
         "24.301/5.4.5.4",
         "24.301/5.1.3.4.1",
@@ -1052,6 +1151,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 1.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -1073,7 +1177,7 @@
           "clause_id": "6.3.8"
         }
       ],
-      "latency_ms": 2050.7,
+      "latency_ms": 2210.3,
       "top_5": [
         "24.301/5.3.9A",
         "24.501/5.3.19",
@@ -1100,6 +1204,11 @@
         "mrr": 0.0,
         "ndcg_at_10": 0.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 0,
         "answer_at_10": 0,
@@ -1121,7 +1230,7 @@
           "clause_id": "5.1.3.3"
         }
       ],
-      "latency_ms": 1757.1,
+      "latency_ms": 2110.0,
       "top_5": [
         "24.301/5.1.3.3",
         "24.301/9.9.3.13",
@@ -1148,6 +1257,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 1.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -1169,7 +1283,7 @@
           "clause_id": "6.3.3"
         }
       ],
-      "latency_ms": 2108.7,
+      "latency_ms": 2008.8,
       "top_5": [
         "24.301/6.3.3",
         "24.301/6.6.4.4",
@@ -1196,6 +1310,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 1.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -1217,7 +1336,7 @@
           "clause_id": "5.5.5"
         }
       ],
-      "latency_ms": 2307.9,
+      "latency_ms": 1998.1,
       "top_5": [
         "24.301/5.5.5",
         "24.301/8.2.29.1",
@@ -1244,6 +1363,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 1.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -1265,7 +1389,7 @@
           "clause_id": "7.5.1"
         }
       ],
-      "latency_ms": 2343.6,
+      "latency_ms": 2174.4,
       "top_5": [
         "24.301/7.5.3",
         "24.501/8.2.6.16",
@@ -1292,6 +1416,11 @@
         "mrr": 0.0,
         "ndcg_at_10": 0.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 0,
         "answer_at_10": 0,
@@ -1313,7 +1442,7 @@
           "clause_id": "5.6.4.3"
         }
       ],
-      "latency_ms": 2072.0,
+      "latency_ms": 2294.9,
       "top_5": [
         "24.301/5.6.4.3",
         "24.301/5.6.3.1",
@@ -1340,6 +1469,11 @@
         "mrr": 1.0,
         "ndcg_at_10": 1.0
       },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
+      },
       "chunk": {
         "answer_at_5": 1,
         "answer_at_10": 1,
@@ -1361,7 +1495,7 @@
           "clause_id": "6.5.4.2"
         }
       ],
-      "latency_ms": 2179.7,
+      "latency_ms": 2434.6,
       "top_5": [
         "24.301/6.5.4.2",
         "24.301/6.4.3.3",
@@ -1387,6 +1521,11 @@
         "recall_at_20": 1.0,
         "mrr": 1.0,
         "ndcg_at_10": 1.0
+      },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 1,
+        "all_specs_at_5": 1
       },
       "chunk": {
         "answer_at_5": 1,
@@ -1414,7 +1553,7 @@
           "clause_id": "5.4.5.3"
         }
       ],
-      "latency_ms": 4321.5,
+      "latency_ms": 4819.8,
       "top_5": [
         "24.301/8.2.12",
         "23.501/6.2.1",
@@ -1440,6 +1579,11 @@
         "recall_at_20": 0.5,
         "mrr": 0.25,
         "ndcg_at_10": 0.2640681225725909
+      },
+      "cross_spec": {
+        "specs_covered_at_5": 1,
+        "specs_needed": 2,
+        "all_specs_at_5": 0
       },
       "chunk": {
         "answer_at_5": 1,
@@ -1467,7 +1611,7 @@
           "clause_id": "5.5.1.2.2"
         }
       ],
-      "latency_ms": 4318.0,
+      "latency_ms": 4501.5,
       "top_5": [
         "24.301/5.5.1.2.2",
         "24.501/5.6.1.7",
@@ -1493,6 +1637,11 @@
         "recall_at_20": 0.5,
         "mrr": 1.0,
         "ndcg_at_10": 0.6131471927654584
+      },
+      "cross_spec": {
+        "specs_covered_at_5": 2,
+        "specs_needed": 2,
+        "all_specs_at_5": 1
       },
       "chunk": {
         "answer_at_5": 1,

@@ -3,6 +3,7 @@ import math
 import pytest
 
 from src.eval.metrics import (
+    cross_spec_coverage,
     is_prefix_match,
     mrr,
     ndcg_at_k,
@@ -180,3 +181,17 @@ class TestScoreChunkGrades:
         assert out["relevant_at_5"] == 0
         assert out["first_answer_rank"] is None
         assert out["unjudged_in_top_5"] == 2
+
+
+class TestCrossSpecCoverage:
+    GOLD = [{"spec_id": "24.301", "clause_id": "5.5.1"}, {"spec_id": "23.501", "clause_id": "6.2.7"}]
+
+    def test_both_specs_in_top_5(self):
+        results = [make_result("24.301", "1"), make_result("23.501", "2")]
+        out = cross_spec_coverage(results, self.GOLD)
+        assert out == {"specs_covered_at_5": 2, "specs_needed": 2, "all_specs_at_5": 1}
+
+    def test_one_spec_missing(self):
+        results = [make_result("24.301", str(i)) for i in range(5)] + [make_result("23.501", "x")]
+        out = cross_spec_coverage(results, self.GOLD)
+        assert out["specs_covered_at_5"] == 1 and out["all_specs_at_5"] == 0

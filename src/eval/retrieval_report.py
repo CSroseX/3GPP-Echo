@@ -32,7 +32,7 @@ import time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from src.config import get_settings
-from src.eval.metrics import score_chunk_grades, score_question
+from src.eval.metrics import cross_spec_coverage, score_chunk_grades, score_question
 from src.generation.nodes.retrieve import merge_ranked
 from src.generation.nodes.triage import make_triage_node
 from src.retrieval.retriever import Retriever
@@ -108,6 +108,7 @@ def main():
         latencies_ms.append(elapsed_ms)
 
         metrics = score_question(results, q["gold_clauses"])
+        metrics["cross_spec"] = cross_spec_coverage(results, q["gold_clauses"])
         if chunk_grades is not None:
             metrics["chunk"] = score_chunk_grades(results, chunk_grades.get(q["id"], {}))
         per_question.append({
@@ -158,6 +159,14 @@ def main():
             "p50": percentile(latencies_ms, 0.50),
             "p95": percentile(latencies_ms, 0.95),
         },
+    }
+
+    # Cross-spec coverage only means something for questions whose gold
+    # clauses span more than one spec (mostly the 4G/5G traps).
+    multi = [pq for pq in per_question if pq["cross_spec"]["specs_needed"] > 1]
+    summary["cross_spec_coverage"] = {
+        "questions_needing_2_plus_specs": len(multi),
+        "all_needed_specs_in_top_5": f'{sum(pq["cross_spec"]["all_specs_at_5"] for pq in multi)}/{len(multi)}',
     }
 
     if chunk_grades is not None:

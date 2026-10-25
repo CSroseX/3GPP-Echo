@@ -166,3 +166,17 @@ def score_chunk_grades(
         "first_answer_rank": first_answer,
         f"unjudged_in_top_{k5}": sum(cid not in grades for cid in ids[:k5]),
     }
+
+
+def cross_spec_coverage(results: Sequence[dict], gold_pairs: Iterable[dict], k: int = 5) -> dict:
+    """Did the top k include at least one chunk from every spec the gold
+    clauses come from? The 4G/5G traps need both a 4G and a 5G spec in
+    context to explain the mismatch, so a top 5 drawn from one spec fails
+    them even if it holds a gold clause."""
+    needed = {p.get("spec_id") for p in gold_pairs}
+    found = {r.get("spec_id") for r in results[:k]}
+    return {
+        f"specs_covered_at_{k}": len(needed & found),
+        "specs_needed": len(needed),
+        f"all_specs_at_{k}": int(needed <= found),
+    }
