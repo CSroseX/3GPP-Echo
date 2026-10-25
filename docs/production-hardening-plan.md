@@ -1,5 +1,15 @@
 # Production-Hardening the 3GPP RAG Assistant
 
+> **Status (2026-10-25):** this is the original plan, kept for its baseline and
+> diagnoses. Parts of the architecture it describes have since changed, each
+> measured in [DECISIONS.md](../DECISIONS.md): the sufficiency check and query
+> rewrite (Phase 4) became the input guardrail (answer cache + 4G/5G split in
+> triage); the verifier, abstain node and retry loop (Phases 2 and 4) were
+> removed, so each answer is one LLM call that labels itself
+> `answered | partial | not_covered`; the reranker is now
+> `ettin-reranker-32m-v1`; the golden set is v2 (40 questions). Current
+> architecture: [CLAUDE.md](../CLAUDE.md). Next phase: the public demo (#59).
+
 ## Context
 
 This repo answers 3GPP telecom questions (TS 23.501 / 24.501 / 24.301) using a

@@ -1,135 +1,93 @@
-# 3GPP RAG Assistant
+# 3GPP-Echo
 
-A retrieval-augmented generation system designed to answer telecom technical questions grounded in 3GPP specifications.
+A retrieval-augmented assistant that answers telecom questions from three 3GPP specifications: TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (4G/EPS NAS).
 
----
-
-## Overview
-
-The system processes 3GPP technical specifications (such as TS 23.501, TS 24.301, and TS 24.501), indexes structured text and tables into a vector database, and executes a multi-stage retrieval and verification pipeline to generate grounded answers to technical questions.
+The three specs were chosen because they share vocabulary but differ in procedure: 4G "attach" vs 5G "registration", the MME vs the AMF. Mixing up 4G and 5G answers is the failure this project is built to measure and prevent. Every design choice, with the measurement behind it, is in [DECISIONS.md](DECISIONS.md).
 
 ---
 
-## Architecture
+## How a question is answered
 
-The system consists of four primary components:
+```
+question
+   │
+   ▼
+cache_lookup ── seen before (and answered)? ──► cached answer, no LLM call
+   │
+   ▼
+triage ── off-topic? ──► fixed refusal, no LLM call
+   │       mixes 4G and 5G terms? ──► split into a 4G search and a 5G search
+   ▼
+retrieve ── dense search in Qdrant, rerank, keep the top 5 chunks
+   │
+   ▼
+generate ── one LLM call: answers from the 5 chunks and labels itself
+   │        answered | partial | not_covered
+   ▼
+cache_store ── keeps only "answered" answers
+```
 
-1. **Ingestion & Indexing Pipeline (`src/ingestion/`)**:
-   - **Document Parsing (`parse.py`)**: Extracts text, headings, and table structures from specification PDFs using Docling.
-   - **Hierarchy Builder (`tree_builder.py`)**: Parses clause numbers and section hierarchy to build structured clause trees with complete ancestral lineage.
-   - **Clause-Aware Chunker (`chunker.py`)**: Chunks text with soft and hard token limits while preserving clause metadata and keeping tables intact.
-   - **Vector Indexer (`indexer.py`)**: Computes dense vector embeddings using `BAAI/bge-small-en-v1.5` via FastEmbed and indexes vectors and payloads into a Qdrant vector database.
+- **One LLM call per question.** There is no separate verifier: it re-read the same chunks, doubled the cost, and rejected correct 4G/5G answers. Instead the model labels its own answer, and a code check (no LLM) downgrades "answered" to "partial" if a timer, cause number or message name in the answer isn't in the retrieved text.
+- **Input guardrail.** Off-topic questions are refused for free (keyword check, then embedding similarity, then a tiny LLM yes/no only when unsure). Questions that mix 4G and 5G terms, detected from acronyms and two-word phrases measured in the specs themselves, are searched per generation.
+- **Retrieval.** Each spec is rebuilt into its clause tree (tables kept whole, bulleted lists included), embedded with `BAAI/bge-small-en-v1.5`, stored in Qdrant, and reranked with `cross-encoder/ettin-reranker-32m-v1` plus a bonus when the question names a clause's heading. Questions that name a spec or clause are searched only there.
 
-2. **Dual-Path Retrieval Engine (`src/retrieval/retriever.py`)**:
-   - **Query Routing**: Uses regex parsing to detect explicit specification numbers (e.g., TS 23.501) or clause references (e.g., clause 5.5.1).
-   - **Path A (Semantic Search)**: Executes global dense semantic retrieval across the entire indexed corpus in Qdrant when no explicit target is present.
-   - **Path B (Targeted Metadata Filter)**: Applies Qdrant payload filters matching the identified `spec_id` and `clause_id` hierarchy.
-   - **Cross-Encoder Reranking**: Reranks the top 20 retrieved chunks using `cross-encoder/ms-marco-MiniLM-L-6-v2` to select the top 5 chunks.
+## Measured results
 
-3. **Generation & Verification Graph (`src/generation/`)**:
-   - **Orchestration (`graph.py`)**: Implements a LangGraph state machine coordinating generation, claim verification, and conditional retry loops.
-   - **Generation Node (`nodes.py`)**: Prompts the LLM to generate domain-expert answers grounded strictly in retrieved context.
-   - **Verification Node (`nodes.py`)**: Evaluates generated claims against source chunks via structured JSON output, identifying unsupported assertions.
-   - **Correction Loop**: Feeds unsupported claim feedback back to the generator for up to 3 revision attempts before outputting the final response.
+All on golden set v2 (40 questions: 13 5G, 8 4G, 8 mixed 4G/5G traps, 11 off-topic).
 
-4. **Interface & Evaluation (`app.py`, `eval/`)**:
-   - **Streamlit App (`app.py`)**: Interactive chat interface displaying answers, grounded status badges, retries, and retrieved source chunks, alongside an evaluation dashboard.
-   - **Evaluation Suite (`eval/run_eval.py`)**: Evaluates queries against an evaluation set (`eval/eval_set.json`), recording verdicts and tracking verification metrics.
+| | Start | Now |
+|---|---|---|
+| Answer chunk in the top 5 (29 retrieval-scored questions) | 15/29 | **20/29** |
+| Trap questions with the answer chunk in the top 5 | 1/8 | **4/8** |
+| Normal questions answered correctly (release bar: at least 4/6) | 1/6 | **5/6** |
+| Trap questions answered correctly | 0 (none passed) | **5/8** |
+| LLM calls per in-domain question | 2-6 | **1** |
 
----
-
-## Design Decisions
-
-- **Modular State Graph**: Generation and verification are isolated into distinct LangGraph nodes, allowing independent prompt tuning, model configuration, and deterministic retry routing.
-- **Table Preservation**: Tables are preserved in full grid structure without splitting across chunks to maintain relational context across technical data.
-- **Lineage-Enriched Context**: Chunks include complete hierarchical lineage headers (e.g., Spec, Clause ID, Clause Title), ensuring unambiguous context during embedding and LLM generation.
-- **Two-Stage Retrieval**: Dense vector retrieval fetches the top 20 retrieved chunks from Qdrant, followed by cross-encoder reranking to improve relevance for complex technical procedures.
-- **Query Targeting**: Queries containing specific specification or clause identifiers route directly to filtered subset queries, narrowing the search space prior to semantic scoring.
-
----
-
-## Hallucination Mitigation
-
-- **Strict Judge Verification**: A dedicated verification step fact-checks each claim against the retrieved chunks, failing any response that contains claims not entailed by the context.
-- **Iterative Feedback Loop**: Unsupported claims identified by the verifier are provided directly back to the generator as revision feedback.
-- **Constrained Prompts**: System prompts instruct the LLM to refuse fabrication, avoid assuming details not present in context, and state explicitly when a technical detail is not covered by the specifications.
-- **Leak Prevention**: Post-processing strips internal reasoning tags and checks for leaked retrieval artifacts.
+Answer correctness is judged by reading each answer against the golden set's expected answer (single grader, 14 questions). Details and limitations: [DECISIONS.md](DECISIONS.md).
 
 ---
 
 ## Setup
 
-### Prerequisites
-
-- Python 3.9 or higher
-- Docker (for running Qdrant)
-- OpenAI-compatible API endpoint (e.g., Groq) or local LLM server (e.g., Ollama)
-
-### 1. Environment Setup
-
-Create and activate a virtual environment, then install dependencies:
+Requires Python 3.11+, Docker, and an OpenAI-compatible LLM endpoint (OpenRouter is used in development) or a local Ollama.
 
 ```bash
 python -m venv venv
-# On Windows:
-venv\Scripts\activate
-# On Linux/macOS:
-source venv/bin/activate
+venv\Scripts\activate            # Windows; on Linux/macOS: source venv/bin/activate
+pip install -e ".[ingest,dev]"   # pinned in pyproject.toml
 
-pip install -r requirements.txt
+cp .env.example .env             # then fill in your key and model
+docker compose up -d qdrant      # Qdrant on :6333
+python src/ingestion/indexer.py  # build the index from data/chunks/ (about 25 min on CPU)
 ```
 
-### 2. Configuration
-
-Copy the example environment file and configure the variables:
+## Running it
 
 ```bash
-cp .env.example .env
-```
+streamlit run app.py                                     # chat UI (being replaced, see below)
+python src/generation/verify.py "What is the AMF?"       # one question end to end, verbose
 
-Set the required variables in `.env`:
+# Evaluation
+python -m src.eval.retrieval_report --pipeline \
+    --golden eval/golden/golden_set.v2.json \
+    --grades eval/pooling/v2/grades.json                 # retrieval only, zero LLM tokens
+python -m src.eval.runner --golden eval/golden/golden_set.v2.json \
+    --max-llm-calls 20                                   # full pipeline, spends tokens
 
-```env
-USE_REMOTE_LLM=true
-OPENAI_API_KEY=your_api_key_here
-OPENAI_BASE_URL=https://api.groq.com/openai/v1
-MODEL_NAME=qwen/qwen3.6-27b
-```
-
-### 3. Vector Database
-
-Start a local Qdrant instance:
-
-```bash
-docker run -d -p 6333:6333 -p 6334:6334 qdrant/qdrant
-```
-
-Index the specifications into Qdrant:
-
-```bash
-python src/ingestion/indexer.py
-```
-
-### 4. Running the Application
-
-Launch the Streamlit web interface:
-
-```bash
-streamlit run app.py
-```
-
-### 5. Running the Evaluation Suite
-
-Run the evaluation script against the test benchmark:
-
-```bash
-python eval/run_eval.py
+ruff check . && pytest tests/ -q                         # what CI runs (no network, no LLM)
 ```
 
 ---
 
+## What's next
+
+- **Public portfolio demo** ([#59](https://github.com/CSroseX/3GPP-Echo/issues/59)): a FastAPI backend and a SvelteKit frontend replacing Streamlit, deployed without a login.
+- **Budget protection** ([#64](https://github.com/CSroseX/3GPP-Echo/issues/64), [#67](https://github.com/CSroseX/3GPP-Echo/issues/67)): 5 questions per visitor, a global budget released in hourly slices, cached example answers, visible quotas and a provider spend cap.
+- **Observability**: bring up the self-hosted Langfuse tracing ([#23](https://github.com/CSroseX/3GPP-Echo/issues/23)) and carry it into the FastAPI backend.
+- **Quality**: the remaining misses are first-stage retrieval (8 of 9 missed answers never reach the top 20) and answers the model labels "not covered" too readily.
+
 ## Limitations
 
-- **Chunk Boundary Splits**: Multi-page procedural flows spanning multiple clauses may be separated across chunk boundaries.
-- **General-Purpose Embeddings**: Out-of-the-box embedding and reranking models may misinterpret niche telecom acronyms that occur across different functional layers.
-- **Aggressive Verification**: The strict verification judge may occasionally flag valid technical deductions as unsupported if the exact wording is absent from the retrieved chunks.
+- The golden set is small (40 questions) and graded by one reviewer; numbers move by one question at a time.
+- The model's status label is not an independent check: it can call a wrong answer "answered".
+- Answers vary between runs even at temperature 0, because OpenRouter routes the same model to different hosting providers.
