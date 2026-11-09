@@ -1,0 +1,7 @@
+*
+!Dockerfile
+!pyproject.toml
+!src/
+!data/chunks/*_chunks.json
+!data/domain_centroids.npz
+**/__pycache__

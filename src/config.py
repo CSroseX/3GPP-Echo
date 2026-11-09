@@ -27,6 +27,9 @@ class Settings(BaseSettings):
 
     # ── Infrastructure ──────────────────────────────────────────────
     qdrant_url: str = "http://localhost:6333"
+    # Empty for the local docker-compose Qdrant; set (with QDRANT_URL) to
+    # reach a Qdrant Cloud cluster.
+    qdrant_api_key: str = ""
     qdrant_collection: str = "3gpp_specs"
 
     ollama_base_url: str = "http://localhost:11434/v1"
@@ -147,6 +150,15 @@ class Settings(BaseSettings):
     # Per-chunk character cap on chunk text injected into the generate
     # prompt (prompt tokens are 66% of measured spend).
     prompt_chunk_char_cap: int = 2400
+
+    # ── Public API (src/api/main.py) ────────────────────────────────
+    # Browser origins allowed to call the API (the frontend's URLs).
+    api_cors_origins: list[str] = ["http://localhost:5173"]
+    api_max_question_chars: int = 500
+    # Characters of each source's text returned with an answer.
+    api_source_excerpt_chars: int = 600
+    # Seconds the OpenRouter balance is cached between /api/quota calls.
+    api_budget_cache_seconds: int = 60
 
     @property
     def project_root(self) -> Path:

@@ -16,6 +16,9 @@ dependencies = [
     "structlog==26.1.0",
     "rank-bm25==0.2.2",
     "snowballstemmer==3.1.1",
+    "fastapi==0.162.2",
+    "uvicorn==0.52.3",
+    "httpx==0.28.1",
 ]
 
 [project.optional-dependencies]
@@ -27,6 +30,10 @@ ingest = [
 dev = [
     "pytest==9.1.1",
     "ruff>=0.8",
+]
+# Deploy-only: deploy/modal_app.py serves the API on Modal.
+deploy = [
+    "modal==1.6.3",
 ]
 obs = [
     "langfuse==4.17.0",
