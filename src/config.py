@@ -74,12 +74,14 @@ class Settings(BaseSettings):
     # Safety net on answer length; the prompt asks for brevity. For a
     # reasoning model (gpt-oss-20b) the cap also covers its hidden thinking,
     # so too low a cap returns an empty answer: at 1000, 3 of 14 benchmark
-    # questions came back empty once the prompt asked it to read every chunk.
-    generate_max_tokens: int = 2000
+    # questions came back empty once the prompt asked it to read every chunk,
+    # and at 2000, 2 of 29 in the full v2 run (both hit exactly 2000).
+    generate_max_tokens: int = 5000
     # "low" | "medium" | "high": how long a reasoning model thinks before
     # answering (OpenRouter's `reasoning.effort`; other providers don't get
-    # it). Empty = the model's own default (medium for gpt-oss-20b).
-    generate_reasoning_effort: str = ""
+    # it). Empty = the model's own default (medium for gpt-oss-20b). "low"
+    # since 2026-10-25, together with the 5000 cap, against empty answers.
+    generate_reasoning_effort: str = "low"
 
     # ── Chunking ────────────────────────────────────────────────────
     chunk_soft_limit: int = 400
