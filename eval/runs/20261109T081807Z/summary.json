@@ -1,0 +1,59 @@
+{
+  "run_id": "20261109T081807Z",
+  "question_count": 38,
+  "total_tokens_in": 67703,
+  "total_tokens_out": 4807,
+  "total_tokens": 72510,
+  "total_cost_estimate_usd (ESTIMATE)": 0.1111685,
+  "per_node": {
+    "cache_lookup": {
+      "calls": 38,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 96.82
+    },
+    "triage": {
+      "calls": 38,
+      "tokens_in": 248,
+      "tokens_out": 20,
+      "cost_estimate_usd": 0.000412,
+      "total_latency_ms": 6761.42
+    },
+    "retrieve": {
+      "calls": 33,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 96764.04
+    },
+    "generate": {
+      "calls": 33,
+      "tokens_in": 67455,
+      "tokens_out": 4787,
+      "cost_estimate_usd": 0.1107565,
+      "total_latency_ms": 65866.93
+    },
+    "cache_store": {
+      "calls": 33,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 17.02
+    },
+    "refuse": {
+      "calls": 5,
+      "tokens_in": 0,
+      "tokens_out": 0,
+      "cost_estimate_usd": 0.0,
+      "total_latency_ms": 2.48
+    }
+  },
+  "termination_reasons": {
+    "answered": 19,
+    "partial": 8,
+    "not_covered": 6,
+    "out_of_domain": 5
+  },
+  "_note": "All cost figures are ESTIMATES based on a static price table, not actual billing."
+}
