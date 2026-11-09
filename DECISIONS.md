@@ -187,3 +187,21 @@ The difference between 5/6 and 4/6 is within run-to-run variation; the answers c
 
 What drove the gains, each measured in the entries above: the bulleted-list fix (37% of the text had been missing), the Ettin reranker and the phrase-based 4G/5G split (answer chunk in top 5: 15/29 → 20/29), one self-labelled LLM call instead of a verifier loop, and the prompt that accepts answers in different words.
 **Limitation:** One run, one grader. Known weak spots: 2 empty answers (the model spends its 2,000-token allowance thinking), trap answers that vary between runs (OpenRouter routes the model to different hosts), off-topic questions that sound like telecom cost one LLM call each, and the off-topic reference vectors (`data/domain_centroids.npz`) had gone stale after the re-index, so the first off-topic question rebuilt them (about 21 minutes). Evidence: `eval/runs/20261025T090844Z`, `eval/runner_results_v2_full.json`.
+
+### 2026-11-09 · Answer allowance 5000 tokens, reasoning effort low; two consecutive full runs
+**Decision:** `generate_max_tokens` is 5000 (was 2000) and `generate_reasoning_effort` is `low` (was the model's default, medium). These settings were measured with two full golden-set v2 runs, back to back, with identical code and settings, as the release rule requires.
+**Why:** The reasoning model's hidden thinking counts against the same token allowance as the answer, so a tight allowance leaves too little room for the answer. Asking it to think less also makes answers faster.
+
+| Measure (golden set v2, 40 questions) | 2026-10-25 | 2026-11-09 run 1 | 2026-11-09 run 2 |
+|---|---|---|---|
+| Original 6 normal questions correct | 5/6 | 5/6 | 4/6 |
+| All 21 normal questions correct | 16/21 | 15/21 | 15/21 |
+| 4G/5G traps correct | 4/8 (+1 partly) | 4/8 (+1 partly) | 4/8 (+2 partly) |
+| Off-topic refused with zero LLM calls | 5/5 | 5/5 | 5/5 |
+| Out-of-scope questions with a made-up answer | 0/11 | 0/11 | 0/11 |
+| Wrong answers labelled "answered" | 1 (Q27) | 2 (Q24, Q27) | 2 (Q24, Q27) |
+| Answer time, median / 95th percentile | 9.8 s / 34 s | 5.2 s / 7.2 s | 7.1 s / 11.6 s |
+| Tokens per question reaching the LLM | ~2,600 | ~2,270 | ~2,290 |
+
+Release criteria: 9 of 10 met in both runs. The miss is criterion 6: Q24 and Q27 are wrong and labelled "answered" in both runs, with near-identical text, so this is consistent behaviour, not run-to-run noise. Q24 describes the UE-initiated de-registration abnormal case instead of the network-initiated one; Q27 describes the T3448 control-plane back-off timer instead of the serving PLMN rate limit that lasts until the PDN connection is released. Elsewhere, answers still vary between runs (Q6 right in run 1, "not covered" in run 2; Q23 the reverse), and criteria 1–3 sit on their thresholds.
+**Limitation:** Single grader. Q32 is counted wrong (it names DOWNLINK NAS TRANSPORT; the key expects DOWNLINK GENERIC NAS TRANSPORT, and the question's wording fits both). Each run was split in two and resumed (an OpenRouter credit stop after question 38 in run 1, a network drop at question 40 in run 2), so each has two run directories. The provider host was not pinned. Evidence: `eval/runner_results_v2_low5k_full.json` (`eval/runs/20261109T081807Z`, `20261109T082841Z`) and `eval/runner_results_v2_low5k_run2.json` (`20261109T084441Z`, `20261109T085547Z`).

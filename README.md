@@ -40,19 +40,19 @@ All on golden set v2 (40 questions: 13 5G, 8 4G, 8 mixed 4G/5G traps, 11 off-top
 | Answer chunk in the top 5 (29 retrieval-scored questions) | 15/29 | **20/29** |
 | Trap questions with the answer chunk in the top 5 | 1/8 | **4/8** |
 | Questions needing 2+ specs with every needed spec in the top 5 (cross-spec coverage) | 3/7 | **6/7** |
-| Original 6 normal questions answered correctly (release bar: at least 4/6) | 1/6 | **5/6** |
-| All 21 normal questions answered correctly | — | **15/21** |
-| Trap questions answered correctly (mismatch named and explained) | 0 (none passed) | **4/8**, 1 partly |
-| Off-topic questions refused with zero LLM calls | 0/6 | **5/5** |
-| Out-of-scope questions given a made-up answer | — | **0/11** |
-| Wrong answers labelled "answered" | — | 2 (Q24, Q27) |
+| Original 6 normal questions answered correctly (release bar: at least 4/6) | 1/6 | **5/6, 4/6** |
+| All 21 normal questions answered correctly | — | **15/21, 15/21** |
+| Trap questions answered correctly (mismatch named and explained) | 0 (none passed) | **4/8, 4/8** (+1, +2 partly) |
+| Off-topic questions refused with zero LLM calls | 0/6 | **5/5, 5/5** |
+| Out-of-scope questions given a made-up answer | — | **0/11, 0/11** |
+| Wrong answers labelled "answered" | — | 2, 2 (Q24 and Q27 both times) |
 | LLM calls per in-domain question | 2-6 | **1** |
-| Answer time, median / 95th percentile | — | **5.2 s / 7.2 s** |
+| Answer time, median / 95th percentile | — | **5.2 s / 7.2 s, 7.1 s / 11.6 s** |
 | Tokens to run the original 18 questions | 124,701 | **28,780** |
 
-Answer correctness is judged by reading each of the 40 answers against the golden set's expected answer (single grader, run of 2026-11-09: `eval/runs/20261109T081807Z` and `20261109T082841Z`, results in `eval/runner_results_v2_low5k_full.json`). Details and limitations: [DECISIONS.md](DECISIONS.md).
+Answer rows show two full runs on 2026-11-09 with identical code and settings (run 1, run 2). Correctness is judged by reading each of the 40 answers against the golden set's expected answer (single grader). Evidence: `eval/runner_results_v2_low5k_full.json` (runs `20261109T081807Z` + `20261109T082841Z`) and `eval/runner_results_v2_low5k_run2.json` (runs `20261109T084441Z` + `20261109T085547Z`). Details and limitations: [DECISIONS.md](DECISIONS.md).
 
-The public demo ships when the [release criteria](docs/release-criteria.md) hold in two consecutive runs. The latest run meets 9 of 10; it gave 2 wrong answers labelled "answered", and the bar is at most 1.
+The public demo ships when the [release criteria](docs/release-criteria.md) hold in two consecutive runs. Both runs meet 9 of 10; each gave 2 wrong answers labelled "answered", and the bar is at most 1.
 
 ### What we tried (ablations)
 
@@ -96,7 +96,7 @@ python -m src.eval.retrieval_report --pipeline \
     --golden eval/golden/golden_set.v2.json \
     --grades eval/pooling/v2/grades.json                 # retrieval only, zero LLM tokens
 python -m src.eval.runner --golden eval/golden/golden_set.v2.json \
-    --max-llm-calls 20                                   # full pipeline, spends tokens
+    --max-llm-calls 45                                   # full pipeline, ~35 LLM calls, spends tokens
 
 ruff check . && pytest tests/ -q                         # what CI runs (no network, no LLM)
 ```
