@@ -1,0 +1,1305 @@
+{
+  "golden_set_hash": "69caa7c8bec9a19e3285817a9fd9e2611af43e7ff420939e548be3247bca7c6c",
+  "results": [
+    {
+      "id": 1,
+      "question": "What is the role of the AMF in the 5G system architecture?",
+      "type": "normal",
+      "expected_behavior": "Should describe AMF functions like registration management, connection management, mobility management based on TS 23.501.",
+      "generated_answer": "The AMF is the Access and Mobility Management Function that handles all control-plane functions for UE connectivity. It terminates the RAN CP interface (N2) and the NAS interface (N1), performs NAS ciphering and integrity protection, and manages registration, connection, reachability, and mobility of UEs. The AMF also provides transport for SM, SMS, and Location Services messages, performs access authentication and authorization, supports lawful intercept, and manages charging and network-slice-specific authentication. Additionally, it selects the appropriate SMF per UE subscription, forwards user location and access type information to the SMF, and supports non-3GPP access through N3IWF/TNGF interfaces.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "4.2.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.6.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "4.1"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 2,
+      "question": "How does the UE initiate a PDU session establishment in 5GS?",
+      "type": "normal",
+      "expected_behavior": "Should describe the UE sending a PDU Session Establishment Request via NAS as per TS 24.501.",
+      "generated_answer": "The UE initiates a PDU session establishment in 5GS by creating a **PDU SESSION ESTABLISHMENT REQUEST** message.  \nIt allocates a new PDU session ID that is not currently used, allocates a PTI value that is not used, and sets the PTI IE in the request.  \nIf the session is always-on (e.g., for time synchronization or TSC) the UE includes the **Always-on PDU session requested IE**.  \nFor emergency or handover scenarios the UE may set the request type accordingly and include the stored PDU session ID and S-NSSAI when transferring an existing session.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.2"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 3,
+      "question": "Which network function is responsible for selecting the SMF?",
+      "type": "normal",
+      "expected_behavior": "Should state that the AMF is responsible for SMF selection.",
+      "generated_answer": "The SMF selection functionality is performed by the AMF and the SCP.  \nBoth functions use the NRF to discover SMF instances and then select an SMF (and service instance) based on the available information.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.16.4.5"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.16.3.11"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 4,
+      "question": "What is the structure of the 5G-GUTI?",
+      "type": "normal",
+      "expected_behavior": "Should explain the components of 5G-GUTI (GUAMI + 5G-TMSI, etc.).",
+      "generated_answer": "The 5G-GUTI is composed of two parts:  \n\n- **GUAMI** - the Globally Unique AMF Identifier, which itself is formed as  \n  `<MCC><MNC><AMF Region ID><AMF Set ID><AMF Pointer>`.  \n- **5G-TMSI** - the temporary mobile subscriber identity that uniquely identifies the UE within the AMF(s) identified by the GUAMI.  \n\nThus, `<5G-GUTI> := <GUAMI> <5G-TMSI>`.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.9.4"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "3.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.2"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 5,
+      "question": "Describe the states of 5GMM (5GS Mobility Management) in the UE.",
+      "type": "normal",
+      "expected_behavior": "Should list states like 5GMM-DEREGISTERED, 5GMM-REGISTERED, etc., from TS 24.501.",
+      "generated_answer": "The 5GS mobility management (5GMM) sublayer of the UE is described by a state machine that is managed per access type independently.  \nThe UE states that are explicitly mentioned are:  \n* **5GMM-DEREGISTERED** - the UE is not registered with the network.  \n* **5GMM-REGISTERED** - the UE is registered but not yet connected to the user plane.  \n* **5GMM-CONNECTED** - the UE has an established 5GMM context and is able to carry user-plane traffic.  \n* **5GMM services disabled** - a state in which 5GS mobility management functions are not performed.  \n\nThese states are defined in the 5GMM sublayer state machine of the UE.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.1.3.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "10.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.2.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.1.3.2.1.2.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "4.2"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 6,
+      "question": "What is the purpose of the Network Slice Selection Assistance Information (NSSAI)?",
+      "type": "normal",
+      "expected_behavior": "Should explain NSSAI is used for network slice selection.",
+      "generated_answer": "The source text does not define a specific purpose for the Network Slice Selection Assistance Information (NSSAI).",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "9.11.3.36"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.2.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.4.1.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.15.2.1"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 7,
+      "question": "When an MME receives an Attach Request, does it communicate with the UDM?",
+      "type": "adversarial",
+      "expected_behavior": "Should point out that MME is an EPS (4G) entity and communicates with HSS, whereas UDM is a 5GS entity.",
+      "generated_answer": "The MME is a 4G (EPS) network function that processes Attach Request messages.  \nIn the 4G architecture the MME does not interact with a UDM; the UDM is a 5G network function used by the AMF for subscription data handling.  \nTherefore, when an MME receives an Attach Request it does not communicate with a UDM.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "7.5.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.7"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.11"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "4.4.4.3"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "an MME receives an Attach Request, does it communicate with the Mobility Management Entity TS 24.301",
+          "an receives an, does it communicate with the UDM Unified Data Management"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "question": "What timer does the AMF use for a Tracking Area Update in EPS?",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that AMF and 5G use Registration Update, whereas EPS and MME use Tracking Area Update.",
+      "generated_answer": "The AMF is a 5G core network function and does not directly control the EPS Tracking Area Update procedure. In EPS, the TAU procedure is governed by the UE timers such as T3411 (retry) and T3402 (normal TAU), as specified in 3GPP 24.301. The AMF does not use a specific timer for an EPS TAU.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4A"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4A"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "10.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.3.5"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "timer does the use for a Tracking Area Update in EPS Evolved Packet System TS 24.301",
+          "timer does the AMF use for a in Access and Mobility Management Function"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "question": "During a 5G registration, how is the EPS bearer identity allocated?",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that 5GS uses PDU sessions and QoS flows, not EPS bearers.",
+      "generated_answer": "The question mixes 4G and 5G concepts.  \nIn 4G, the EPS bearer identity (EBI) is allocated by the MME when an EPS bearer context is established; the MME selects an EBI from the range 5-15 (or 0 if none is assigned) and includes it in ESM messages.  \nIn 5G, the registration procedure does not involve EPS bearer identities. 5G uses a 5G-GUTI (or a temporary 5G-GUTI) and a SUPI/PEI for subscriber and equipment identification, and bearer contexts are created later during the establishment of 5G bearer contexts.  \n\nThus, the source text does not define an EPS bearer identity allocation for 5G registration.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.9.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "7.3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "7.3.2"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "During a registration, how is the EPS bearer identity allocated Evolved Packet System EBI TS 24.301",
+          "During a 5G registration, how is the bearer identity allocated"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "question": "Does the SGW connect to the SMF for user plane traffic?",
+      "type": "adversarial",
+      "expected_behavior": "Should note that SGW is a 4G user plane node (connecting to PGW), whereas SMF is a 5G control plane node connecting to UPF.",
+      "generated_answer": "The source text does not mention any connection between an SGW and the SMF for user-plane traffic.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.29.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.3.3"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.29.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.8.2.13.3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.8.2.5.1"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 11,
+      "question": "Explain how the PDN Gateway handles 5G QoS flows.",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that PDN Gateway (PGW) is a 4G entity, and 5G QoS flows are handled by the UPF.",
+      "generated_answer": "The PDN Gateway is a 4G (EPS) entity and is not defined to handle 5G QoS flows. 5G QoS flows are managed by the SMF and UPF in the 5G Core, not by the PDN Gateway.  This detail is not defined in the 5G specifications for the PDN Gateway.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.7.1.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "3.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.7.3.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.20"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "the PDN Gateway handles flows Packet Data Networks TS 24.301",
+          "the Gateway handles 5G QoS flows Quality of Service"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "question": "What is the message format for a 5G Session Management Tracking Area Update?",
+      "type": "adversarial",
+      "expected_behavior": "Should clarify that Tracking Area Update is an EPS concept, and 5G Session Management handles PDU Session Modification/Establishment.",
+      "generated_answer": "The 5G Session Management (5GSM) procedure is not carried in a separate \u201cTracking Area Update\u201d message; instead, 5GSM messages are piggy-backed inside 5GMM transport messages such as the Tracking Area Update (TAU) request and TAU accept.  \nThe TAU request format is defined in 3GPP TS 24.301 \u00a78.2.29.1, and the TAU accept format is defined in \u00a78.2.26.1.  \nA 5GSM message can be carried in an information element within these TAU messages, but the TAU itself is a 5GMM message, not a 5GSM message.  \nThus, there is no distinct \u201c5G Session Management Tracking Area Update\u201d message; the TAU request/accept messages are the 5GMM messages that may carry 5GSM content.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.27"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "9.7"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.29.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "4.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.26.1"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "the message format for a Session Management Tracking Area Update TS 24.301",
+          "the message format for a 5G Session Management"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "question": "What is the capital of France?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal. System should indicate it only answers 3GPP-related queries.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "termination_reason": "out_of_domain",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.4495869576931
+      }
+    },
+    {
+      "id": 14,
+      "question": "Can you explain how to bake a chocolate cake?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "termination_reason": "out_of_domain",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.45353031158447266
+      }
+    },
+    {
+      "id": 15,
+      "question": "What is the difference between TCP and UDP?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal or state that it is out of scope of 3GPP specs unless specifically referenced as transport.",
+      "generated_answer": "The source text only describes how TCP and UDP port ranges are encoded in the 5G ProSe layer-3 UE-to-network relay: the TCP port range field contains the lowest and highest TCP port numbers, and the UDP port range field contains the lowest and highest UDP port numbers, each represented by two octets. No further functional or protocol differences between TCP and UDP are provided.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "9.11.4.29"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.32.8"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.7.5.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "8.2.5"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "8.2.4"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 16,
+      "question": "Who won the World Cup in 2022?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "termination_reason": "out_of_domain",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.43971824645996094
+      }
+    },
+    {
+      "id": 17,
+      "question": "Write a python script to parse an XML file.",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "termination_reason": "out_of_domain",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.5750340819358826
+      }
+    },
+    {
+      "id": 18,
+      "question": "What are the side effects of aspirin?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refusal.",
+      "generated_answer": "This question is out of scope: I can only answer questions about the 3GPP specifications TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (EPS NAS).",
+      "sources": [],
+      "termination_reason": "out_of_domain",
+      "decisions": {
+        "triage_decision": "out_of_domain",
+        "triage_tier": "centroid",
+        "triage_score": 0.5110796689987183
+      }
+    },
+    {
+      "id": 19,
+      "question": "When a UE is registered over both 3GPP and non-3GPP access in the same PLMN, does the AMF give it one 5G-GUTI or one per access?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 23.501 clause 5.3.2.4; the answer sentence is in answer_quotes.",
+      "generated_answer": "When the 3GPP and non-3GPP accesses belong to the same PLMN, the AMF assigns a single 5G-GUTI that is common to both accesses. The AMF associates this common 5G-GUTI with the UE\u2019s access-specific RM contexts for 3GPP and non-3GPP.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.3.2.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.3.2.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.3.2.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.3.2.4"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.3.2.4"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 20,
+      "question": "If a phone is idle on the cellular side but still connected to the 5G core over Wi-Fi, how does the network reach it when downlink data arrives for the cellular side?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 23.501 clause 5.3.3.4; the answer sentence is in answer_quotes.",
+      "generated_answer": "When downlink data arrives for the cellular side while the UE is idle on the 3GPP access, the network pages the UE. Upon receiving the paging indication, the UE stops timer T3346 and, if it is in 5GMM-IDLE mode without suspend indication, initiates a service request procedure over 3GPP access to respond to the paging (sub-clauses 5.6.1.2.1). The service request restores the N1 NAS signalling connection and brings the UE into 5GMM-CONNECTED mode so that the downlink data can be delivered.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.1.5"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.3.3.2.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.6.2.2.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.1.2"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 21,
+      "question": "How are Configuration Transfer messages routed between RAN nodes in 5GS?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 23.501 clause 5.26.2.2; the answer sentence is in answer_quotes.",
+      "generated_answer": "Configuration Transfer messages are routed through the core network by including the source and destination RAN node addresses in a transparent container.  \nThe source RAN node sends the message to its core network node (AMF or MME) over the appropriate interface (N2 for NG-RAN, S1 for E-UTRAN).  \nThe core network node uses the destination address to forward the message to the correct AMF via the N14 interface, or to the target RAN node via the N2 or N26 interface.  \nEach message is routed and relayed independently by the core network nodes, so a request/response exchange is carried out as two separate messages.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.26.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.26"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.17.7.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.26.2.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.17.7.1"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 22,
+      "question": "After a 5G residential gateway receives cause #28 \"Restricted service area\" over wireline access, which 5GMM state does it enter?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.501 clause 5.3.5.3; the answer sentence is in answer_quotes.",
+      "generated_answer": "After receiving cause #28 \u201cRestricted service area\u201d over wireline access, the 5G-RG enters the state **5GMM-REGISTERED.NON-ALLOWED-SERVICE**.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.5.3"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.5.3"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.4.5.3.3"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.23"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.5.1"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 23,
+      "question": "When a UE performs a registration update only because its periodic timer T3512 expired, what registration type does it indicate?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.501 clause 5.5.1.3.2; the answer sentence is in answer_quotes.",
+      "generated_answer": "When timer T3512 expires, the UE performs a periodic registration update procedure.  \nIn this case the UE indicates a **Periodic Registration Update** registration type.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.7"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.7"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.31.7.5"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.3.4"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 24,
+      "question": "In the network-initiated de-registration procedure, what does the UE do if the lower layers report that the DEREGISTRATION ACCEPT message failed to transmit?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.501 clause 5.5.2.3.4; the answer sentence is in answer_quotes.",
+      "generated_answer": "If the lower layers report that the DEREGISTRATION ACCEPT message failed to transmit, the UE aborts the network-initiated de-registration procedure.  \n- If the de-registration was triggered by disabling 5GS services, the UE enters the 5GMM-NULL state;  \n- If it was a normal de-registration for other reasons, the UE enters the 5GMM-DEREGISTERED state.  \nThe UE does not start a new de-registration signalling procedure, remains in the current serving cell, applies the normal cell reselection process, and may perform a local de-registration immediately or after an implementation-dependent delay.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.2.2.6"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.2.3.1"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.2.3.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.2.2.6"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.2.2.1"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 25,
+      "question": "Which timer does a UE start when it sends its first REGISTRATION REQUEST to join the 5G network?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.501 clause 5.5.1.2.2; the answer sentence is in answer_quotes.",
+      "generated_answer": "The UE starts timer T3510 when it sends its first REGISTRATION REQUEST to join the 5G network.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.20.3"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.5.1.2.5"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.7"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.7"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 26,
+      "question": "What does the MME do if an EMM INFORMATION message is not delivered because of a handover?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.301 clause 5.4.5.4; the answer sentence is in answer_quotes.",
+      "generated_answer": "If an EMM INFORMATION message cannot be delivered because of an intra-MME handover, the MME shall retransmit the EMM INFORMATION message after the handover has successfully completed. If the handover fails and the lower layer reports this while the S1 signalling connection still exists, the MME shall also retransmit the EMM INFORMATION message.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.4.5.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.1.3.4.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.6.2.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.3.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.4.4.6"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 27,
+      "question": "In LTE, can the network limit how often an IoT device sends user data inside control-plane NAS messages, and how long does that limit last?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.301 clause 6.3.8; the answer sentence is in answer_quotes.",
+      "generated_answer": "Yes. In LTE the network may activate congestion control for transport of user data via the control plane. It does so by including a control-plane data back-off timer (T3448) in the ATTACH ACCEPT, TRACKING AREA UPDATE ACCEPT, SERVICE ACCEPT or SERVICE REJECT message. The UE starts T3448 with the value sent by the network; while this timer is running the UE in EMM-IDLE mode is not allowed to initiate control-plane user-data transport (except for exception data reporting). The limit therefore lasts until the T3448 timer expires, after which the UE may again send user data via the control plane.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.3.9A"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.3.19"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.3.9"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.31.15"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.1.4.2"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 28,
+      "question": "What are the possible values of the EPS update status?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.301 clause 5.1.3.3; the answer sentence is in answer_quotes.",
+      "generated_answer": "- EU1: UPDATED - the last attach or tracking area updating attempt was successful.  \n- EU2: NOT UPDATED - the last attach, service request or tracking area updating attempt failed procedurally.  \n- EU3: ROAMING NOT ALLOWED - the last attach, service request or tracking area updating attempt was correctly performed, but the answer from the MME was negative (because of roaming or subscription restrictions).",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.1.3.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.13"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.3.14"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.3.4.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.5"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 29,
+      "question": "In EPS, if an ESM uplink message fails to send and the UE has moved to a tracking area outside its TAI list, what happens to the ESM procedure?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.301 clause 6.3.3; the answer sentence is in answer_quotes.",
+      "generated_answer": "If lower layers indicate a TAI change and the current TAI is not in the UE\u2019s TAI list, the ESM procedure is aborted and must be re-initiated only after the UE has successfully performed a tracking area updating procedure.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.3.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.6.4.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.6"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.6"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.6"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 30,
+      "question": "What is the TRACKING AREA UPDATE REQUEST message used for in N1 mode?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.301 clause 5.5.5; the answer sentence is in answer_quotes.",
+      "generated_answer": "The TRACKING AREA UPDATE REQUEST message is used to construct a TRACKING AREA UPDATE REQUEST for the inter-system change from S1 mode to N1 mode so that the MME can perform further security verification. It is created by EMM on request of 5GMM and then included in the REGISTRATION REQUEST message.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.5"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.29.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.7"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 31,
+      "question": "How should an LTE UE respond when it receives an EPS NAS message that is missing a mandatory information element?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.301 clause 7.5.1; the answer sentence is in answer_quotes.",
+      "generated_answer": "- If the UE receives an **ACTIVATE DEFAULT EPS BEARER CONTEXT REQUEST** that lacks a mandatory information element, it must send an **ACTIVATE DEFAULT EPS BEARER CONTEXT REJECT** message with ESM cause #96 \u201cinvalid mandatory information\u201d.  \n- If the UE receives an **ACTIVATE DEDICATED EPS BEARER CONTEXT REQUEST** that lacks a mandatory information element, it must send an **ACTIVATE DEDICATED EPS BEARER CONTEXT REJECT** message with ESM cause #96 \u201cinvalid mandatory information\u201d.  \n- If the UE receives a **MODIFY EPS BEARER CONTEXT REQUEST** that lacks a mandatory information element, it must send a **MODIFY EPS BEARER CONTEXT REJECT** message with ESM cause #96 \u201cinvalid mandatory information\u201d.  \n- If the UE receives a **DEACTIVATE EPS BEARER CONTEXT REQUEST** that lacks a mandatory information element, it must send a **DEACTIVATE EPS BEARER CONTEXT ACCEPT** message and release all resources associated with that EPS bearer.  \n- If the UE receives a **PDN CONNECTIVITY REQUEST** that lacks a mandatory information element, it must send a **PDN CONNECTIVITY REJECT** message with ESM cause #96 \u201cinvalid mandatory information\u201d.  \n- If the UE receives a **PDN DISCONNECT REQUEST** that lacks a mandatory information element, it must send a **PDN DISCONNECT REJECT** message with ESM cause #96 \u201cinvalid mandatory information\u201d.  \n- If the UE receives a **BEARER RESOURCE ALLOCATION REQUEST** that lacks a mandatory information element, it must send a **BEARER RESOURCE ALLOCATION REJECT** message with ESM cause #96 \u201cinvalid mandatory information\u201d.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "7.5.3"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "8.2.6.16"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "8.2.26.3"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.4.2.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.3.7b"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 32,
+      "question": "How does the MME start a network-initiated transport of NAS messages?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.301 clause 5.6.4.3; the answer sentence is in answer_quotes.",
+      "generated_answer": "The MME starts a network-initiated transport of NAS messages by sending a **DOWNLINK NAS TRANSPORT** message to the UE. This message contains the NAS message container IE that carries the encapsulated NAS message. The UE, upon receiving the DOWNLINK NAS TRANSPORT, forwards the contents of the NAS message container IE to the appropriate entity (e.g., the SMS entity).",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.4.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.3.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.4.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.3.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "4.4.5"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 33,
+      "question": "When an LTE UE wants to change the guaranteed bit rate of a bearer without touching its packet filters, what does it put in the request?",
+      "type": "normal",
+      "expected_behavior": "Answer grounded in TS 24.301 clause 6.5.4.2; the answer sentence is in answer_quotes.",
+      "generated_answer": "The UE sends a BEARER RESOURCE MODIFICATION REQUEST that contains:\n\n* the EPS bearer identity of the bearer in the EPS bearer identity for packet filter IE;  \n* a Traffic Flow Aggregate IE with the TFT operation code set to \u201cno TFT operation\u201d;  \n* the packet-filter identifier(s) to which the GBR change applies in the Packet filter identifier parameter;  \n* the new GBR value in the Required traffic flow QoS IE.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.5.4.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.4.3.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.5.4.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.5.4.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "6.5.4.3"
+        }
+      ],
+      "termination_reason": "answered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 34,
+      "question": "When the AMF sends a DOWNLINK GENERIC NAS TRANSPORT message to the UE, which IE carries the application's message?",
+      "type": "adversarial",
+      "expected_behavior": "Name the generation mismatch (DOWNLINK GENERIC NAS TRANSPORT is the 4G (MME) message; the AMF uses DL NAS TRANSPORT with a Payload container), then answer each part from its own spec.",
+      "generated_answer": "In the 4G (EPS) specification, a DOWNLINK GENERIC NAS TRANSPORT message carries the application\u2019s payload in the **generic message container IE** (see 5.6.4.3).  \nThe AMF, being a 5G network function, does not use the 4G \u201cgeneric NAS\u201d procedure; it would use a 5G-specific NAS transport message instead.  \nThus, the IE that carries the application\u2019s message in the 4G context is the generic message container IE.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.12"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.2.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "8.2.31.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.4.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.6.3.3"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "the sends a DOWNLINK GENERIC NAS TRANSPORT message to the UE, which IE carries the application's message TS 24.301",
+          "the AMF sends a DOWNLINK TRANSPORT message to the UE, which IE carries the application's message Access and Mobility Management Function"
+        ]
+      }
+    },
+    {
+      "id": 35,
+      "question": "Does the UE start timer T3510 when it sends an ATTACH REQUEST to the MME?",
+      "type": "adversarial",
+      "expected_behavior": "Name the generation mismatch (T3510 is the 5G registration timer; a 4G attach starts T3410), then answer each part from its own spec.",
+      "generated_answer": "In a 4G EPS attach, the UE does not start timer T3510 when it sends an ATTACH REQUEST to the MME.  \nTimer T3510 is defined for 5G registration procedures and is started by the UE only when it initiates a 5G registration (e.g., sending a 5G Registration Request to the AMF).  \nThus, the 4G attach procedure and the 5G timer T3510 are unrelated; the UE will not start T3510 during a 4G attach.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.6.1.7"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.2.6"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "5.4.1.2.4.5"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.1.3.5"
+        }
+      ],
+      "termination_reason": "partial",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical",
+        "mixed_generation": true,
+        "retrieval_queries": [
+          "Does the UE start timer when it sends an ATTACH REQUEST to the MME Mobility Management Entity TS 24.301",
+          "Does the UE start timer T3510 when it sends an to the"
+        ],
+        "unsupported_identifiers": [
+          "T3510"
+        ]
+      }
+    },
+    {
+      "id": 36,
+      "question": "How does Wi-Fi 6 use OFDMA to share a channel between devices?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refuse / not covered.",
+      "generated_answer": "The source text does not cover how Wi-Fi 6 uses OFDMA to share a channel between devices.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.12.1"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.8.2.13.0"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.18.1"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.4.18"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "6.3.12b"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "fail_open",
+        "triage_score": 0.6679319739341736
+      }
+    },
+    {
+      "id": 37,
+      "question": "What is the maximum downstream speed of a DOCSIS 3.1 cable modem?",
+      "type": "out_of_scope",
+      "expected_behavior": "Refuse / not covered.",
+      "generated_answer": "The source does not contain any information about DOCSIS 3.1 cable modem speeds.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.4.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.4.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.4.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.4.3"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "9.9.4.3"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "fail_open",
+        "triage_score": 0.6808257102966309
+      }
+    },
+    {
+      "id": 38,
+      "question": "How many HARQ processes does the NR MAC support in the downlink?",
+      "type": "out_of_scope",
+      "expected_behavior": "Say the indexed specs don't cover it.",
+      "generated_answer": "The source text does not specify the number of HARQ processes supported by the NR MAC in the downlink.",
+      "sources": [
+        {
+          "spec_id": "23.501",
+          "clause_id": "0"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.12.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.33.2.2"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "5.16.3.10"
+        },
+        {
+          "spec_id": "23.501",
+          "clause_id": "0"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 39,
+      "question": "What does the PDCP discard timer control in NR?",
+      "type": "out_of_scope",
+      "expected_behavior": "Say the indexed specs don't cover it.",
+      "generated_answer": "The source text does not define or describe the PDCP discard timer in NR.",
+      "sources": [
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.2.4.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.2.4.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.4.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.2.4.2"
+        },
+        {
+          "spec_id": "24.501",
+          "clause_id": "6.4.1.4.2"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    },
+    {
+      "id": 40,
+      "question": "Which Diameter command does the MME send to the HSS over S6a to update the UE's location?",
+      "type": "out_of_scope",
+      "expected_behavior": "Say the indexed specs don't cover it.",
+      "generated_answer": "The source text does not specify which Diameter command the MME sends to the HSS over S6a to update the UE's location.",
+      "sources": [
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.3.4.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.4.3.2"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.2.4"
+        },
+        {
+          "spec_id": "24.301",
+          "clause_id": "5.5.3.3.4.2"
+        }
+      ],
+      "termination_reason": "not_covered",
+      "decisions": {
+        "triage_decision": "in_domain",
+        "triage_tier": "lexical"
+      }
+    }
+  ]
+}
