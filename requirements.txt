@@ -1,4 +1,3 @@
-streamlit
 qdrant-client
 fastembed
 sentence-transformers

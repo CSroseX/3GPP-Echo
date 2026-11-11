@@ -35,7 +35,7 @@ Status legend: **Decided** (agreed with the owner) · **Proposed** (awaiting app
 |---|---|---|
 | Backend + models | **Modal**, free Starter plan (Decided) | The app needs ~840 MB RAM; every no-card free host checked gives ≤512 MB (Render, Railway, Koyeb, Northflank), Hugging Face Docker Spaces now need PRO, Vercel/Netlify only run tiny functions. Modal bills per second only while running ($30/month free); at ~$0.002 per visit that's thousands of visits, far beyond the OpenRouter budget. Deployed by `deploy/modal_app.py` from the same Dockerfile. Limits: 1 container, sleeps after 5 idle minutes. |
 | Qdrant points | **Qdrant Cloud free cluster** (Decided) | 1 GB RAM, 4 GB disk; our index (~10 MB vectors + ~20 MB payload) fits easily. Loaded with `deploy/copy_qdrant.py`, which copies points with their stored vectors (no re-embedding). Chosen over a snapshot because a snapshot must match the cloud's Qdrant version; a point copy works across versions. |
-| Frontend | Cloudflare Pages | Static files, free, never sleeps, so the page loads instantly and can say "waking the server up" while the backend starts. |
+| Frontend | Cloudflare **Workers** (static assets; planned as Pages) | Static files, free, never sleeps, so the page loads instantly and can say "waking the server up" while the backend starts. |
 | Counters | Upstash Redis free tier | The container's disk is wiped whenever it sleeps, so counters must live outside it. Redis has atomic counters with automatic expiry, which fits "per day" exactly. |
 
 Known behaviour (measured): after 5 idle minutes the backend sleeps; the next visitor waits ~20–26 s (model load ~16 s). Warm replies to health/quota take ~1 s. The frontend shows a "waking up" state for that. Image needs ~840 MB RAM.
@@ -138,6 +138,17 @@ Example recordings: `npm run record` (in `frontend/`, backend running) writes `c
 
 The graph, retrieval and prompts are not changed by Phase 7.
 
+## Deployment (live 2026-11-11)
+
+| Piece | Where | Notes |
+|---|---|---|
+| Site | Cloudflare **Workers** (static assets), `3gpp-echo` | Built from `main` by Workers Builds: root `frontend/`, `npm run build`, `npx wrangler deploy`. `frontend/wrangler.jsonc` stops Wrangler auto-configuring SvelteKit (that rewrote the build and failed) and keeps `workers_dev` on. The API URL is in `frontend/.env.production`: the dashboard build variable was not applied, so the first build called `localhost:8000`. A Worker was created instead of Pages; it serves static files just as well. |
+| API | Modal, `3gpp-echo-api` | `API_CORS_ORIGINS` in `.env` lists the site (JSON list), passed through the Modal secret. |
+| Budget shown | OpenRouter key limit | `/api/quota` reports the key's remaining credit limit (capped by the account balance), since the key limit is what stops the demo. |
+| Qdrant keep-alive | GitHub Action every 3 days | One real vector search. GitHub pauses scheduled workflows after 60 days without repo activity: re-enable from the Actions tab. |
+
+Runbook (deploy, roll back, rotate the key): README → "Deployment".
+
 ## Approach
 
 Build a thin end-to-end slice first, deployed, then thicken it. The biggest risk is "does it run on free hosting", so that is tested first.
@@ -148,6 +159,7 @@ Build a thin end-to-end slice first, deployed, then thicken it. The biggest risk
 4. **Frontend** — v1 built and accepted (2026-11-11), not deployed yet. Superseded the "minimal first" plan.
 5. **Budget protection** — built (2026-11-11). Needs the Modal redeploy to be live.
 6. **Frontend enhancements** after launch prep.
+   **Deployed 2026-11-11** — see "Deployment" above. Streamlit removed the same day.
 7. **Launch:** share the link, Qdrant keep-alive job, runbook, remove Streamlit.
 
 ## Log
@@ -159,6 +171,7 @@ Build a thin end-to-end slice first, deployed, then thicken it. The biggest risk
 - 2026-11-09 — **Blocker:** Hugging Face no longer hosts Docker Spaces on free CPU without a PRO subscription (402 on Space creation). Backend host to be re-chosen. Measured image needs: ~730 MB RAM, 3.1 GB image, 17 s model load — rules out 512 MB free tiers (Render, Koyeb).
 - 2026-11-09 — No global daily cap: the OpenRouter balance is the global budget; notify when it runs out.
 - 2026-11-09 — Backend host: **Modal** (free Starter plan). `deploy/modal_app.py` deploys the Dockerfile; secrets go into the named Modal secret `3gpp-echo-api-env` from `.env`; `modal run deploy/modal_app.py::check` smoke-tests Qdrant + OpenRouter from inside the container (no tokens). Live at `https://csrosex--3gpp-echo-api-api.us-east.modal.run`: health, quota ($4.80) and an off-topic refusal verified; cold start 20–26 s. HF deploy files removed. Steps 1–3 done.
+- 2026-11-11 — **Live**: site on Cloudflare Workers, API on Modal with SSE + quota + CORS. Fixes on the way: Wrangler config (auto-configure broke the build), production API URL committed (build variable not applied), budget shows the key limit and fetches on first use. Qdrant keep-alive Action added; Streamlit app and dependency removed; LinkedIn added to the site.
 - 2026-11-11 — Budget protection built: visitor token (`X-Visitor-Token`, HMAC-signed), 5/day per visitor, 15/day per IP (/64 for IPv6), Upstash Redis over REST, charge only LLM-reaching answers, fail-open; frontend shows "N of 5 questions left today" and disables typing at 0 (recorded examples still play).
 - 2026-11-11 — Frontend v1 accepted for shipping after the owner's first-pass review (system map, dark chatbot demo, footer and author, evals edits).
 - 2026-11-11 — Frontend built (local, not deployed): four sections, live route panel over SSE, tours; `POST /api/ask/stream` added with tests. Frontend planning started earlier that day.
