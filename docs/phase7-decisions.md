@@ -48,10 +48,14 @@ Known behaviour (measured): after 5 idle minutes the backend sleeps; the next vi
 
 ### Concern 2: Budget protection
 
+**Built 2026-11-11** (`src/api/quota.py`, tests in `tests/test_api.py`): per-visitor and per-IP daily limits on Upstash Redis (REST), charged only when the LLM was reached. Checked live: off-topic questions leave the counter untouched. Details below; deviations from the plan are noted inline.
+
 - **Visitor identity:** a server-signed visitor token stored in the browser, plus the IP address (IPv6 → /64 prefix). A cookie won't work, because the frontend and backend are on different domains and browsers block such cookies. The token goes in a request header instead.
-- **Per-visitor limit:** 5 LLM-reaching questions per day per token. Per IP the limit is higher (e.g. 15/day), so people sharing one network (college, office) aren't blocked by each other, but clearing storage to get a new token only buys a few extra questions.
+- **Per-visitor limit:** 5 LLM-reaching questions per day per token (UTC day). Per IP the limit is higher (15/day; a request without a valid token gets 5/day on its IP), so people sharing one network (college, office) aren't blocked by each other, but clearing storage to get a new token only buys a few extra questions.
 - **Global limit (Decided):** no separate daily cap. The global budget is the OpenRouter credit balance. When it runs out, OpenRouter rejects the call (HTTP 402) and the site tells the visitor the demo budget is used up. The remaining balance can be read from OpenRouter's key endpoint for the quota panel. ($5 ≈ 1,470 answered questions at ~$0.0034 each.)
 - **What counts:** only questions that reach the LLM. Off-topic refusals (triage) and cache hits are free.
+- **Fail-open:** if Redis can't be reached, questions are allowed and logged; the OpenRouter key's credit limit is the backstop.
+- **Race-safe:** the limit is re-checked inside the one-at-a-time graph lock, so parallel requests can't slip past it.
 - **Exhausted:** a clear message (per-visitor: come back tomorrow; global: demo budget used up). Example questions stay clickable (their answers are pre-computed and served free).
 - **Last line of defence:** a credit limit on the OpenRouter API key (set by the owner in the OpenRouter dashboard).
 - **Model (Decided):** one model, the paid `openai/gpt-oss-20b` the benchmarks used. No free-variant fallback. A model dropdown may be added later if wanted.
@@ -142,7 +146,7 @@ Build a thin end-to-end slice first, deployed, then thicken it. The biggest risk
 2. **Backend API** — done.
 3. **Hosting check** on Modal — done.
 4. **Frontend** — v1 built and accepted (2026-11-11), not deployed yet. Superseded the "minimal first" plan.
-5. **Budget protection** before the link is shared anywhere.
+5. **Budget protection** — built (2026-11-11). Needs the Modal redeploy to be live.
 6. **Frontend enhancements** after launch prep.
 7. **Launch:** share the link, Qdrant keep-alive job, runbook, remove Streamlit.
 
@@ -155,6 +159,7 @@ Build a thin end-to-end slice first, deployed, then thicken it. The biggest risk
 - 2026-11-09 — **Blocker:** Hugging Face no longer hosts Docker Spaces on free CPU without a PRO subscription (402 on Space creation). Backend host to be re-chosen. Measured image needs: ~730 MB RAM, 3.1 GB image, 17 s model load — rules out 512 MB free tiers (Render, Koyeb).
 - 2026-11-09 — No global daily cap: the OpenRouter balance is the global budget; notify when it runs out.
 - 2026-11-09 — Backend host: **Modal** (free Starter plan). `deploy/modal_app.py` deploys the Dockerfile; secrets go into the named Modal secret `3gpp-echo-api-env` from `.env`; `modal run deploy/modal_app.py::check` smoke-tests Qdrant + OpenRouter from inside the container (no tokens). Live at `https://csrosex--3gpp-echo-api-api.us-east.modal.run`: health, quota ($4.80) and an off-topic refusal verified; cold start 20–26 s. HF deploy files removed. Steps 1–3 done.
+- 2026-11-11 — Budget protection built: visitor token (`X-Visitor-Token`, HMAC-signed), 5/day per visitor, 15/day per IP (/64 for IPv6), Upstash Redis over REST, charge only LLM-reaching answers, fail-open; frontend shows "N of 5 questions left today" and disables typing at 0 (recorded examples still play).
 - 2026-11-11 — Frontend v1 accepted for shipping after the owner's first-pass review (system map, dark chatbot demo, footer and author, evals edits).
 - 2026-11-11 — Frontend built (local, not deployed): four sections, live route panel over SSE, tours; `POST /api/ask/stream` added with tests. Frontend planning started earlier that day.
 - 2026-11-11 — Frontend planning started. Decided: pitch-first purpose, light theme, heavy guided tours, one page with three sections (pitch → interactive pipeline diagram → visitor-driven demo with a live vertical node flow in a side panel). No drafting until the owner's green flag.
