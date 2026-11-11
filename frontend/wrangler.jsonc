@@ -1,0 +1,11 @@
+// Cloudflare Workers config: serve the static build (no server code).
+// Having this file stops `wrangler deploy` from auto-configuring the project.
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "3gpp-echo",
+	"compatibility_date": "2026-11-01",
+	"assets": {
+		"directory": "./build",
+		"not_found_handling": "404-page"
+	}
+}
