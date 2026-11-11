@@ -160,6 +160,17 @@ class Settings(BaseSettings):
     # Seconds the OpenRouter balance is cached between /api/quota calls.
     api_budget_cache_seconds: int = 60
 
+    # ── Budget protection (src/api/quota.py) ────────────────────────
+    # Questions that reach the LLM, per visitor token and per IP (IPv6 /64)
+    # per UTC day. Off-topic refusals and cache hits are free.
+    quota_per_visitor_day: int = 5
+    quota_per_ip_day: int = 15
+    # Upstash Redis over REST. Empty URL = quota off (local runs).
+    upstash_redis_rest_url: str = ""
+    upstash_redis_rest_token: str = ""
+    # Signs visitor tokens; required when the quota is on.
+    visitor_token_secret: str = ""
+
     @property
     def project_root(self) -> Path:
         return _find_project_root()

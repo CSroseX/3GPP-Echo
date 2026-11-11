@@ -15,9 +15,22 @@ A RAG system that answers 3GPP telecom questions grounded in three specs: TS 23.
 docker compose up -d qdrant       # Qdrant only (pinned v1.19.2, matches qdrant-client); data persists in volume 3gpp-echo_qdrant_data
 docker compose up -d              # + self-hosted Langfuse UI at http://localhost:3000 (optional tracing)
 
-pip install -e ".[ingest,dev]"    # pyproject.toml pins versions; extras: ingest (docling), dev (pytest, ruff), obs (langfuse). requirements.txt is kept but stale
+pip install -e ".[ingest,dev]"    # pyproject.toml pins versions; extras: ingest (docling), dev (pytest, ruff), obs (langfuse), deploy (modal). requirements.txt is kept but stale
 
-streamlit run app.py              # chat UI + eval dashboard (to be replaced by FastAPI + SvelteKit, #59)
+streamlit run app.py              # chat UI + eval dashboard (being replaced by the API below + SvelteKit, #59)
+uvicorn src.api.main:app --port 8000   # public HTTP API: POST /api/ask, POST /api/ask/stream (SSE), GET /api/quota, GET /api/health
+
+# Frontend (frontend/, SvelteKit 3 + Svelte 5, static build). Talks to VITE_API_BASE (default http://localhost:8000)
+cd frontend && npm install && npm run dev     # http://localhost:5173, live reload
+npm run build                                 # static site in frontend/build (Cloudflare Pages)
+npx svelte-check --tsconfig ./tsconfig.json   # type check
+npm run record                                # record example runs for free replay — spends LLM tokens, needs go-ahead
+
+# Deploy (Phase 7) — reads .env; QDRANT_CLOUD_URL / QDRANT_CLOUD_API_KEY are kept separate from
+# QDRANT_URL so local runs stay on local Qdrant
+python deploy/copy_qdrant.py      # copy points + vectors from local Qdrant to Qdrant Cloud (adds the keyword indexes Cloud needs for spec_id/clause_id filters)
+python deploy/modal_app.py        # build the Dockerfile on Modal, update the named secret, deploy, zero-token smoke check
+docker build -t 3gpp-echo-api .   # same image, runnable anywhere (port 7860, config only via env vars)
 
 # Ingestion pipeline — each stage is a separate CLI taking explicit paths.
 # Only re-run from the stage you changed; outputs are cached as JSON.
@@ -54,6 +67,7 @@ python eval/baseline/run_baseline.py
 # Lint + tests (what CI runs; no network, no Qdrant, no LLM)
 ruff check .
 pytest tests/ -q
+pytest tests/test_api.py -q -k quota   # single file / single test
 ```
 
 `src.eval.runner` writes resumable results to `eval/runner_results.json` (keyed by golden-set `id`) and, for every invocation that executes questions, a run directory `eval/runs/<run_id>/{run.json,per_question.jsonl,summary.json}`. The legacy `eval/run_eval.py` resumes positionally from `eval/results.json` — **delete that file to force a clean legacy run**, otherwise a completed file means zero questions execute. Note that `app.py`'s Eval Dashboard tab still reads `eval/results.json`, not the new runner's outputs (pointing it at `eval/runs/` is issue #27).
@@ -103,6 +117,16 @@ The conditional edges are pure functions in `src/generation/routers.py` (`after_
 - The generate prompt deliberately hides the retrieval system from the user: a word-boundary banned-phrase gate (`_detect_banned_phrase` in `nodes/core.py`) is a **real gate** — one targeted rephrase attempt, then the leak is allowed to stand. Bare substring matching on "retrieved"/"chunks" was replaced because it false-positived on legitimate 3GPP prose. `<think>` blocks are stripped with regex.
 - LLM client selection lives in `nodes/core.py`, read from `.env` at import: `USE_REMOTE_LLM=false` pins a local Ollama endpoint (`localhost:11434`, `qwen3.5:4b`); true picks OpenRouter when `OPEN_ROUTER_API_KEY` is set (or the base URL mentions openrouter), else OpenAI-compatible with `OPENAI_API_KEY` / `OPENAI_BASE_URL` / `MODEL_NAME`. The client itself comes from `make_llm_client()` in `src/obs/tracing.py`. Every node shares one client and model.
 
+**API and deploy (`src/api/`, `Dockerfile`, `deploy/`)** — decisions logged in `docs/phase7-decisions.md`.
+
+- `src/api/main.py` turns HTTP requests into runs of the same graph (with the answer cache, unlike the eval runner). `create_app(graph_factory, balance)` takes injected seams; `tests/test_api.py` uses a fake graph, so no models load in CI. The graph is built once in the FastAPI lifespan and **runs one question at a time behind a lock** (sized for a 2-vCPU free host). `/api/ask` returns `answer`, `status` (= `termination_reason`), `cached`, and `sources` (chunk metadata + an excerpt; table grids flattened). An OpenRouter 402 (out of credit) becomes `503 budget_exhausted`; other LLM errors `502`. `/api/quota` reports the remaining OpenRouter balance, cached `api_budget_cache_seconds`. Per-visitor limits (#64) are not built yet. API settings are the `api_*` fields in `config.py`.
+- `/api/ask/stream` runs the graph with `graph.stream(stream_mode="updates")` in one worker thread (keeps the lock and trace context on one thread) and sends SSE: `start`, a `node` event per finished node (`{node, ms, facts}`, facts built in `src/api/events.py`), then `done` (the `AskResponse`) or `error`. The frontend's live route panel depends on these node names and fact keys.
+- **Frontend (`frontend/`)** — a one-page pitch site: Pitch → Pipeline diagram → Evals → Demo with a live route panel. Components hold no copy or numbers: text and numbers live in `src/lib/content/*.ts`, section order/nav/API URL in `src/lib/config/site.ts`, colours and type in `src/lib/theme/tokens.css`, guided tours (Driver.js) in `content/tours.ts`, keyed by `data-tour` attributes. `content/demo.ts` `flow.steps` maps backend node names to panel steps. SvelteKit 3 quirks: options go in `vite.config.ts` (no `svelte.config.js`), `#lib` is a config alias (deprecated but working), and any file named `server.*` is treated as server-only (hence `stores/backend.svelte.ts`). The customisation map is in `docs/phase7-decisions.md` → "Frontend build".
+- **Budget protection** (`src/api/quota.py`): `GET /api/quota` issues an HMAC-signed visitor token (sent back as `X-Visitor-Token`) and reports `questions_left`; both ask endpoints return 429 `quota_exhausted` past `quota_per_visitor_day` (5) or `quota_per_ip_day` (15, IPv6 /64), re-checked inside the graph lock, and charge only answers that reached the LLM (`reached_llm`: not a cache hit or refusal, and passages were retrieved). Counters live in Upstash Redis over REST (`UPSTASH_REDIS_REST_URL`/`_TOKEN`, empty = quota off) and expire at the end of the UTC day; a Redis outage fails open. Tests inject a `FakeStore` via `create_app(quota_factory=...)` and never read `.env`'s Upstash values.
+- `qdrant_api_key` (empty = local docker Qdrant) is passed by the retriever; set it with `QDRANT_URL` to hit Qdrant Cloud. Retrieval against Cloud matches local (20/29).
+- The `Dockerfile` installs CPU-only torch, copies only `src/`, `data/chunks/*_chunks.json` and `data/domain_centroids.npz`, bakes both models in at build time and sets `HF_HUB_OFFLINE=1` — so a changed embed/reranker model or chunk files means rebuilding the image. ~840 MB RAM.
+- `deploy/modal_app.py` serves that image on Modal's free plan: at most one container, scales to zero after idle (cold start 20–26 s), secrets from `.env` pushed into the named Modal secret `3gpp-echo-api-env`.
+
 **Observability (`src/obs/`)**
 
 - `logging.py` — `get_logger()` (structlog): JSON lines to `logs/app.jsonl`, pretty console in dev.
@@ -144,4 +168,4 @@ Measured progress since then (golden set v2, see `DECISIONS.md` and `docs/releas
 - [x] **Phase 4 — Decision-nodes (#28).** Reshaped into the input guardrail (answer cache + triage with a 4G/5G split on acronyms and two-word phrases); refusal and token targets met.
 - [ ] **Phase 5 — Retrieval quality (#34).** Done: rerank shortlist (#35), lineage boost (#38), reranker A/B (#37, Ettin 32M adopted), golden set v2 with traps (#39), stemmed BM25 re-tested (no big win, kept off). Remaining misses are first-stage retrieval: 8 of 9 missed answers never reach the top 20. A bigger embedding model is the next candidate, only after a cheap test shows it finds them. Not started: real conflation metric (#41), CI retrieval-regression ratchet (#42). #40 (judge validation) no longer applies: there is no judge.
 - [ ] **Phase 6 — Polish (#43).** Nightly / `workflow_dispatch` LLM eval job (#44); README with before/after tables (#45, first version done).
-- [ ] **Phase 7 — Public portfolio demo (#59).** FastAPI backend + SvelteKit frontend replacing Streamlit, no login. Release criteria (#60; bar: ≥4/6 normal questions answered correctly), memory (#61), Dockerfile (#62), production Qdrant (#63), budget protection (#64: 5 questions per visitor by IP /64 + signed cookie, hourly global budget slices #67, cached example answers, visible quotas, provider spend cap), production config (#65), deployment (#66).
+- [ ] **Phase 7 — Public portfolio demo (#59).** FastAPI backend + SvelteKit frontend replacing Streamlit, no login. Done (steps 1–3): FastAPI backend, Dockerfile, deployed on Modal, index copied to Qdrant Cloud. Frontend v1 accepted for shipping (`frontend/`, 2026-11-11; see `docs/phase7-decisions.md` → "Frontend build — v1 shipped"), not deployed; the Modal backend still lacks `/api/ask/stream` until redeployed. Not started: budget protection. Release criteria (#60; bar: ≥4/6 normal questions answered correctly), memory (#61), Dockerfile (#62), production Qdrant (#63), budget protection (#64: 5 questions per visitor by IP /64 + signed cookie, hourly global budget slices #67, cached example answers, visible quotas, provider spend cap), production config (#65), deployment (#66).

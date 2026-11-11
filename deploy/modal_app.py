@@ -7,7 +7,7 @@ without requests, so idle time costs nothing.
     python deploy/modal_app.py            # deploy; prints the public URL
 
 Secrets are read from .env at deploy time (Modal token, OpenRouter key,
-Qdrant Cloud URL + key), stored in a named Modal secret, and reach the
+Qdrant Cloud URL + key, Upstash REST URL + token, visitor-token secret), stored in a named Modal secret, and reach the
 container as environment variables.
 """
 
@@ -29,6 +29,10 @@ CONTAINER_ENV = {
     "OPEN_ROUTER_API_KEY": ENV.get("OPEN_ROUTER_API_KEY") or "",
     "QDRANT_URL": ENV.get("QDRANT_CLOUD_URL") or "",
     "QDRANT_API_KEY": ENV.get("QDRANT_CLOUD_API_KEY") or "",
+    # Budget protection (src/api/quota.py): per-visitor / per-IP daily limits.
+    "UPSTASH_REDIS_REST_URL": ENV.get("UPSTASH_REDIS_REST_URL") or "",
+    "UPSTASH_REDIS_REST_TOKEN": ENV.get("UPSTASH_REDIS_REST_TOKEN") or "",
+    "VISITOR_TOKEN_SECRET": ENV.get("VISITOR_TOKEN_SECRET") or "",
 }
 if ENV.get("API_CORS_ORIGINS"):
     CONTAINER_ENV["API_CORS_ORIGINS"] = ENV["API_CORS_ORIGINS"]
@@ -79,7 +83,9 @@ def api():
 
 if __name__ == "__main__":
     missing = [k for k in ("MODAL_TOKEN_ID", "MODAL_TOKEN_SECRET", "OPEN_ROUTER_API_KEY",
-                           "QDRANT_CLOUD_URL", "QDRANT_CLOUD_API_KEY") if not ENV.get(k)]
+                           "QDRANT_CLOUD_URL", "QDRANT_CLOUD_API_KEY",
+                           "UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN",
+                           "VISITOR_TOKEN_SECRET") if not ENV.get(k)]
     if missing:
         sys.exit(f"Missing in .env: {', '.join(missing)}")
     env = {**os.environ, "MODAL_TOKEN_ID": ENV["MODAL_TOKEN_ID"], "MODAL_TOKEN_SECRET": ENV["MODAL_TOKEN_SECRET"],

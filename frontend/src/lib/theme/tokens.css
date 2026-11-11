@@ -1,0 +1,79 @@
+/*
+ * Design tokens: the one place to change colours, type, spacing and shape.
+ * Components read only these variables, never raw values.
+ */
+:root {
+	/* Surfaces */
+	--bg: #f8f8f5;
+	--bg-alt: #f0f1ec;
+	--surface: #ffffff;
+	--surface-2: #f3f4f0;
+	--border: #e2e4dd;
+	--border-strong: #c9ccc2;
+
+	/* Text */
+	--text: #1f2933;
+	--text-muted: #52606d;
+	--text-faint: #7b8794;
+
+	/* Accent (links, active pipeline step, primary buttons) */
+	--accent: #2b5fd9;
+	--accent-hover: #2350ba;
+	--accent-soft: #e8eefc;
+	--accent-text: #ffffff;
+
+	/* Answer labels */
+	--ok: #1f8a4c;
+	--ok-soft: #e3f4ea;
+	--warn: #b7791f;
+	--warn-soft: #fbf0dc;
+	--neutral: #616e7c;
+	--neutral-soft: #eceef0;
+	--stop: #9b3b3b;
+	--stop-soft: #f7e6e6;
+
+	/* Pipeline lanes */
+	--lane-offline: #7a5af5;
+	--lane-offline-soft: #f0ecfe;
+	--lane-query: var(--accent);
+	--lane-query-soft: var(--accent-soft);
+
+	/* Type */
+	--font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+	--text-xs: 0.8125rem;
+	--text-sm: 0.9375rem;
+	--text-base: 1.0625rem;
+	--text-lg: 1.25rem;
+	--text-xl: 1.625rem;
+	--text-2xl: 2.25rem;
+	--text-hero: clamp(2.25rem, 5vw, 3.75rem);
+	--leading: 1.65;
+	--leading-tight: 1.2;
+
+	/* Space and shape */
+	--space-1: 0.25rem;
+	--space-2: 0.5rem;
+	--space-3: 0.75rem;
+	--space-4: 1rem;
+	--space-5: 1.5rem;
+	--space-6: 2rem;
+	--space-7: 3rem;
+	--space-8: 5rem;
+	--radius-sm: 6px;
+	--radius: 10px;
+	--radius-lg: 16px;
+	--shadow-sm: 0 1px 2px rgba(31, 41, 51, 0.06);
+	--shadow: 0 4px 16px rgba(31, 41, 51, 0.08);
+	--shadow-lg: 0 12px 40px rgba(31, 41, 51, 0.12);
+
+	/* Layout */
+	--content-width: 1120px;
+	--prose-width: 68ch;
+	--gutter: clamp(16px, 4vw, 40px);
+	--nav-height: 64px;
+
+	/* Motion */
+	--ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+	--dur: 220ms;
+}
