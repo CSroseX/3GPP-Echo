@@ -10,6 +10,11 @@ around the graph), which is what a 2-vCPU free host can serve anyway.
 Server-Sent Events: `start` (the question got the graph), one `node` event
 per finished node (src/api/events.py), then `done` (the AskResponse) or
 `error` ({code, message}).
+
+Budget protection (src/api/quota.py): GET /api/quota issues a visitor token
+and reports questions left; both ask endpoints refuse with 429
+`quota_exhausted` once the visitor's (or IP's) daily limit is used, and
+charge only questions that reached the LLM.
 """
 
 from __future__ import annotations
@@ -22,12 +27,13 @@ from typing import Any, Callable, Dict, List, Optional
 
 import httpx
 import openai
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from src.api.events import node_facts, sse
+from src.api.quota import Quota, default_quota, reached_llm
 from src.config import get_settings
 from src.obs.logging import get_logger
 from src.obs.tracing import trace_attributes, trace_query, update_trace_attributes
@@ -54,6 +60,8 @@ class AskResponse(BaseModel):
     status: Optional[str]
     cached: bool
     sources: List[Source]
+    # Questions the visitor has left today; None when the quota is off.
+    questions_left: Optional[int] = None
 
 
 def _default_graph():
@@ -126,11 +134,27 @@ def _api_error(e: Exception) -> ApiError:
     return ApiError(500, "internal_error", "Something went wrong.")
 
 
+def client_ip(request: Request) -> Optional[str]:
+    """The visitor's IP: first X-Forwarded-For hop behind the host's proxy."""
+    fwd = request.headers.get("x-forwarded-for")
+    if fwd:
+        return fwd.split(",")[0].strip()
+    return request.client.host if request.client else None
+
+
+QUOTA_EXHAUSTED = {
+    "code": "quota_exhausted",
+    "message": "You've used today's questions. Come back tomorrow, or try the example questions.",
+}
+
+
 def create_app(
     graph_factory: Callable[[], Any] = _default_graph,
     balance: Callable[[], Optional[float]] = openrouter_balance,
+    quota_factory: Callable[[], Quota] = default_quota,
 ) -> FastAPI:
     cfg = get_settings()
+    limits = quota_factory()
     state: Dict[str, Any] = {"graph": None, "started": time.monotonic(), "startup_s": None}
     graph_lock = threading.Lock()
     budget_cache: Dict[str, Any] = {"value": None, "at": 0.0}
@@ -160,16 +184,21 @@ def create_app(
         }
 
     @app.get("/api/quota")
-    def quota() -> Dict[str, Any]:
-        # Per-visitor limits arrive with budget protection (Phase 7 step 5).
+    def quota(request: Request, x_visitor_token: Optional[str] = Header(default=None)) -> Dict[str, Any]:
         now = time.monotonic()
         if now - budget_cache["at"] > cfg.api_budget_cache_seconds:
             budget_cache["value"] = balance()
             budget_cache["at"] = now
         remaining = budget_cache["value"]
+        # A missing or forged token gets a fresh one; the browser stores it.
+        token = x_visitor_token if limits.visitor(x_visitor_token) else limits.new_token()
+        status = limits.check(limits.visitor(token), client_ip(request))
         return {
             "budget_remaining_usd": remaining,
             "budget_exhausted": remaining is not None and remaining <= 0,
+            "visitor_token": token,
+            "questions_left": status.left,
+            "questions_per_day": status.limit,
         }
 
     def clean_question(req: AskRequest) -> str:
@@ -186,30 +215,51 @@ def create_app(
             )
         return question
 
-    def to_response(final: Dict[str, Any]) -> AskResponse:
+    def to_response(final: Dict[str, Any], questions_left: Optional[int]) -> AskResponse:
         log.info("api.answered", status=final.get("termination_reason"), cached=bool(final.get("cache_hit")))
         return AskResponse(
             answer=final.get("answer") or "",
             status=final.get("termination_reason"),
             cached=bool(final.get("cache_hit")),
             sources=[_source(c, cfg.api_source_excerpt_chars) for c in final.get("chunks") or []],
+            questions_left=questions_left,
         )
 
+    def settle(final: Dict[str, Any], visitor: Optional[str], ip: Optional[str], left_before: Optional[int]) -> Optional[int]:
+        """Charge the question if it reached the LLM; return questions left."""
+        if reached_llm(final):
+            return limits.charge(visitor, ip)
+        return left_before
+
     @app.post("/api/ask", response_model=AskResponse)
-    def ask(req: AskRequest) -> AskResponse:
+    def ask(req: AskRequest, request: Request, x_visitor_token: Optional[str] = Header(default=None)) -> AskResponse:
         question = clean_question(req)
+        visitor, ip = limits.visitor(x_visitor_token), client_ip(request)
+        if not limits.check(visitor, ip).allowed:
+            raise HTTPException(429, detail=QUOTA_EXHAUSTED)
         try:
             with graph_lock, trace_query(question):
+                status = limits.check(visitor, ip)  # again, inside the lock: parallel requests can't slip past
+                if not status.allowed:
+                    raise HTTPException(429, detail=QUOTA_EXHAUSTED)
                 final = state["graph"].invoke({"query": question})
                 update_trace_attributes(**trace_attributes(final))
+                left = settle(final, visitor, ip, status.left)
+        except HTTPException:
+            raise
         except Exception as e:
             err = _api_error(e)
             raise HTTPException(err.status, detail=err.detail())
-        return to_response(final)
+        return to_response(final, left)
 
     @app.post("/api/ask/stream")
-    def ask_stream(req: AskRequest) -> StreamingResponse:
+    def ask_stream(
+        req: AskRequest, request: Request, x_visitor_token: Optional[str] = Header(default=None)
+    ) -> StreamingResponse:
         question = clean_question(req)  # bad input is a plain 422, before any stream
+        visitor, ip = limits.visitor(x_visitor_token), client_ip(request)
+        if not limits.check(visitor, ip).allowed:
+            raise HTTPException(429, detail=QUOTA_EXHAUSTED)
         events: "queue.Queue[Optional[str]]" = queue.Queue()
 
         def run() -> None:
@@ -217,6 +267,10 @@ def create_app(
             # context stay on a single thread while events flow to the client.
             try:
                 with graph_lock, trace_query(question):
+                    status = limits.check(visitor, ip)  # again, inside the lock
+                    if not status.allowed:
+                        events.put(sse("error", QUOTA_EXHAUSTED))
+                        return
                     events.put(sse("start", {}))
                     final: Dict[str, Any] = {"query": question}
                     t = time.monotonic()
@@ -232,7 +286,8 @@ def create_app(
                             }))
                             t = now
                     update_trace_attributes(**trace_attributes(final))
-                events.put(sse("done", to_response(final).model_dump()))
+                    left = settle(final, visitor, ip, status.left)
+                events.put(sse("done", to_response(final, left).model_dump()))
             except Exception as e:
                 events.put(sse("error", _api_error(e).detail()))
             finally:
