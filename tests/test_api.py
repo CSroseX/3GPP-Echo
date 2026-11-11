@@ -311,3 +311,28 @@ def test_redis_outage_fails_open():
     with client_for(FakeGraph(ANSWERED), quota=quota_with(FakeStore(fail=True))) as client:
         r = client.post("/api/ask", json={"question": "q"})
     assert r.status_code == 200 and r.json()["questions_left"] is None
+
+
+def test_balance_prefers_the_key_limit(monkeypatch):
+    import src.api.main as api
+
+    class R:
+        def __init__(self, data):
+            self.data = data
+
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"data": self.data}
+
+    pages = {
+        "/credits": {"total_credits": 5, "total_usage": 0.2},
+        "/key": {"limit_remaining": 1.96},
+    }
+    monkeypatch.setattr(api.httpx, "get", lambda url, **kw: R(pages["/" + url.rsplit("/", 1)[1]]))
+    monkeypatch.setattr(api, "get_settings", lambda: type("S", (), {
+        "open_router_api_key": "k", "openrouter_base_url": "https://x/api/v1"})())
+    assert api.openrouter_balance() == 1.96
+    pages["/key"] = {"limit_remaining": None}  # no key limit: the account balance
+    assert api.openrouter_balance() == 4.8

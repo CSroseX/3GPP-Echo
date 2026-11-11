@@ -78,19 +78,29 @@ def _default_graph():
 
 
 def openrouter_balance() -> Optional[float]:
-    """Remaining OpenRouter credit in USD, or None if it can't be read."""
+    """Spendable OpenRouter budget in USD, or None if it can't be read.
+
+    The key's own credit limit when one is set (that is what stops the demo),
+    capped by the account balance; just the account balance otherwise.
+    """
     cfg = get_settings()
     if not cfg.open_router_api_key:
         return None
+    headers = {"Authorization": f"Bearer {cfg.open_router_api_key}"}
     try:
-        r = httpx.get(
-            f"{cfg.openrouter_base_url}/credits",
-            headers={"Authorization": f"Bearer {cfg.open_router_api_key}"},
-            timeout=10,
-        )
-        r.raise_for_status()
-        data = r.json()["data"]
-        return round(float(data["total_credits"]) - float(data["total_usage"]), 4)
+        credits = httpx.get(f"{cfg.openrouter_base_url}/credits", headers=headers, timeout=10)
+        credits.raise_for_status()
+        c = credits.json()["data"]
+        account = float(c["total_credits"]) - float(c["total_usage"])
+        try:
+            key = httpx.get(f"{cfg.openrouter_base_url}/key", headers=headers, timeout=10)
+            key.raise_for_status()
+            key_left = key.json()["data"].get("limit_remaining")
+        except Exception as e:  # no key limit readable: fall back to the account
+            log.warning("api.key_limit_unavailable", error=str(e))
+            key_left = None
+        left = account if key_left is None else min(account, float(key_left))
+        return round(left, 4)
     except Exception as e:  # the quota panel must not break the app
         log.warning("api.balance_unavailable", error=str(e))
         return None
@@ -157,7 +167,8 @@ def create_app(
     limits = quota_factory()
     state: Dict[str, Any] = {"graph": None, "started": time.monotonic(), "startup_s": None}
     graph_lock = threading.Lock()
-    budget_cache: Dict[str, Any] = {"value": None, "at": 0.0}
+    # "at" None = never fetched (monotonic time can start near 0 on a fresh host).
+    budget_cache: Dict[str, Any] = {"value": None, "at": None}
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
@@ -186,7 +197,7 @@ def create_app(
     @app.get("/api/quota")
     def quota(request: Request, x_visitor_token: Optional[str] = Header(default=None)) -> Dict[str, Any]:
         now = time.monotonic()
-        if now - budget_cache["at"] > cfg.api_budget_cache_seconds:
+        if budget_cache["at"] is None or now - budget_cache["at"] > cfg.api_budget_cache_seconds:
             budget_cache["value"] = balance()
             budget_cache["at"] = now
         remaining = budget_cache["value"]
