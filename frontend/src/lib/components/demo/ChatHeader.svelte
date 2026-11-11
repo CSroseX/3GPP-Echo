@@ -23,8 +23,15 @@
 	<div class="right">
 		{#if server.budgetExhausted}
 			<span class="budget out">{demo.errors.budget_exhausted}</span>
-		{:else if server.budgetUsd !== null}
-			<span class="budget mono">{demo.quota.budget(server.budgetUsd)}</span>
+		{:else}
+			{#if server.questionsLeft !== null && server.questionsPerDay}
+				<span class="quota" class:out={server.questionsLeft === 0} data-tour="demo-quota">
+					{server.questionsLeft === 0 ? demo.quota.exhausted : demo.quota.questions(server.questionsLeft, server.questionsPerDay)}
+				</span>
+			{/if}
+			{#if server.budgetUsd !== null}
+				<span class="budget mono">{demo.quota.budget(server.budgetUsd)}</span>
+			{/if}
 		{/if}
 		<button class="new" onclick={() => chat.clear()} disabled={chat.busy || chat.messages.length === 0}>
 			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
@@ -89,6 +96,18 @@
 	.budget {
 		font-size: var(--text-xs);
 		color: var(--text-muted);
+	}
+	.quota {
+		font-size: var(--text-xs);
+		font-weight: 600;
+		padding: 3px 10px;
+		border-radius: 999px;
+		background: var(--accent-soft);
+		color: var(--accent);
+	}
+	.quota.out {
+		background: var(--stop-soft);
+		color: var(--stop);
 	}
 	.budget.out {
 		color: var(--stop);

@@ -15,6 +15,8 @@
 	let drawerOpen = $state(true);
 
 	const locked = $derived(chat.busy || server.budgetExhausted);
+	// Typing is off once today's questions are used; recorded examples still play.
+	const typingLocked = $derived(locked || server.quotaExhausted);
 	const firstDoneId = $derived(chat.messages.find((m) => m.phase === 'done')?.id ?? null);
 
 	async function ask(q: string) {
@@ -60,7 +62,7 @@
 			</div>
 
 			<div class="bottom">
-				<Composer disabled={locked} onask={ask} />
+				<Composer disabled={typingLocked} onask={ask} />
 				<p class="disclaimer">{demo.chat.disclaimer}</p>
 			</div>
 		</div>

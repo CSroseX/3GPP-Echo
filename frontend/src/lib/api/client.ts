@@ -7,6 +7,35 @@ import type { ApiError, Quota, StreamEvent } from './types';
 
 const url = (path: string) => `${site.apiBase.replace(/\/$/, '')}${path}`;
 
+/**
+ * The visitor token the backend issues for the daily question limit. Kept in
+ * localStorage and sent as a header (a cookie can't cross to the API domain).
+ */
+const TOKEN_KEY = 'visitor-token';
+let memoryToken: string | null = null;
+
+function getToken(): string | null {
+	try {
+		return localStorage.getItem(TOKEN_KEY) ?? memoryToken;
+	} catch {
+		return memoryToken;
+	}
+}
+
+function setToken(token: string) {
+	memoryToken = token;
+	try {
+		localStorage.setItem(TOKEN_KEY, token);
+	} catch {
+		/* private mode: keep it in memory for this visit */
+	}
+}
+
+function tokenHeader(): Record<string, string> {
+	const t = getToken();
+	return t ? { 'X-Visitor-Token': t } : {};
+}
+
 /** True when the backend answers its health check within `timeoutMs`. */
 export async function health(timeoutMs = 60_000): Promise<boolean> {
 	try {
@@ -19,8 +48,11 @@ export async function health(timeoutMs = 60_000): Promise<boolean> {
 
 export async function quota(): Promise<Quota | null> {
 	try {
-		const r = await fetch(url('/api/quota'));
-		return r.ok ? ((await r.json()) as Quota) : null;
+		const r = await fetch(url('/api/quota'), { headers: tokenHeader() });
+		if (!r.ok) return null;
+		const q = (await r.json()) as Quota;
+		if (q.visitor_token) setToken(q.visitor_token);
+		return q;
 	} catch {
 		return null;
 	}
@@ -35,7 +67,7 @@ export async function* askStream(question: string, signal?: AbortSignal): AsyncG
 	try {
 		r = await fetch(url('/api/ask/stream'), {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
+			headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream', ...tokenHeader() },
 			body: JSON.stringify({ question }),
 			signal
 		});

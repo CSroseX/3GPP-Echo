@@ -143,12 +143,15 @@ export const demo = {
 
 	errors: {
 		budget_exhausted: 'The demo’s question budget is used up. Thanks for trying it!',
+		quota_exhausted: 'You’ve used today’s questions. Come back tomorrow, or try the example questions.',
 		llm_error: 'The language model is unavailable right now. Please try again shortly.',
 		network: 'Lost the connection to the server. Please try again.',
 		default: 'Something went wrong. Please try again.'
 	} as Record<string, string>,
 
 	quota: {
-		budget: (usd: number) => `Demo budget left: $${usd.toFixed(2)}`
+		budget: (usd: number) => `Demo budget left: $${usd.toFixed(2)}`,
+		questions: (left: number, perDay: number) => `${left} of ${perDay} questions left today`,
+		exhausted: 'No questions left today · examples still work'
 	}
 };

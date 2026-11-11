@@ -56,6 +56,8 @@ class ChatState {
 	async ask(question: string) {
 		question = question.trim();
 		if (!question || this.busy) return;
+		// Out of questions: only recorded examples (free replays) still run.
+		if (server.quotaExhausted && !recorded[question]) return;
 		this.messages.push({
 			id: this.#nextId++,
 			question,
@@ -101,10 +103,12 @@ class ChatState {
 		} else if (ev.type === 'done') {
 			msg.response = ev.data;
 			msg.phase = 'done';
+			if (!msg.recorded && ev.data.questions_left != null) server.questionsLeft = ev.data.questions_left;
 		} else if (ev.type === 'error') {
 			msg.error = ev.data;
 			msg.phase = 'error';
 			if (ev.data.code === 'budget_exhausted') server.budgetExhausted = true;
+			if (ev.data.code === 'quota_exhausted') server.questionsLeft = 0;
 		}
 	}
 }

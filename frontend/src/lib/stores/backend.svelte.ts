@@ -8,6 +8,9 @@ class ServerState {
 	status = $state<ServerStatus>('unknown');
 	budgetUsd = $state<number | null>(null);
 	budgetExhausted = $state(false);
+	/** Questions this visitor has left today; null when unknown or the quota is off. */
+	questionsLeft = $state<number | null>(null);
+	questionsPerDay = $state<number | null>(null);
 	#waking: Promise<boolean> | null = null;
 
 	/** Ping the backend until it answers (a cold start takes ~20–26 s). */
@@ -19,7 +22,8 @@ class ServerState {
 			const ok = await health(60_000);
 			this.status = ok ? 'ready' : 'offline';
 			this.#waking = null;
-			if (ok) void this.refreshQuota();
+			// Wait for the visitor token, so the first question is counted against it.
+			if (ok) await this.refreshQuota();
 			return ok;
 		})();
 		return this.#waking;
@@ -30,6 +34,12 @@ class ServerState {
 		if (!q) return;
 		this.budgetUsd = q.budget_remaining_usd;
 		this.budgetExhausted = q.budget_exhausted;
+		this.questionsLeft = q.questions_left;
+		this.questionsPerDay = q.questions_per_day;
+	}
+
+	get quotaExhausted() {
+		return this.questionsLeft === 0;
 	}
 }
 

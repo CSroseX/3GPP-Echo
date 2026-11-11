@@ -15,6 +15,8 @@ export interface AskResponse {
 	status: string | null;
 	cached: boolean;
 	sources: Source[];
+	/** Questions the visitor has left today; null when the quota is off. */
+	questions_left?: number | null;
 }
 
 /** Facts one node reports; which keys appear depends on the node. */
@@ -53,4 +55,7 @@ export type StreamEvent =
 export interface Quota {
 	budget_remaining_usd: number | null;
 	budget_exhausted: boolean;
+	visitor_token: string;
+	questions_left: number | null;
+	questions_per_day: number;
 }
