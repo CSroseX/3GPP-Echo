@@ -4,6 +4,8 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "3gpp-echo",
 	"compatibility_date": "2026-11-01",
+	// Keep the public *.workers.dev address on across deploys.
+	"workers_dev": true,
 	"assets": {
 		"directory": "./build",
 		"not_found_handling": "404-page"
