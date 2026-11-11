@@ -1,5 +1,7 @@
 """Public API (src/api/main.py), driven with a fake graph: no models, Qdrant or LLM."""
 
+import json
+
 import httpx
 import openai
 import pytest
@@ -19,6 +21,14 @@ class FakeGraph:
         if self.error:
             raise self.error
         return {**inputs, **self.result}
+
+    def stream(self, inputs, stream_mode="updates"):
+        """Yield the result as per-node updates, like LangGraph's updates mode."""
+        self.queries.append(inputs["query"])
+        for node, update in self.result.get("_steps", []):
+            yield {node: update}
+        if self.error:
+            raise self.error
 
 
 def client_for(graph, balance=lambda: 4.5):
@@ -116,3 +126,67 @@ def test_quota_reports_budget_and_caches_it():
 def test_quota_unknown_budget_is_not_exhausted():
     with client_for(FakeGraph(), balance=lambda: None) as client:
         assert client.get("/api/quota").json()["budget_exhausted"] is False
+
+
+def parse_sse(text):
+    events = []
+    for block in text.strip().split("\n\n"):
+        lines = dict(line.split(": ", 1) for line in block.splitlines())
+        events.append((lines["event"], json.loads(lines["data"])))
+    return events
+
+
+def test_stream_sends_node_facts_then_the_answer():
+    chunks = [{"spec_id": "23.501", "clause_id": "6.2.1", "clause_title": "AMF", "content": "AMF text"}]
+    graph = FakeGraph({"_steps": [
+        ("cache_lookup", {"cache_hit": None}),
+        ("triage", {"triage_decision": "in_domain", "triage_tier": "lexical",
+                    "triage_signals": {"acronyms": ["AMF"], "spec_ids": []}}),
+        ("retrieve", {"chunks": chunks}),
+        ("generate", {"answer": "The AMF ...", "termination_reason": "answered", "unsupported_identifiers": []}),
+        ("cache_store", None),
+    ]})
+    with client_for(graph) as client:
+        r = client.post("/api/ask/stream", json={"question": "What is the AMF?"})
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/event-stream")
+    events = parse_sse(r.text)
+    names = [e for e, _ in events]
+    assert names == ["start", "node", "node", "node", "node", "node", "done"]
+    nodes = {d["node"]: d for e, d in events if e == "node"}
+    assert nodes["triage"]["facts"] == {"decision": "in_domain", "tier": "lexical", "matched": ["AMF"],
+                                        "mixed_generation": False}
+    assert nodes["retrieve"]["facts"] == {"count": 1, "specs": {"23.501": 1}, "clauses": ["23.501 §6.2.1"]}
+    assert nodes["generate"]["facts"]["status"] == "answered"
+    assert all(isinstance(d["ms"], int) for e, d in events if e == "node")
+    done = events[-1][1]
+    assert done["answer"] == "The AMF ..." and done["status"] == "answered"
+    assert done["sources"][0]["clause_title"] == "AMF"
+
+
+def test_stream_reports_mixed_generation_terms():
+    graph = FakeGraph({"_steps": [
+        ("triage", {"triage_decision": "in_domain", "triage_tier": "lexical", "mixed_generation": True,
+                    "generation_terms": {"4g": ["MME"], "5g": ["UDM"]}, "triage_signals": {}}),
+    ]})
+    with client_for(graph) as client:
+        events = parse_sse(client.post("/api/ask/stream", json={"question": "q"}).text)
+    facts = events[1][1]["facts"]
+    assert facts["mixed_generation"] is True
+    assert facts["terms_4g"] == ["MME"] and facts["terms_5g"] == ["UDM"]
+
+
+def test_stream_turns_out_of_credit_into_an_error_event():
+    graph = FakeGraph({"_steps": [("cache_lookup", {})]}, error=_status_error(402))
+    with client_for(graph) as client:
+        events = parse_sse(client.post("/api/ask/stream", json={"question": "q"}).text)
+    assert [e for e, _ in events] == ["start", "node", "error"]
+    assert events[-1][1]["code"] == "budget_exhausted"
+
+
+def test_stream_rejects_bad_questions_before_streaming():
+    graph = FakeGraph()
+    with client_for(graph) as client:
+        r = client.post("/api/ask/stream", json={"question": "   "})
+    assert r.status_code == 422
+    assert graph.queries == []

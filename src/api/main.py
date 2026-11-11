@@ -5,10 +5,16 @@
 The graph is the same one the eval runner and app.py use; this module only
 turns HTTP requests into graph runs. Questions run one at a time (a lock
 around the graph), which is what a 2-vCPU free host can serve anyway.
+
+/api/ask returns one JSON answer. /api/ask/stream returns the same answer as
+Server-Sent Events: `start` (the question got the graph), one `node` event
+per finished node (src/api/events.py), then `done` (the AskResponse) or
+`error` ({code, message}).
 """
 
 from __future__ import annotations
 
+import queue
 import threading
 import time
 from contextlib import asynccontextmanager
@@ -18,8 +24,10 @@ import httpx
 import openai
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
+from src.api.events import node_facts, sse
 from src.config import get_settings
 from src.obs.logging import get_logger
 from src.obs.tracing import trace_attributes, trace_query, update_trace_attributes
@@ -95,6 +103,29 @@ def _source(chunk: Dict[str, Any], excerpt_chars: int) -> Source:
     )
 
 
+class ApiError(Exception):
+    """An error with an HTTP status and a visitor-facing {code, message}."""
+
+    def __init__(self, status: int, code: str, message: str):
+        super().__init__(message)
+        self.status, self.code, self.message = status, code, message
+
+    def detail(self) -> Dict[str, str]:
+        return {"code": self.code, "message": self.message}
+
+
+def _api_error(e: Exception) -> ApiError:
+    """Map a failure inside a graph run to what the visitor is told."""
+    if isinstance(e, openai.APIStatusError):
+        if e.status_code == 402:
+            log.warning("api.budget_exhausted")
+            return ApiError(503, "budget_exhausted", "The demo's question budget is used up.")
+        log.error("api.llm_error", status=e.status_code, error=str(e))
+        return ApiError(502, "llm_error", "The language model is unavailable.")
+    log.error("api.ask_failed", error=repr(e))
+    return ApiError(500, "internal_error", "Something went wrong.")
+
+
 def create_app(
     graph_factory: Callable[[], Any] = _default_graph,
     balance: Callable[[], Optional[float]] = openrouter_balance,
@@ -141,8 +172,7 @@ def create_app(
             "budget_exhausted": remaining is not None and remaining <= 0,
         }
 
-    @app.post("/api/ask", response_model=AskResponse)
-    def ask(req: AskRequest) -> AskResponse:
+    def clean_question(req: AskRequest) -> str:
         question = req.question.strip()
         if not question:
             raise HTTPException(422, detail={"code": "empty_question", "message": "Please type a question."})
@@ -154,29 +184,70 @@ def create_app(
                     "message": f"Please keep questions under {cfg.api_max_question_chars} characters.",
                 },
             )
-        try:
-            with graph_lock, trace_query(question):
-                final = state["graph"].invoke({"query": question})
-                update_trace_attributes(**trace_attributes(final))
-        except openai.APIStatusError as e:
-            if e.status_code == 402:
-                log.warning("api.budget_exhausted")
-                raise HTTPException(
-                    503,
-                    detail={"code": "budget_exhausted", "message": "The demo's question budget is used up."},
-                )
-            log.error("api.llm_error", status=e.status_code, error=str(e))
-            raise HTTPException(502, detail={"code": "llm_error", "message": "The language model is unavailable."})
-        except Exception as e:
-            log.error("api.ask_failed", error=repr(e))
-            raise HTTPException(500, detail={"code": "internal_error", "message": "Something went wrong."})
+        return question
 
+    def to_response(final: Dict[str, Any]) -> AskResponse:
         log.info("api.answered", status=final.get("termination_reason"), cached=bool(final.get("cache_hit")))
         return AskResponse(
             answer=final.get("answer") or "",
             status=final.get("termination_reason"),
             cached=bool(final.get("cache_hit")),
             sources=[_source(c, cfg.api_source_excerpt_chars) for c in final.get("chunks") or []],
+        )
+
+    @app.post("/api/ask", response_model=AskResponse)
+    def ask(req: AskRequest) -> AskResponse:
+        question = clean_question(req)
+        try:
+            with graph_lock, trace_query(question):
+                final = state["graph"].invoke({"query": question})
+                update_trace_attributes(**trace_attributes(final))
+        except Exception as e:
+            err = _api_error(e)
+            raise HTTPException(err.status, detail=err.detail())
+        return to_response(final)
+
+    @app.post("/api/ask/stream")
+    def ask_stream(req: AskRequest) -> StreamingResponse:
+        question = clean_question(req)  # bad input is a plain 422, before any stream
+        events: "queue.Queue[Optional[str]]" = queue.Queue()
+
+        def run() -> None:
+            # One worker thread owns the whole run, so the lock and the trace
+            # context stay on a single thread while events flow to the client.
+            try:
+                with graph_lock, trace_query(question):
+                    events.put(sse("start", {}))
+                    final: Dict[str, Any] = {"query": question}
+                    t = time.monotonic()
+                    for chunk in state["graph"].stream({"query": question}, stream_mode="updates"):
+                        for node, update in chunk.items():
+                            now = time.monotonic()
+                            update = update or {}
+                            final.update(update)
+                            events.put(sse("node", {
+                                "node": node,
+                                "ms": round((now - t) * 1000),
+                                "facts": node_facts(node, update),
+                            }))
+                            t = now
+                    update_trace_attributes(**trace_attributes(final))
+                events.put(sse("done", to_response(final).model_dump()))
+            except Exception as e:
+                events.put(sse("error", _api_error(e).detail()))
+            finally:
+                events.put(None)
+
+        threading.Thread(target=run, daemon=True).start()
+
+        def stream():
+            while (item := events.get()) is not None:
+                yield item
+
+        return StreamingResponse(
+            stream(),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
         )
 
     return app
