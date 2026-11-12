@@ -8,7 +8,7 @@ export const author = {
 	name: 'Chitransh',
 	role: 'Built and measured by',
 	github: 'https://github.com/CSroseX',
-	linkedin: ''
+	linkedin: 'https://www.linkedin.com/in/chitranshatlkdin/'
 };
 
 const repo = 'https://github.com/CSroseX/3GPP-Echo';

@@ -1,6 +1,6 @@
 """retrieve_node: fetches relevant chunks from Qdrant as the first
 graph node, replacing the external retriever.search() calls that
-used to live in app.py, verify.py, and the eval runners."""
+used to live in the old Streamlit app, verify.py, and the eval runners."""
 
 from __future__ import annotations
 

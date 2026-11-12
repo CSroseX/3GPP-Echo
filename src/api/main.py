@@ -2,7 +2,7 @@
 
     uvicorn src.api.main:app --port 8000
 
-The graph is the same one the eval runner and app.py use; this module only
+The graph is the same one the eval runner and verify.py use; this module only
 turns HTTP requests into graph runs. Questions run one at a time (a lock
 around the graph), which is what a 2-vCPU free host can serve anyway.
 

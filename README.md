@@ -4,6 +4,8 @@ A retrieval-augmented assistant that answers telecom questions from three 3GPP s
 
 The three specs were chosen because they share vocabulary but differ in procedure: 4G "attach" vs 5G "registration", the MME vs the AMF. Mixing up 4G and 5G answers is the failure this project is built to measure and prevent. Every design choice, with the measurement behind it, is in [DECISIONS.md](DECISIONS.md).
 
+**Live demo: [3gpp-echo.chitransh-saxena-contact.workers.dev](https://3gpp-echo.chitransh-saxena-contact.workers.dev)** · 5 questions per visitor per day · the first question after an idle spell takes ~20 s while the server wakes.
+
 ---
 
 ## How a question is answered
@@ -88,7 +90,8 @@ python src/ingestion/indexer.py  # build the index from data/chunks/ (about 25 m
 ## Running it
 
 ```bash
-streamlit run app.py                                     # chat UI (being replaced, see below)
+uvicorn src.api.main:app --port 8000                     # the API the demo calls
+cd frontend && npm install && npm run dev                # the site on http://localhost:5173
 python src/generation/verify.py "What is the AMF?"       # one question end to end, verbose
 
 # Evaluation
@@ -103,10 +106,36 @@ ruff check . && pytest tests/ -q                         # what CI runs (no netw
 
 ---
 
+## Deployment
+
+```
+Browser ──► Cloudflare Workers (static SvelteKit site, frontend/)
+   │
+   └──► Modal: FastAPI + LangGraph (Dockerfile, models baked in) ──► Qdrant Cloud (6,124 points)
+                    │                                              ──► OpenRouter (gpt-oss-20b)
+                    └──► Upstash Redis: per-visitor / per-IP daily question counters
+```
+
+All free tiers; the only spend is OpenRouter, capped by a credit limit on the API key. Decisions and their reasons: [docs/phase7-decisions.md](docs/phase7-decisions.md).
+
+### Runbook
+
+| Task | How |
+|---|---|
+| Deploy the frontend | Merge to `main`. Cloudflare Workers Builds runs `npm run build` + `npx wrangler deploy` in `frontend/` (`frontend/wrangler.jsonc`); the API URL comes from `frontend/.env.production`. |
+| Deploy the backend | `python deploy/modal_app.py` (reads `.env`, updates the Modal secret, builds the image, deploys). Check from inside the container with `python -m modal run deploy/modal_app.py::check` (no LLM tokens). |
+| Roll back the frontend | Cloudflare dashboard → the `3gpp-echo` Worker → Deployments → pick an earlier version → Rollback. |
+| Roll back the backend | `git checkout <good commit>` then `python deploy/modal_app.py`; or Modal dashboard → the app → Deployments → roll back. |
+| Rotate the OpenRouter key | Create a new key (with a credit limit) on OpenRouter, put it in `.env` as `OPEN_ROUTER_API_KEY`, run `python deploy/modal_app.py`, then delete the old key. |
+| Allow another frontend URL | Add it to `API_CORS_ORIGINS` in `.env` (a JSON list) and redeploy the backend. |
+| Change the daily limits | `QUOTA_PER_VISITOR_DAY` / `QUOTA_PER_IP_DAY` in `.env`, then redeploy the backend. |
+| Keep Qdrant Cloud alive | The `qdrant-keepalive` GitHub Action searches every 3 days (free clusters are suspended after a week idle). Run it by hand from the Actions tab to check. |
+| Rebuild Qdrant Cloud if lost | Start local Qdrant (`docker compose up -d qdrant`, index present) and run `python deploy/copy_qdrant.py`: seconds, no re-embedding. |
+
 ## What's next
 
-- **Public portfolio demo** ([#59](https://github.com/CSroseX/3GPP-Echo/issues/59)): a FastAPI backend and a SvelteKit frontend replacing Streamlit, deployed without a login.
-- **Budget protection** ([#64](https://github.com/CSroseX/3GPP-Echo/issues/64), [#67](https://github.com/CSroseX/3GPP-Echo/issues/67)): 5 questions per visitor, a global budget released in hourly slices, cached example answers, visible quotas and a provider spend cap.
+- **Frontend v2**: more polish on the live site; record the example questions so their cards replay for free.
+- **Budget**: optional hourly slices of the global budget ([#67](https://github.com/CSroseX/3GPP-Echo/issues/67)); today the OpenRouter key's credit limit is the global cap.
 - **Observability**: bring up the self-hosted Langfuse tracing ([#23](https://github.com/CSroseX/3GPP-Echo/issues/23)) and carry it into the FastAPI backend.
 - **Quality**: the remaining misses are first-stage retrieval (8 of 9 missed answers never reach the top 20) and answers the model labels "not covered" too readily. Candidates: a bigger embedding model, and Qdrant's native sparse vectors as a keyword index inside the database (the in-process BM25 above needs no re-index, which is why it was tried first).
 

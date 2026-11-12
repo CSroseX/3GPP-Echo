@@ -38,7 +38,7 @@ from src.obs.tracing import traced_node
 def build_graph(retriever=None, *, embed=None, centroids_loader=None, triage_llm=None, answer_cache=None):
     """Compile the graph.
 
-    retriever: an existing Retriever (app.py / the eval runner cache one);
+    retriever: an existing Retriever (the API and the eval runner pass one in);
         constructed lazily on first use otherwise.
     embed: texts -> vectors for triage tier 2. Defaults to the retriever's
         already-loaded BGE model, so triage adds no model load of its own.
