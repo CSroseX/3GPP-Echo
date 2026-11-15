@@ -1,6 +1,23 @@
 # 3GPP-Echo
 
-A retrieval-augmented assistant that answers telecom questions from three 3GPP specifications: TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (4G/EPS NAS).
+**Ask the 3GPP specs. Get the clause, not a guess.**
+
+[![Live demo](https://img.shields.io/badge/Live_demo-Try_it-3B5BDB?style=flat-square&logo=cloudflare&logoColor=white)](https://3gpp-echo.chitransh-saxena-contact.workers.dev)
+[![CI](https://github.com/CSroseX/3GPP-Echo/actions/workflows/ci.yml/badge.svg)](https://github.com/CSroseX/3GPP-Echo/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.11+-blue?style=flat-square&logo=python&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-1.2-1C3C3C?style=flat-square&logo=langchain&logoColor=white)
+![Qdrant](https://img.shields.io/badge/Qdrant-vector_DB-DC244C?style=flat-square)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.162-009688?style=flat-square&logo=fastapi&logoColor=white)
+![SvelteKit](https://img.shields.io/badge/SvelteKit-3-FF3E00?style=flat-square&logo=svelte&logoColor=white)
+![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?style=flat-square&logo=cloudflare&logoColor=white)
+![Modal](https://img.shields.io/badge/Backend-Modal-000000?style=flat-square)
+![Docker](https://img.shields.io/badge/Docker-supported-2496ED?style=flat-square&logo=docker&logoColor=white)
+
+[![3GPP Echo live site](docs/images/hero.webp)](https://3gpp-echo.chitransh-saxena-contact.workers.dev)
+
+---
+
+A retrieval-augmented assistant that answers telecom questions from three 3GPP specifications: TS 23.501 (5G system architecture), TS 24.501 (5G NAS) and TS 24.301 (4G/EPS NAS), with clause-level citations.
 
 The three specs were chosen because they share vocabulary but differ in procedure: 4G "attach" vs 5G "registration", the MME vs the AMF. Mixing up 4G and 5G answers is the failure this project is built to measure and prevent. Every design choice, with the measurement behind it, is in [DECISIONS.md](DECISIONS.md).
 
@@ -9,6 +26,10 @@ The three specs were chosen because they share vocabulary but differ in procedur
 ---
 
 ## How a question is answered
+
+![Architecture: offline ingestion (parse, clause tree, chunk, embed into Qdrant) and the per-question LangGraph state machine (cache, triage, retrieve and rerank, one generate call, code-only answer checks)](docs/images/architecture.png)
+
+The same flow in short:
 
 ```
 question
